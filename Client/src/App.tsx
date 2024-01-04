@@ -1,35 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Grid from '@mui/material/Unstable_Grid2';
+import {Box, Button, Container, Toolbar, Typography} from "@mui/material";
+import DarkModeSwitch from "./components/DarkModeSwitch/DarkModeSwitch.tsx"; // Grid version 2
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    return (
+        <Box>
+            <Toolbar sx={{justifyContent: 'flex-end', mb: '2rem'}}>
+                <DarkModeSwitch/>
+            </Toolbar>
+            <Typography variant="h1" sx={{
+                textAlign: 'center',
+                fontWeight: 700,
+                fontSize: { xs: '1.8rem', sm: '2.8rem' }
+            }}>
+                Welcome to your favorite Wishlist app 🎁
+            </Typography>
+            <Container sx={{textAlign: 'center', py: '5em'}}>
+                <Grid>
+                    <Grid xs={12}>
+                        <Button variant="contained" size="large" sx={{ mt: 2, mb: 3 }}>Create an account</Button>
+                    </Grid>
+                    <Grid xs={12}>
+                        OR
+                    </Grid>
+                    <Grid xs={12}>
+                        <Button variant="contained" sx={{ mt: 3, mb: 2 }}>Log in</Button>
+                    </Grid>
+                </Grid>
+            </Container>
+        </Box>
+    )
 }
 
 export default App
