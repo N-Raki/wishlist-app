@@ -4,6 +4,10 @@ using Newtonsoft.Json;
 using Serilog;
 using Server;
 using Server.Models;
+using Server.Repositories;
+using Server.Repositories.Contracts;
+using Server.Services;
+using Server.Services.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
