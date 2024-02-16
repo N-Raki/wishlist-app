@@ -17,11 +17,13 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         body: JSON.stringify({
             email: data.get('email'),
             password: data.get('password')
-        })
+        }),
+        credentials: 'include'
     })
-        .then(response => response.text())
-        .then(data => {
-            console.log(data);
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '/profile';
+            }
         })
         .catch((error) => {
             console.error('Error:', error);
