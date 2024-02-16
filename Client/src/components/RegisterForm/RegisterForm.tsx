@@ -5,6 +5,8 @@ import Copyright from "../Copyright/Copyright.tsx";
 import {Box, Button, Link, TextField, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
 
+const apiUrl: string = import.meta.env.VITE_API_URL;
+
 interface RegisterFormProps {}
 
 const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -14,7 +16,7 @@ const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         alert('Passwords do not match');
         return;
     }
-    fetch('https://localhost:7200/register', {
+    fetch(apiUrl + '/register', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

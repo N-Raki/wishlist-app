@@ -4,10 +4,12 @@ import AuthenticationForm from "../AuthenticationForm/AuthenticationForm.tsx";
 import React from "react";
 import Copyright from "../Copyright/Copyright.tsx";
 
+const apiUrl: string = import.meta.env.VITE_API_URL;
+
 const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    fetch('https://localhost:7200/login?useCookies=true', {
+    fetch(apiUrl + '/login?useCookies=true', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
