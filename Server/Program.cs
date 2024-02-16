@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Serilog;
 using Server;
 using Server.Models;
@@ -18,10 +19,16 @@ builder.Logging.AddSerilog(logger);
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+	options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+});
+
 builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
 builder.Services.AddAuthorizationBuilder();
 
-builder.Services.AddDbContext<DatabaseContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<DatabaseContext>(options => options.UseLazyLoadingProxies().UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddIdentityCore<User>().AddEntityFrameworkStores<DatabaseContext>().AddApiEndpoints();
 
 builder.Services.AddEndpointsApiExplorer();
