@@ -25,6 +25,22 @@ const router = createBrowserRouter([
     {
         path: '/profile',
         element: <UserProfile />
+    },
+    {
+        path: '/profile/wishlists',
+        element: <div>Wishlists</div>
+    },
+    {
+        path: '/profile/settings',
+        element: <div>Settings</div>
+    },
+    {
+        path: '/wishlists/:guid',
+        element: <div>Wishlist</div>
+    },
+    {
+        path: '*',
+        element: <div>Not Found</div>
     }
 ])
 
