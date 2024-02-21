@@ -24,6 +24,9 @@ builder.Logging.AddSerilog(logger);
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
+builder.Services.AddScoped<IWishlistsService, WishlistsService>();
+builder.Services.AddScoped<IWishlistsRepository, WishlistsRepository>();
+
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
 	options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
