@@ -21,7 +21,7 @@ public sealed class UsersController(ILogger<UsersController> logger, IUsersServi
 		}
 		
 		var guid = Guid.Parse(userId);
-		var user = await usersService.GetUserByIdAsync(guid, HttpContext.RequestAborted).ConfigureAwait(false);
+		var user = await usersService.GetUserByGuidAsync(guid, HttpContext.RequestAborted).ConfigureAwait(false);
 		if (user is null)
 		{
 			logger.LogError("User with id {Id} not found", guid);

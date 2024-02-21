@@ -4,5 +4,5 @@ namespace Server.Services.Contracts;
 
 public interface IUsersService
 {
-	Task<User?> GetUserByIdAsync(Guid guid, CancellationToken cancellationToken = default);
+	Task<User?> GetUserByGuidAsync(Guid guid, CancellationToken cancellationToken = default);
 }

@@ -4,7 +4,11 @@ namespace Server.Models;
 
 public class Wishlist
 {
-	public Guid Id { get; set; }
-	public Guid UserId { get; set; }
-	public virtual User User { get; set; } = null!;
+	// Properties
+	public Guid Id { get; init; }
+	public Guid UserId { get; init; }
+
+	// Navigation properties
+	public virtual User User { get; } = null!;
+	public virtual IEnumerable<Item> Items { get; } = new List<Item>();
 }
