@@ -3,7 +3,7 @@ import {User} from "../models/user.model.ts";
 
 const API_URL: string = import.meta.env.VITE_API_URL;
 
-const getUser = async (): Promise<User | undefined> => {
+const getUser = async (): Promise<User> => {
     try {
         return await axios.get<User>(API_URL + '/api/users/me',
             {
@@ -15,10 +15,10 @@ const getUser = async (): Promise<User | undefined> => {
             if (error.response?.status === 401) {
                 window.location.href = '/login';
             }
-        } else {
-            throw error;
         }
+        throw error;
     }
 }
+
 
 export default getUser;

@@ -9,12 +9,12 @@ interface UserProfileProps {}
 
 const UserProfile: FC<UserProfileProps> = () => {
     const queryClient = useQueryClient();
-    const query = useQuery('user', getUser);
+    const query = useQuery({queryKey: ['user'], queryFn: getUser});
     
     const mutation = useMutation({
         mutationFn: logout,
         onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: 'user'});
+            await queryClient.invalidateQueries({ queryKey: ['user'] });
         }
     });
     
@@ -23,7 +23,7 @@ const UserProfile: FC<UserProfileProps> = () => {
     }
     
     if (query.error) {
-        return <div>Error: {(query.error as Error).message}</div>;
+        return <div>Error: {query.error.message}</div>;
     }
     
     if (query.isSuccess)
