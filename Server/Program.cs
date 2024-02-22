@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Serilog;
 using Server;
+using Server.Mappers;
+using Server.Mappers.Contracts;
 using Server.Models;
 using Server.Repositories;
 using Server.Repositories.Contracts;
@@ -21,11 +23,15 @@ var logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
+builder.Services.AddScoped<IUserMapper, UserMapper>();
 builder.Services.AddScoped<IUsersService, UsersService>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
+builder.Services.AddScoped<IWishlistMapper, WishlistMapper>();
 builder.Services.AddScoped<IWishlistsService, WishlistsService>();
 builder.Services.AddScoped<IWishlistsRepository, WishlistsRepository>();
+
+builder.Services.AddScoped<IItemMapper, ItemMapper>();
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {

@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Server.Mappers.Contracts;
 using Server.Services.Contracts;
 
 namespace Server.Controllers;
@@ -8,7 +9,7 @@ namespace Server.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public sealed class UsersController(ILogger<UsersController> logger, IUsersService usersService) : ControllerBase
+public sealed class UsersController(ILogger<UsersController> logger, IUsersService usersService, IUserMapper userMapper) : ControllerBase
 {
 	[HttpGet("me")]
 	public async Task<IActionResult> GetMe()
@@ -27,7 +28,9 @@ public sealed class UsersController(ILogger<UsersController> logger, IUsersServi
 			logger.LogError("User with guid {Guid} not found", guid);
 			return BadRequest();
 		}
+
+		var response = userMapper.MapToResponse(user);
 		
-		return Ok(user);
+		return Ok(response);
 	}
 }

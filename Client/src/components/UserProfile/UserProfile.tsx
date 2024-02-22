@@ -33,6 +33,19 @@ const UserProfile: FC<UserProfileProps> = () => {
         return (
             <div className="UserProfile">
                 <pre>Id: {user?.id}</pre>
+                <pre>Username: {user?.username}</pre>
+                <pre>Email: {user?.email}</pre>
+                <ul>
+                    {user?.wishlists.map((wishlist) => 
+                        <li key={wishlist.id}>{wishlist.id}
+                            <ul>
+                                {wishlist.items.map((item) => 
+                                    <li key={item.id}>{item.name}</li>
+                                )}
+                            </ul>
+                        </li>
+                    )}
+                </ul>
                 <button onClick={() => mutation.mutate()}>Log Out</button>
             </div>
         );
