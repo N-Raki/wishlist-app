@@ -8,6 +8,7 @@ import HomePage from "./components/HomePage/HomePage.tsx";
 import LoginForm from "./components/LoginForm/LoginForm.tsx";
 import RegisterForm from "./components/RegisterForm/RegisterForm.tsx";
 import UserProfile from "./components/UserProfile/UserProfile.tsx";
+import {QueryClient, QueryClientProvider} from "react-query";
 
 const router = createBrowserRouter([
     {
@@ -42,13 +43,17 @@ const router = createBrowserRouter([
         path: '*',
         element: <div>Not Found</div>
     }
-])
+]);
+
+const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <CustomThemeProvider>
             <CssBaseline/>
-            <RouterProvider router={router} />
+            <QueryClientProvider client={queryClient}>
+                <RouterProvider router={router} />
+            </QueryClientProvider>
         </CustomThemeProvider>
     </React.StrictMode>
 )

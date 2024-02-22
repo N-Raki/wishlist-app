@@ -1,37 +1,42 @@
 import {FC} from 'react';
 import './UserProfile.css';
-import {User} from "../../user.model.ts";
-import {useGet} from "../../hooks/useGet.ts";
+import {useMutation, useQuery, useQueryClient} from "react-query";
+import getUser from "../../api/getUser.request.ts";
+import logout from "../../api/logout.request.ts";
 
 
 interface UserProfileProps {}
 
-// const logout = () => {
-//     fetch(apiUrl + '/logout', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json'
-//         },
-//         credentials: 'include'
-//     })
-//         .then(response => {
-//             if (response.ok) {
-//                 window.location.href = '/login';
-//             }
-//         })
-//         .catch((error) => {
-//             console.error('Error:', error);
-//         });
-// }
-
 const UserProfile: FC<UserProfileProps> = () => {
-    const { data: userData } = useGet<User>('/api/users/me');
+    const queryClient = useQueryClient();
+    const query = useQuery('user', getUser);
     
-    return (
-        <div className="UserProfile">
-            <pre>{JSON.stringify(userData, null, 2)}</pre>
-        </div>
-    );
+    const mutation = useMutation({
+        mutationFn: logout,
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: 'user'});
+        }
+    });
+    
+    if (query.isLoading) {
+        return <div>Loading...</div>;
+    }
+    
+    if (query.error) {
+        return <div>Error: {(query.error as Error).message}</div>;
+    }
+    
+    if (query.isSuccess)
+    {
+        const user = query.data;
+        console.log(user);
+        return (
+            <div className="UserProfile">
+                <pre>Id: {user?.id}</pre>
+                <button onClick={() => mutation.mutate()}>Log Out</button>
+            </div>
+        );
+    }
 };
 
 export default UserProfile;
