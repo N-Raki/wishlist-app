@@ -1,8 +1,8 @@
 import {FC} from 'react';
 import './UserProfile.css';
-import {useMutation, useQuery, useQueryClient} from "react-query";
 import getUser from "../../api/getUser.request.ts";
 import logout from "../../api/logout.request.ts";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
 
 interface UserProfileProps {}
