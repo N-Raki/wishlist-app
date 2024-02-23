@@ -1,36 +1,31 @@
 import {Box, Button, Checkbox, FormControlLabel, Link, TextField, Typography} from "@mui/material";
 import Grid from '@mui/material/Grid';
 import AuthenticationForm from "../AuthenticationForm/AuthenticationForm.tsx";
-import React from "react";
+import React, {useState} from "react";
 import Copyright from "../Copyright/Copyright.tsx";
+import {useMutation} from "@tanstack/react-query";
+import login from "../../api/login.request.ts";
 
-const apiUrl: string = import.meta.env.VITE_API_URL;
-
-const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    fetch(apiUrl + '/login?useCookies=true', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            email: data.get('email'),
-            password: data.get('password')
-        }),
-        credentials: 'include'
-    })
-        .then(response => {
-            if (response.ok) {
-                window.location.href = '/profile';
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-};
+class FormData {
+    email: string = '';
+    password: string = '';
+}
 
 export default function LoginForm() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const mutation = useMutation({
+        mutationFn: (data: FormData) => login(data.email, data.password),
+        onSuccess: async () => {
+            window.location.href = '/profile';
+        }
+    });
+    
+    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        mutation.mutate({ email, password });
+    };
+    
     return (
         <AuthenticationForm>
             <Box sx={{my: 4, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
@@ -47,6 +42,7 @@ export default function LoginForm() {
                         label="Email Address"
                         name="email"
                         autoComplete="email"
+                        onChange={(e) => setEmail(e.target.value)}
                         autoFocus
                     />
                     <TextField
@@ -58,6 +54,7 @@ export default function LoginForm() {
                         type="password"
                         id="password"
                         autoComplete="current-password"
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary"/>}
@@ -68,9 +65,15 @@ export default function LoginForm() {
                         fullWidth
                         variant="contained"
                         sx={{mt: 3, mb: 2}}
+                        disabled={mutation.isPending}
                     >
                         Sign In
                     </Button>
+                    {
+                        mutation.isPending
+                            ? (<div>Logging in...</div>)
+                            : null
+                    }
                     <Grid container>
                         <Grid item xs>
                             <Link href="#" variant="body2">
