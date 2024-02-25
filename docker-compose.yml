@@ -1,0 +1,13 @@
+﻿services:
+  client:
+    image: node:alpine
+    container_name: wishlist-client
+    entrypoint: /bin/sh
+    ports:
+      - 8000:8000
+    working_dir: /srv/app
+    volumes:
+      - type: bind
+        source: ./Client
+        target: /srv/app
+    tty: true
