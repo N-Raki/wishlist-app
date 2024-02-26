@@ -1,8 +1,8 @@
 import {FC} from 'react';
 import './UserProfile.css';
 import getUser from "../../api/getUser.request.ts";
-import logout from "../../api/logout.request.ts";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import AuthService from "../../services/auth.service.ts";
 
 
 interface UserProfileProps {}
@@ -12,7 +12,7 @@ const UserProfile: FC<UserProfileProps> = () => {
     const query = useQuery({queryKey: ['user'], queryFn: getUser});
     
     const mutation = useMutation({
-        mutationFn: logout,
+        mutationFn: AuthService.logout,
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['user'] });
         }

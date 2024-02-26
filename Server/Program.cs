@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Serilog;
 using Server;
+using Server.Extensions;
 using Server.Mappers;
 using Server.Mappers.Contracts;
 using Server.Models;
@@ -70,10 +71,12 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 
 	app.UseCors(corsPolicyBuilder => corsPolicyBuilder
-		.WithOrigins("http://localhost:5173")
+		.WithOrigins("http://localhost:8000")
 		.AllowAnyMethod()
 		.AllowAnyHeader()
 		.AllowCredentials());
+	
+	app.ApplyMigrations();
 }
 else
 {
@@ -86,12 +89,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapIdentityApi<User>();
-
-app.MapPost("/logout", async ([FromServices] IServiceProvider sp) =>
-{
-	var signInManager = sp.GetRequiredService<SignInManager<User>>();
-	await signInManager.SignOutAsync().ConfigureAwait(false);
-}).RequireAuthorization();
 
 app.Run();

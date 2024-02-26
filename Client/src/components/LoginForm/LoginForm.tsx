@@ -4,7 +4,8 @@ import AuthenticationForm from "../AuthenticationForm/AuthenticationForm.tsx";
 import React, {useState} from "react";
 import Copyright from "../Copyright/Copyright.tsx";
 import {useMutation} from "@tanstack/react-query";
-import login from "../../api/login.request.ts";
+import AuthService from "../../services/auth.service.ts";
+import {useNavigate} from "react-router-dom";
 
 class FormData {
     email: string = '';
@@ -12,12 +13,14 @@ class FormData {
 }
 
 export default function LoginForm() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const mutation = useMutation({
-        mutationFn: (data: FormData) => login(data.email, data.password),
+        mutationFn: (data: FormData) => AuthService.login(data.email, data.password),
         onSuccess: async () => {
-            window.location.href = '/profile';
+            navigate('/profile');
+            window.location.reload();
         }
     });
     

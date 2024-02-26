@@ -5,9 +5,37 @@
     entrypoint: /bin/sh
     ports:
       - 8000:8000
-    working_dir: /srv/app
+    working_dir: /app/Client
     volumes:
       - type: bind
         source: ./Client
-        target: /srv/app
+        target: /app/Client
     tty: true
+  server:
+    image: ${DOCKER_REGISTRY-}wishlist-server
+    container_name: wishlist-server
+    build:
+      context: .
+      dockerfile: Server/Dockerfile
+    ports:
+      - 5000:5000
+      - 5001:5001
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=5000
+      - ASPNETCORE_HTTPS_PORTS=5001
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=1724
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ${HOME}/.aspnet/https:/https/
+  database:
+    image: postgres:latest
+    container_name: wishlist-database
+    environment:
+      POSTGRES_DB: wishlist-app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ./Database:/var/lib/postgresql/data
