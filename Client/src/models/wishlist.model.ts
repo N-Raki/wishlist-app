@@ -2,5 +2,6 @@
 
 export class Wishlist {
     id: string = '';
+    name: string = '';
     items: Item[] = [];
 }

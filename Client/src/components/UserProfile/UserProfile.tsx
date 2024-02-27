@@ -29,15 +29,14 @@ const UserProfile: FC<UserProfileProps> = () => {
     if (query.isSuccess)
     {
         const user = query.data;
-        console.log(user);
         return (
             <div className="UserProfile">
                 <pre>Id: {user?.id}</pre>
-                <pre>Username: {user?.username}</pre>
+                <pre>Display Name: {user?.displayName}</pre>
                 <pre>Email: {user?.email}</pre>
                 <ul>
                     {user?.wishlists.map((wishlist) => 
-                        <li key={wishlist.id}>{wishlist.id}
+                        <li key={wishlist.id}>{wishlist.id} - {wishlist.name}
                             <ul>
                                 {wishlist.items.map((item) => 
                                     <li key={item.id}>{item.name}</li>
