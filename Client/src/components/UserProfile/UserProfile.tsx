@@ -1,15 +1,14 @@
 import {FC} from 'react';
 import './UserProfile.css';
-import getUser from "../../api/getUser.request.ts";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import AuthService from "../../services/auth.service.ts";
-
+import UserService from "../../services/user.service.ts";
 
 interface UserProfileProps {}
 
 const UserProfile: FC<UserProfileProps> = () => {
     const queryClient = useQueryClient();
-    const query = useQuery({queryKey: ['user'], queryFn: getUser});
+    const query = useQuery({queryKey: ['user'], queryFn: UserService.getCurrentUser});
     
     const mutation = useMutation({
         mutationFn: AuthService.logout,
@@ -39,7 +38,11 @@ const UserProfile: FC<UserProfileProps> = () => {
                         <li key={wishlist.id}>{wishlist.id} - {wishlist.name}
                             <ul>
                                 {wishlist.items.map((item) => 
-                                    <li key={item.id}>{item.name}</li>
+                                    <li key={item.id}>
+                                        <span>{item.name}</span>
+                                        {item.url ? ( - <a href={item.url} target="_blank">Link</a>) : null}
+                                        {item.price ? ( - <span>{item.price}</span>) : null}
+                                    </li>
                                 )}
                             </ul>
                         </li>

@@ -20,7 +20,9 @@ internal sealed class ItemsService(IItemsRepository itemsRepository, IAuthentica
 		var item = new Item
 		{
 			WishlistId = wishlistId,
-			Name = request.Name
+			Name = request.Name,
+			Url = request.Url,
+			Price = request.Price
 		};
 		return await itemsRepository.CreateItemAsync(item, cancellationToken).ConfigureAwait(false);
 	}
