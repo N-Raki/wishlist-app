@@ -10,19 +10,20 @@ import * as Yup from 'yup';
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {UserRegisterRequest} from "../../models/requests/user-register.model.ts";
+import {ObjectSchema} from "yup";
 
-class FormData {
+class RegisterFormData {
     displayName: string = '';
     email: string = '';
     password: string = '';
     confirmPassword: string = '';
 }
 
-const validationScheme = Yup.object().shape({
+const validationScheme: ObjectSchema<RegisterFormData> = Yup.object({
     displayName: Yup.string().required('Display name is required'),
     email: Yup.string()
         .required('Email is required')
-        .email('Invalid email'),
+        .email('Invalid email address'),
     password: Yup.string()
         .required('Password is required')
         .min(6, 'Password must be at least 6 characters')
@@ -38,20 +39,24 @@ export default function RegisterForm() {
     const {
         register,
         handleSubmit,
-        formState: { errors },
-        
-    } = useForm<FormData>({resolver: yupResolver(validationScheme), mode: 'onBlur'});
+        formState: { errors }
+    } = useForm<RegisterFormData>({resolver: yupResolver(validationScheme), mode: 'onBlur'});
     
     const mutation = useMutation({
         mutationFn: (data: UserRegisterRequest) => AuthService.register(data),
         onSuccess: async () => {
-            navigate('/profile');
+            navigate('/login');
             window.location.reload();
         }
     });
 
-    const onSubmit = (data: UserRegisterRequest) => {
-        mutation.mutate(data);
+    const onSubmit = (data: RegisterFormData) => {
+        const request: UserRegisterRequest = {
+            displayName: data.displayName,
+            email: data.email,
+            password: data.password
+        }
+        mutation.mutate(request);
     };
 
     return (
@@ -107,17 +112,6 @@ export default function RegisterForm() {
                         sx={{mt: 3, mb: 2}}
                     >
                         Sign Up
-                    </Button>
-                    <Button
-                        type="button"
-                        fullWidth
-                        variant="contained"
-                        sx={{mt: 3, mb: 2}}
-                        onClick={() => {
-                            console.log(errors);
-                        }}
-                    >
-                        Test
                     </Button>
                     <Grid container>
                         <Grid item xs/>

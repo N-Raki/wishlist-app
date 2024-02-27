@@ -1,34 +1,54 @@
-import {Box, Button, Checkbox, FormControlLabel, Link, TextField, Typography} from "@mui/material";
+import {Box, Button, Link, TextField, Typography} from "@mui/material";
 import Grid from '@mui/material/Grid';
 import AuthenticationForm from "../AuthenticationForm/AuthenticationForm.tsx";
-import React, {useState} from "react";
 import Copyright from "../Copyright/Copyright.tsx";
 import {useMutation} from "@tanstack/react-query";
 import AuthService from "../../services/auth.service.ts";
 import {useNavigate} from "react-router-dom";
+import {UserLoginRequest} from "../../models/requests/user-login.model.ts";
+import {useForm} from "react-hook-form";
+import {yupResolver} from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import {ObjectSchema} from "yup";
 
-class FormData {
+class LoginFormData {
     email: string = '';
     password: string = '';
 }
 
+const validationScheme: ObjectSchema<LoginFormData> = Yup.object({
+    email: Yup.string()
+        .required('Email is required')
+        .email('Invalid email address'),
+    password: Yup.string()
+        .required('Password is required')
+});
+
 export default function LoginForm() {
     const navigate = useNavigate();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+
+    const {
+        register,
+        handleSubmit,
+        formState: {errors}
+    } = useForm<LoginFormData>({resolver: yupResolver(validationScheme), mode: 'onBlur'});
+
     const mutation = useMutation({
-        mutationFn: (data: FormData) => AuthService.login(data.email, data.password),
+        mutationFn: (data: UserLoginRequest) => AuthService.login(data),
         onSuccess: async () => {
             navigate('/profile');
             window.location.reload();
         }
     });
-    
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        mutation.mutate({ email, password });
+
+    const onSubmit = (data: LoginFormData) => {
+        const request: UserLoginRequest = {
+            email: data.email,
+            password: data.password
+        }
+        mutation.mutate(request);
     };
-    
+
     return (
         <AuthenticationForm>
             <Box sx={{my: 4, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
@@ -36,32 +56,26 @@ export default function LoginForm() {
                 <Typography component="h1" variant="h5">
                     Sign in
                 </Typography>
-                <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt: 1}}>
+                <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{mt: 1}}>
                     <TextField
-                        margin="normal"
                         required
-                        fullWidth
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        onChange={(e) => setEmail(e.target.value)}
                         autoFocus
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
+                        margin="normal"
+                        fullWidth
+                        label="Email Address"
+                        {...register('email')}
                     />
                     <TextField
-                        margin="normal"
                         required
+                        error={!!errors.password}
+                        helperText={errors.password?.message}
+                        margin="normal"
                         fullWidth
-                        name="password"
                         label="Password"
                         type="password"
-                        id="password"
-                        autoComplete="current-password"
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <FormControlLabel
-                        control={<Checkbox value="remember" color="primary"/>}
-                        label="Remember me"
+                        {...register('password')}
                     />
                     <Button
                         type="submit"
@@ -72,11 +86,6 @@ export default function LoginForm() {
                     >
                         Sign In
                     </Button>
-                    {
-                        mutation.isPending
-                            ? (<div>Logging in...</div>)
-                            : null
-                    }
                     <Grid container>
                         <Grid item xs>
                             <Link href="#" variant="body2">

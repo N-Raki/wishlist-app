@@ -6,7 +6,7 @@ const API_URL: string = import.meta.env.VITE_API_URL;
 
 const login = async (data: UserLoginRequest): Promise<void> => {
     try {
-        await axios.post<void, AxiosResponse<void>, UserLoginRequest>(API_URL + '/api/auth/login?useCookies=true',
+        await axios.post<void, AxiosResponse<void>, UserLoginRequest>(API_URL + '/api/auth/login',
             {
                 email: data.email,
                 password: data.password
