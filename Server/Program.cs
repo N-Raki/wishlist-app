@@ -9,6 +9,8 @@ using Server.Extensions;
 using Server.Mappers;
 using Server.Mappers.Contracts;
 using Server.Models;
+using Server.Providers;
+using Server.Providers.Contracts;
 using Server.Repositories;
 using Server.Repositories.Contracts;
 using Server.Services;
@@ -33,6 +35,10 @@ builder.Services.AddScoped<IWishlistsService, WishlistsService>();
 builder.Services.AddScoped<IWishlistsRepository, WishlistsRepository>();
 
 builder.Services.AddScoped<IItemMapper, ItemMapper>();
+builder.Services.AddScoped<IItemsService, ItemsService>();
+builder.Services.AddScoped<IItemsRepository, ItemsRepository>();
+
+builder.Services.AddScoped<IAuthenticationDataProvider, AuthenticationDataProvider>();
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
@@ -71,7 +77,7 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 
 	app.UseCors(corsPolicyBuilder => corsPolicyBuilder
-		.WithOrigins("http://localhost:8000")
+		.WithOrigins("https://localhost:8000")
 		.AllowAnyMethod()
 		.AllowAnyHeader()
 		.AllowCredentials());
