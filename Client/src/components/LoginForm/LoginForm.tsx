@@ -1,4 +1,4 @@
-import {Box, Button, Link, TextField, Typography} from "@mui/material";
+import {Box, Button, Checkbox, FormControlLabel, Link, TextField, Typography} from "@mui/material";
 import Grid from '@mui/material/Grid';
 import AuthenticationForm from "../AuthenticationForm/AuthenticationForm.tsx";
 import Copyright from "../Copyright/Copyright.tsx";
@@ -10,10 +10,12 @@ import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import {ObjectSchema} from "yup";
+import toast from "react-hot-toast";
 
 class LoginFormData {
     email: string = '';
     password: string = '';
+    rememberMe: boolean = false;
 }
 
 const validationScheme: ObjectSchema<LoginFormData> = Yup.object({
@@ -21,7 +23,8 @@ const validationScheme: ObjectSchema<LoginFormData> = Yup.object({
         .required('Email is required')
         .email('Invalid email address'),
     password: Yup.string()
-        .required('Password is required')
+        .required('Password is required'),
+    rememberMe: Yup.boolean().defined()
 });
 
 export default function LoginForm() {
@@ -31,20 +34,21 @@ export default function LoginForm() {
         register,
         handleSubmit,
         formState: {errors}
-    } = useForm<LoginFormData>({resolver: yupResolver(validationScheme), mode: 'onBlur'});
+    } = useForm<LoginFormData>({resolver: yupResolver(validationScheme), mode: 'onChange'});
 
     const mutation = useMutation({
         mutationFn: (data: UserLoginRequest) => AuthService.login(data),
         onSuccess: async () => {
+            toast.success('Logged in successfully');
             navigate('/profile');
-            window.location.reload();
         }
     });
 
     const onSubmit = (data: LoginFormData) => {
         const request: UserLoginRequest = {
             email: data.email,
-            password: data.password
+            password: data.password,
+            rememberMe: data.rememberMe
         }
         mutation.mutate(request);
     };
@@ -76,6 +80,10 @@ export default function LoginForm() {
                         label="Password"
                         type="password"
                         {...register('password')}
+                    />
+                    <FormControlLabel
+                        control={<Checkbox color="primary" {...register('rememberMe')}/>}
+                        label="Remember me"
                     />
                     <Button
                         type="submit"

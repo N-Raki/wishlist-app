@@ -40,8 +40,6 @@ public class AuthController : ControllerBase
         await userStore.SetUserNameAsync(user, registerRequest.Email, CancellationToken.None);
         await emailStore.SetEmailAsync(user, registerRequest.Email, CancellationToken.None);
         
-        user.DisplayName = registerRequest.DisplayName;
-        
         var result = await userManager.CreateAsync(user, registerRequest.Password);
 
         if (!result.Succeeded)
@@ -65,7 +63,7 @@ public class AuthController : ControllerBase
         {
             return TypedResults.Problem("User not found.", statusCode: StatusCodes.Status401Unauthorized);
         }
-        var result = await signInManager.PasswordSignInAsync(user, loginRequest.Password, true, true);
+        var result = await signInManager.PasswordSignInAsync(user, loginRequest.Password, loginRequest.RememberMe, true);
         
         if (!result.Succeeded)
         {
@@ -78,7 +76,7 @@ public class AuthController : ControllerBase
     
     [Authorize]
     [HttpPost("logout")]
-    public async Task<IActionResult> Login([FromServices] IServiceProvider serviceProvider)
+    public async Task<IActionResult> Logout([FromServices] IServiceProvider serviceProvider)
     {
         var signInManager = serviceProvider.GetRequiredService<SignInManager<User>>();
         await signInManager.SignOutAsync().ConfigureAwait(false);
@@ -95,9 +93,8 @@ public class AuthController : ControllerBase
         {
             string[] newDescriptions;
             
-            if (!errorDictionary.TryGetValue(error.Code, out var descriptions))
+            if (errorDictionary.TryGetValue(error.Code, out var descriptions))
             {
-                if (descriptions is null) continue;
                 newDescriptions = new string[descriptions.Length + 1];
                 Array.Copy(descriptions, newDescriptions, descriptions.Length);
                 newDescriptions[descriptions.Length] = error.Description;

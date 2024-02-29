@@ -9,7 +9,8 @@ const login = async (data: UserLoginRequest): Promise<void> => {
         await axios.post<void, AxiosResponse<void>, UserLoginRequest>(API_URL + '/api/auth/login',
             {
                 email: data.email,
-                password: data.password
+                password: data.password,
+                rememberMe: data.rememberMe
             },
             {
                 withCredentials: true
@@ -36,7 +37,6 @@ const logout = async (): Promise<void> => {
 const register = async (data: UserRegisterRequest): Promise<void> => {
     try {
         await axios.post<void, AxiosResponse<void>, UserRegisterRequest>(API_URL + '/api/auth/register', {
-            displayName: data.displayName,
             email: data.email,
             password: data.password
         });

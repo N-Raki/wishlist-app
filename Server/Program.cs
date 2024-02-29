@@ -50,6 +50,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
 	options.Cookie.HttpOnly = true;
 	options.Cookie.SameSite = SameSiteMode.None;
+	options.ExpireTimeSpan = TimeSpan.FromDays(14);
 	
 	options.Events = new CookieAuthenticationEvents
 	{
@@ -65,6 +66,15 @@ builder.Services.AddAuthorizationBuilder();
 builder.Services.AddDbContext<DatabaseContext>(options => options.UseLazyLoadingProxies().UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddIdentityCore<User>().AddEntityFrameworkStores<DatabaseContext>().AddApiEndpoints();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+	options.User.RequireUniqueEmail = true;
+	options.Password.RequireDigit = true;
+	options.Password.RequireLowercase = true;
+	options.Password.RequireNonAlphanumeric = true;
+	options.Password.RequiredLength = 4;
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

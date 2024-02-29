@@ -11,23 +11,23 @@ import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {UserRegisterRequest} from "../../models/requests/user-register.model.ts";
 import {ObjectSchema} from "yup";
+import toast from "react-hot-toast";
+import {AxiosError} from "axios";
+import {AspNetValidationProblem} from "../../models/errors/AspNetValidationProblem.ts";
 
 class RegisterFormData {
-    displayName: string = '';
     email: string = '';
     password: string = '';
     confirmPassword: string = '';
 }
 
 const validationScheme: ObjectSchema<RegisterFormData> = Yup.object({
-    displayName: Yup.string().required('Display name is required'),
     email: Yup.string()
         .required('Email is required')
         .email('Invalid email address'),
     password: Yup.string()
         .required('Password is required')
-        .min(6, 'Password must be at least 6 characters')
-        .max(40, 'Password must not exceed 40 characters'),
+        .min(4, 'Password must be at least 4 characters'),
     confirmPassword: Yup.string()
         .required('Confirm password is required')
         .oneOf([Yup.ref('password')], 'Passwords do not match')
@@ -40,19 +40,29 @@ export default function RegisterForm() {
         register,
         handleSubmit,
         formState: { errors }
-    } = useForm<RegisterFormData>({resolver: yupResolver(validationScheme), mode: 'onBlur'});
+    } = useForm<RegisterFormData>({resolver: yupResolver(validationScheme), mode: 'onChange'});
     
     const mutation = useMutation({
         mutationFn: (data: UserRegisterRequest) => AuthService.register(data),
         onSuccess: async () => {
+            toast.success('User registered successfully');
             navigate('/login');
-            window.location.reload();
+        },
+        onError: (error: AxiosError<AspNetValidationProblem>) => {
+            let errors = error.response?.data.errors;
+            if (errors) {
+                for (let key in errors) {
+                    let message = errors[key].join(' ');
+                    toast.error(message, { duration: 10000 });
+                }
+            } else {
+                toast.error('An error occurred while registering the user. ' + error.message, { duration: 10000 });
+            }
         }
     });
 
     const onSubmit = (data: RegisterFormData) => {
         const request: UserRegisterRequest = {
-            displayName: data.displayName,
             email: data.email,
             password: data.password
         }
@@ -67,15 +77,6 @@ export default function RegisterForm() {
                     Sign up
                 </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{mt: 1}}>
-                    <TextField
-                        required
-                        error={!!errors.displayName}
-                        helperText={errors.displayName?.message}
-                        margin="normal"
-                        fullWidth
-                        label="Display Name"
-                        {...register('displayName')}
-                    />
                     <TextField
                         required
                         error={!!errors.email}
