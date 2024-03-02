@@ -10,9 +10,7 @@ internal sealed class WishlistsService(IWishlistsRepository wishlistsRepository,
 {
 	public async Task<Wishlist?> GetWishlistByGuidAsync(Guid guid, CancellationToken cancellationToken = default)
 	{
-		var userId = authenticationDataProvider.AuthenticatedUser.Id;
-		var wishlist = await wishlistsRepository.GetWishlistByGuidAsync(guid, cancellationToken).ConfigureAwait(false);
-		return wishlist?.UserId == userId ? wishlist : null;
+		return await wishlistsRepository.GetWishlistByGuidAsync(guid, cancellationToken).ConfigureAwait(false);
 	}
 
 	public async Task<Wishlist> CreateWishlistAsync(CreateWishlistRequest createWishlistRequest, CancellationToken cancellationToken = default)

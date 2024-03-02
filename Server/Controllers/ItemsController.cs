@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Common;
+using Server.Mappers.Contracts;
 using Server.Models.Requests;
 using Server.Services.Contracts;
 
@@ -9,7 +10,7 @@ namespace Server.Controllers;
 [ApiController]
 [Route(Routes.WishlistItems)]
 [Authorize]
-public sealed class ItemsController(IItemsService itemsService) : ControllerBase
+public sealed class ItemsController(IItemsService itemsService, IItemMapper itemMapper) : ControllerBase
 {
 	[HttpGet("{itemId:guid}")]
 	public async Task<IActionResult> GetItem([FromRoute] Guid wishlistId, [FromRoute] Guid itemId)
@@ -20,7 +21,7 @@ public sealed class ItemsController(IItemsService itemsService) : ControllerBase
 			return NotFound();
 		}
 		
-		return Ok(item);
+		return Ok(itemMapper.MapToResponse(item));
 	}
 	
 	[HttpPost]

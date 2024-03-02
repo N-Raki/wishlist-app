@@ -3,7 +3,7 @@ import './DarkModeSwitch.css';
 import {IconButton, useTheme} from "@mui/material";
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
-import {ThemeContext} from "../../Theme.tsx";
+import {ThemeContext} from "../../ThemeContext.tsx";
 
 export default function DarkModeSwitch() {
     const { darkMode, setDarkMode } = useContext(ThemeContext);

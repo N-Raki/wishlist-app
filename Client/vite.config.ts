@@ -12,7 +12,7 @@ export default defineConfig({
       usePolling: true
     }
   },
-  //build: {
-  //  outDir: '../Server/wwwroot',
-  //}
+  build: {
+    outDir: '../Server/wwwroot',
+  }
 })

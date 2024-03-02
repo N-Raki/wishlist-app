@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.Common;
+using Server.Mappers.Contracts;
 using Server.Models.Requests;
 using Server.Services.Contracts;
 
@@ -9,7 +10,7 @@ namespace Server.Controllers;
 [ApiController]
 [Route(Routes.Wishlists)]
 [Authorize]
-public sealed class WishlistsController(ILogger<WishlistsController> logger, IWishlistsService wishlistsService): ControllerBase
+public sealed class WishlistsController(ILogger<WishlistsController> logger, IWishlistsService wishlistsService, IWishlistMapper wishlistMapper): ControllerBase
 {
 	[HttpGet("{wishlistId:guid}")]
 	public async Task<IActionResult> GetWishlist([FromRoute] Guid wishlistId)
@@ -21,7 +22,7 @@ public sealed class WishlistsController(ILogger<WishlistsController> logger, IWi
 			return NotFound();
 		}
 		
-		return Ok(wishlist);
+		return Ok(wishlistMapper.MapToResponse(wishlist));
 	}
 	
 	[HttpPost]

@@ -6,6 +6,8 @@ import UserService from "../../services/user.service.ts";
 import {Navigate, useNavigate} from "react-router-dom";
 import toast from "react-hot-toast";
 import {User} from "../../models/user.model.ts";
+import WishlistsList from "../WishlistsList/WishlistsList.tsx";
+import {Box, Container, Stack, Typography} from "@mui/material";
 
 interface UserProfileProps {}
 
@@ -21,10 +23,6 @@ const UserProfile: FC<UserProfileProps> = () => {
         }
     });
     
-    if (query.isLoading) {
-        return <div>Loading...</div>;
-    }
-    
     if (query.isError) {
         return <Navigate to="/login" />
     }
@@ -33,27 +31,29 @@ const UserProfile: FC<UserProfileProps> = () => {
     {
         const user = query.data;
         return (
-            <div className="UserProfile">
-                <pre>Id: {user?.id}</pre>
-                <pre>Email: {user?.email}</pre>
-                {user?.displayName ? <pre>Display Name: {user?.displayName}</pre> : <pre>No display name yet !</pre>}
-                <ul>
-                    {user?.wishlists?.map((wishlist) => 
-                        <li key={wishlist.id}>{wishlist.id} - {wishlist.name}
-                            <ul>
-                                {wishlist.items.map((item) => 
-                                    <li key={item.id}>
-                                        <span>{item.name}</span>
-                                        {item.url ? ( - <a href={item.url} target="_blank">Link</a>) : null}
-                                        {item.price ? ( - <span>{item.price}</span>) : null}
-                                    </li>
-                                )}
-                            </ul>
-                        </li>
-                    )}
-                </ul>
-                <button onClick={() => mutation.mutate()}>Log Out</button>
-            </div>
+            <Box>
+                <Container sx={{
+                    mt: '2rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                }}>
+                    
+                    <Box sx={{my: '2rem'}}>
+                        <Typography variant="h3">
+                            Hello {user?.displayName ? user?.displayName + ' ' : null}!
+                        </Typography>
+                    </Box>
+                    {user?.wishlists.length === 0 ?
+                        <Typography variant="h5">You don't have any wishlists yet.</Typography> :
+                        <Typography variant="h5">Here are your wishlists:</Typography>
+                    }
+                    <Stack spacing={2} sx={{my: '2rem'}}>
+                        <WishlistsList wishlists={user?.wishlists}/>
+                    </Stack>
+                    <button onClick={() => mutation.mutate()}>Log Out</button>
+                </Container>
+            </Box>
         );
     }
 };
