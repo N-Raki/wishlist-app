@@ -7,7 +7,7 @@ import {Navigate, useNavigate} from "react-router-dom";
 import toast from "react-hot-toast";
 import {User} from "../../models/user.model.ts";
 import WishlistsList from "../WishlistsList/WishlistsList.tsx";
-import {Box, Container, Stack, Typography} from "@mui/material";
+import {Box, Button, Container, Stack, Typography} from "@mui/material";
 
 interface UserProfileProps {}
 
@@ -51,7 +51,8 @@ const UserProfile: FC<UserProfileProps> = () => {
                     <Stack spacing={2} sx={{my: '2rem'}}>
                         <WishlistsList wishlists={user?.wishlists}/>
                     </Stack>
-                    <button onClick={() => mutation.mutate()}>Log Out</button>
+                    <Button href="/wishlists/new" variant={'contained'}>Create a new wishlist</Button>
+                    <Button variant={'outlined'} onClick={() => mutation.mutate()} sx={{my:'2rem'}}>Log Out</Button>
                 </Container>
             </Box>
         );

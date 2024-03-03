@@ -9,6 +9,11 @@ export const CustomThemeProvider = ({children}: any) => {
     const [darkMode, setDarkMode] = useState(true);
 
     const theme = createTheme({
+        typography: {
+            h1: {
+                fontSize: '3rem'
+            }
+        },
         palette: {
             mode: darkMode ? 'dark' : 'light'
         },
