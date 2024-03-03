@@ -5,6 +5,7 @@ import {useQuery} from "@tanstack/react-query";
 import {Wishlist} from "../../models/wishlist.model.ts";
 import WishlistsService from "../../services/wishlists.service.ts";
 import toast from "react-hot-toast";
+import {Box, Link, Stack, Typography} from "@mui/material";
 
 interface WishlistViewProps {}
 
@@ -29,20 +30,24 @@ const WishlistView: FC<WishlistViewProps> = () => {
         const wishlist: Wishlist = query.data;
         
         return (
-            <div className="WishlistView">
-                <pre>Id: {wishlist?.id}</pre>
-                <pre>Name: {wishlist?.name}</pre>
-                <pre>Yours: {wishlist?.isOwner ? 'Yes' : 'No'}</pre>
+            <Box>
+                <Typography variant={'h1'}>{wishlist.name}</Typography>
+                <Typography>{wishlist.id}</Typography>
                 <ul>
-                    {wishlist?.items.map((item) =>
+                    {wishlist.items.map((item) =>
                         <li key={item.id}>
-                            <span>{item.name}</span>
-                            {item.url ? (-<a href={item.url} target="_blank">Link</a>) : null}
-                            {item.price ? (-<span>{item.price}</span>) : null}
+                            <Stack spacing={1} direction={'row'}>
+                                {
+                                    item.url ?
+                                        <Link href={item.url} target="_blank">{item.name}</Link> :
+                                        <Typography>{item.name}</Typography>
+                                }
+                                {item.price ? <span> - {item.price}$</span> : null}
+                            </Stack>
                         </li>
                     )}
                 </ul>
-            </div>
+            </Box>
         );
     }
 };
