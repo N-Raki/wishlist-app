@@ -1,5 +1,5 @@
 export class ItemCreateRequest {
     name: string = '';
-    url?: string | undefined;
-    price?: number | undefined;
+    url?: string | null;
+    price?: number | null;
 }

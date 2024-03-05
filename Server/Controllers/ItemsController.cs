@@ -23,6 +23,20 @@ public sealed class ItemsController(IItemsService itemsService, IItemMapper item
 		
 		return Ok(itemMapper.MapToResponse(item));
 	}
+
+	[HttpPut("{itemId:guid}")]
+	public async Task<IActionResult> UpdateItem([FromRoute] Guid wishlistId, [FromRoute] Guid itemId, [FromBody] CreateItemRequest createItemRequest)
+	{
+		try
+		{
+			await itemsService.UpdateItemAsync(wishlistId, itemId, createItemRequest, HttpContext.RequestAborted).ConfigureAwait(false);
+			return NoContent();
+		}
+		catch (ArgumentException)
+		{
+			return NotFound();
+		}
+	}
 	
 	[HttpPost]
 	public async Task<IActionResult> CreateItemAsync([FromRoute] Guid wishlistId, [FromBody] CreateItemRequest createItemRequest)

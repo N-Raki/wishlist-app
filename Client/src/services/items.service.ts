@@ -20,8 +20,42 @@ const createItem = async (wishlistId: string, itemCreateRequest: ItemCreateReque
     }
 };
 
+const updateItem = async (wishlistId: string, itemId: string, itemCreateRequest: ItemCreateRequest) => {
+    try {
+        const response: AxiosResponse = await axios.put(API_URL + '/api/wishlists/' + wishlistId + '/items/' + itemId, itemCreateRequest, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401) {
+                toast.error('You are not logged in');
+            }
+        }
+        throw error;
+    }
+}
+
+const deleteItem = async (wishlistId: string, itemId: string) => {
+    try {
+        const response: AxiosResponse<void> = await axios.delete(API_URL + '/api/wishlists/' + wishlistId + '/items/' + itemId, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401) {
+                toast.error('You are not logged in');
+            }
+        }
+        throw error;
+    }
+};
+
 const ItemsService = {
-    createItem
+    createItem,
+    updateItem,
+    deleteItem
 }
 
 export default ItemsService;

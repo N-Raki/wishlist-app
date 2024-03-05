@@ -17,6 +17,12 @@ internal sealed class ItemsRepository(DatabaseContext databaseContext) : IItemsR
 		return item;
 	}
 
+	public async Task UpdateItemAsync(Item item, CancellationToken cancellationToken = default)
+	{
+		databaseContext.Items.Update(item);
+		await databaseContext.SaveChangesAsync(cancellationToken);
+	}
+
 	public async Task DeleteItemAsync(Item item, CancellationToken cancellationToken = default)
 	{
 		databaseContext.Items.Remove(item);

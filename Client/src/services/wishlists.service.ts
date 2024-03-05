@@ -37,9 +37,26 @@ const createWishlist = async (wishlistCreateRequest: WishlistCreateRequest) => {
     }
 };
 
+const deleteWishlist = async (guid: string) => {
+    try {
+        const response: AxiosResponse<void> = await axios.delete(API_URL + '/api/wishlists/' + guid, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401) {
+                toast.error('You are not logged in');
+            }
+        }
+        throw error;
+    }
+};
+
 const WishlistsService = {
     getWishlist,
-    createWishlist
+    createWishlist,
+    deleteWishlist
 }
 
 export default WishlistsService;

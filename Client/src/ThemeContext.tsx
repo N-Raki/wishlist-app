@@ -1,8 +1,9 @@
 import {createContext, useState} from "react";
 import {createTheme, ThemeProvider} from "@mui/material";
+import {deepOrange, deepPurple, grey} from "@mui/material/colors";
 
 export const ThemeContext = createContext({
-    darkMode: true, setDarkMode: (_: boolean) => { }
+    darkMode: true, setDarkMode: (_: boolean) => {}
 });
 
 export const CustomThemeProvider = ({children}: any) => {
@@ -15,10 +16,34 @@ export const CustomThemeProvider = ({children}: any) => {
             }
         },
         palette: {
-            mode: darkMode ? 'dark' : 'light'
+            mode: darkMode ? 'dark' : 'light',
+            ...(darkMode ? {
+                    // palette values for dark mode
+                    primary: deepPurple,
+                    background: {
+                        default: '#191919',
+                        paper: '#191919',
+                    },
+                    text: {
+                        primary: '#fff',
+                        secondary: grey[500],
+                    }
+                } :
+                {
+                    // palette values for light mode
+                    primary: deepOrange,
+                    background: {
+                        default: '#f0f0f0',
+                        paper: '#f0f0f0',
+                    },
+                    text: {
+                        primary: grey[900],
+                        secondary: grey[800],
+                    },
+                })
         },
     });
-    
+
     return (
         <ThemeContext.Provider value={{darkMode, setDarkMode}}>
             <ThemeProvider theme={theme}>
