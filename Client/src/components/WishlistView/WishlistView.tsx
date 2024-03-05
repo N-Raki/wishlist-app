@@ -75,6 +75,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['wishlist']});
             toast.success('Item added');
+            itemReset();
         },
     });
     
