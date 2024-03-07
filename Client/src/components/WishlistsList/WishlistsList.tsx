@@ -1,7 +1,8 @@
 import './WishlistsList.css'
 import {FC} from "react";
 import {Wishlist} from "../../models/wishlist.model.ts";
-import {Box, Link, Stack} from "@mui/material";
+import {List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper} from "@mui/material";
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 interface WishlistsListProps {
     wishlists: Wishlist[];
@@ -9,13 +10,23 @@ interface WishlistsListProps {
 
 const WishlistsList: FC<WishlistsListProps> = (props: WishlistsListProps) => {
     return (
-        <Stack spacing={2}>
+        <Paper>
+            <List>
                 {props.wishlists.map((wishlist) =>
-                    <Box key={wishlist.id}>
-                        <Link href={'/wishlists/' + wishlist.id} underline="hover">🔷 {wishlist.name}</Link>
-                    </Box>
+                    <ListItem key={wishlist.id}>
+                        <ListItemButton href={'/wishlists/' + wishlist.id}>
+                            <ListItemIcon>
+                                <ChevronRightIcon />
+                            </ListItemIcon>
+                            <ListItemText
+                                primary={wishlist.name}
+                                secondary={wishlist.items.length + ' items'}
+                            />
+                        </ListItemButton>
+                    </ListItem>
                 )}
-        </Stack>
+            </List>
+        </Paper>
     );
 };
 

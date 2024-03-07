@@ -11,6 +11,7 @@ import WishlistsService from "../../services/wishlists.service.ts";
 import {useNavigate} from "react-router-dom";
 import {WishlistCreateRequest} from "../../models/requests/wishlist-create.model.ts";
 import {Wishlist} from "../../models/wishlist.model.ts";
+import ApplicationBar from "../ApplicationBar/ApplicationBar.tsx";
 
 const wishlistSchema: ObjectSchema<WishlistCreateRequest> = Yup.object({
     name: Yup.string().required('Name is required')
@@ -49,27 +50,30 @@ const WishlistsCreateForm: FC<WishlistCreateFormProps> = () => {
     }
 
     return (
-        <Container sx={{
-            mt: '2rem',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
-        }}>
-            <Typography variant="h4">Create a new wishlist</Typography>
-            <Box component={'form'} noValidate onSubmit={wishlistHandleSubmit(createWishlist)} sx={{mt: '1rem'}}>
-                <Stack direction="row" spacing={2} alignItems={'center'} sx={{my: '1rem'}}>
-                    <CustomTextField
-                        required
-                        fullWidth
-                        label="Enter a name"
-                        error={!!wishlistErrors.name}
-                        helperText={wishlistErrors.name?.message}
-                        {...wishlistRegister('name')}
-                    />
-                    <Button variant="contained" size="large" type={'submit'}>Next</Button>
-                </Stack>
-            </Box>
-        </Container>
+        <Box>
+            <ApplicationBar />
+            <Container sx={{
+                mt: '2rem',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center'
+            }}>
+                <Typography variant="h4">Create a new wishlist</Typography>
+                <Box component={'form'} noValidate onSubmit={wishlistHandleSubmit(createWishlist)} sx={{mt: '1rem'}}>
+                    <Stack direction="row" spacing={2} alignItems={'center'} sx={{my: '1rem'}}>
+                        <CustomTextField
+                            required
+                            fullWidth
+                            label="Enter a name"
+                            error={!!wishlistErrors.name}
+                            helperText={wishlistErrors.name?.message}
+                            {...wishlistRegister('name')}
+                        />
+                        <Button variant="contained" size="large" type={'submit'}>Next</Button>
+                    </Stack>
+                </Box>
+            </Container>
+        </Box>
     );
 };
 

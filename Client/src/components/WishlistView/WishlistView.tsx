@@ -25,6 +25,7 @@ import {ObjectSchema} from "yup";
 import * as Yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import ConfirmationDialog from "../ConfirmationDialog/ConfirmationDialog.tsx";
+import ApplicationBar from "../ApplicationBar/ApplicationBar.tsx";
 
 interface WishlistViewProps {
 }
@@ -48,7 +49,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
     const {guid} = useParams();
     if (!guid) {
         toast.error('No wishlist guid provided');
-        return <Navigate to="/profile"/>;
+        return <Navigate to="/"/>;
     }
 
     const query = useQuery<Wishlist>({
@@ -98,7 +99,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
     const {
         register: itemRegister,
         handleSubmit: itemHandleSubmit,
-        formState: {errors: itemErrors},
+        formState: {errors: itemErrors, isDirty: itemIsDirty},
         reset: itemReset
     } = useForm<ItemCreateRequest>({resolver: yupResolver(itemSchema), mode: 'onChange'});
 
@@ -108,17 +109,16 @@ const WishlistView: FC<WishlistViewProps> = () => {
     }
     
     const onEditItem = async (data: ItemCreateRequest) => {
-        await updateItemMutation.mutateAsync(data);
+        if (itemIsDirty) await updateItemMutation.mutateAsync(data);
         setEditingItemId(undefined);
     }
     
     const onCancel = () => {
         setEditingItemId(undefined);
-        itemReset();
     }
 
     if (query.isError) {
-        return <Navigate to="/profile"/>;
+        return <Navigate to="/"/>;
     }
 
     if (query.isSuccess) {
@@ -126,6 +126,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
 
         return (
             <Box>
+                <ApplicationBar />
                 <Container sx={{
                     mt: '2rem',
                     display: 'flex',
@@ -144,7 +145,11 @@ const WishlistView: FC<WishlistViewProps> = () => {
                                                 <TableCell><Typography variant={'h6'}>Name</Typography></TableCell>
                                                 <TableCell><Typography variant={'h6'}>Url</Typography></TableCell>
                                                 <TableCell><Typography variant={'h6'}>Price</Typography></TableCell>
-                                                <TableCell><Typography variant={'h6'}>Gifters</Typography></TableCell>
+                                                {
+                                                    wishlist.isOwner ?
+                                                        null :
+                                                        <TableCell><Typography variant={'h6'}>Gifters</Typography></TableCell>
+                                                }
                                                 <TableCell sx={{width:'20%'}}><Typography variant={'h6'}>Actions</Typography></TableCell>
                                             </TableRow>
                                         </TableHead>
@@ -201,13 +206,17 @@ const WishlistView: FC<WishlistViewProps> = () => {
                                                                     <Typography>{item.price}</Typography>
                                                             }
                                                         </TableCell>
-                                                        <TableCell>
-                                                            <Stack direction={'row'} spacing={2}>
-                                                                <Avatar sx={{width:'24px',height:'24px',fontSize:'14px', backgroundColor:deepOrange[500]}}>M</Avatar>
-                                                                <Avatar sx={{width:'24px',height:'24px',fontSize:'14px', backgroundColor:pink[500]}}>A</Avatar>
-                                                                <Avatar sx={{width:'24px',height:'24px',fontSize:'14px', backgroundColor:deepPurple[500]}}>C</Avatar>
-                                                            </Stack>
-                                                        </TableCell>
+                                                        {
+                                                            wishlist.isOwner ?
+                                                                null :
+                                                                <TableCell>
+                                                                    <Stack direction={'row'} spacing={2}>
+                                                                        <Avatar sx={{width:'24px',height:'24px',fontSize:'14px', backgroundColor:deepOrange[500]}}>M</Avatar>
+                                                                        <Avatar sx={{width:'24px',height:'24px',fontSize:'14px', backgroundColor:pink[500]}}>A</Avatar>
+                                                                        <Avatar sx={{width:'24px',height:'24px',fontSize:'14px', backgroundColor:deepPurple[500]}}>C</Avatar>
+                                                                    </Stack>
+                                                                </TableCell>
+                                                        }
                                                         <TableCell>
                                                             <Stack direction={'row'} spacing={1}>
                                                                 {
@@ -262,7 +271,10 @@ const WishlistView: FC<WishlistViewProps> = () => {
                                     <Button variant="outlined" size="large" type={'submit'}>Add item</Button>
                                 </Stack>
                             </Box> :
-                            <Button variant={'outlined'} onClick={() => setEditingItemId("new")}>Add Item</Button>
+                            <Button variant={'outlined'} onClick={() => {
+                                itemReset({name: '', url: '', price: null});
+                                setEditingItemId("new");
+                            }}>Add Item</Button>
                     }
                     <Stack spacing={2} direction={'row'} sx={{mt:'3rem'}}>
                         <Button variant={'outlined'} color={'error'} onClick={() => setIsDeleteWishlistDialogOpened(true)}>Delete Wishlist</Button>

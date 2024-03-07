@@ -71,8 +71,8 @@ export default function RegisterForm() {
 
     return (
         <AuthenticationForm>
-            <Box sx={{my: 4, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <div style={{marginBottom: '2rem', fontSize: '60px'}}>🎁</div>
+            <Box sx={{my: 2, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <Link href={'/'} underline={'none'} sx={{mb: '2rem', fontSize: '60px'}}>🎁</Link>
                 <Typography component="h1" variant="h5">
                     Sign up
                 </Typography>
@@ -117,7 +117,7 @@ export default function RegisterForm() {
                     <Grid container>
                         <Grid item xs/>
                         <Grid item>
-                            <Link href="/login" variant="body2">
+                            <Link href="/login" variant="body2" color={'inherit'}>
                                 {"Already have an account? Sign In"}
                             </Link>
                         </Grid>

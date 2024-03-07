@@ -40,7 +40,7 @@ export default function LoginForm() {
         mutationFn: (data: UserLoginRequest) => AuthService.login(data),
         onSuccess: async () => {
             toast.success('Logged in successfully');
-            navigate('/profile');
+            navigate('/');
         }
     });
 
@@ -55,8 +55,8 @@ export default function LoginForm() {
 
     return (
         <AuthenticationForm>
-            <Box sx={{my: 4, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <div style={{marginBottom: '2rem', fontSize: '60px'}}>🎁</div>
+            <Box sx={{my: 2, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                <Link href={'/'} underline={'none'} sx={{mb: '2rem', fontSize: '60px'}}>🎁</Link>
                 <Typography component="h1" variant="h5">
                     Sign in
                 </Typography>
@@ -69,6 +69,7 @@ export default function LoginForm() {
                         margin="normal"
                         fullWidth
                         label="Email Address"
+                        autoComplete={'off'}
                         {...register('email')}
                     />
                     <TextField
@@ -96,12 +97,12 @@ export default function LoginForm() {
                     </Button>
                     <Grid container>
                         <Grid item xs>
-                            <Link href="#" variant="body2">
+                            <Link href="#" variant="body2" color={'inherit'}>
                                 Forgot password?
                             </Link>
                         </Grid>
                         <Grid item>
-                            <Link href="/register" variant="body2">
+                            <Link href="/register" variant="body2" color={'inherit'}>
                                 {"Don't have an account? Sign Up"}
                             </Link>
                         </Grid>
