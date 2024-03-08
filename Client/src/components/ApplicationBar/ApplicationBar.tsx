@@ -12,13 +12,19 @@ import {
 } from "@mui/material";
 import React, {useState} from "react";
 import {deepPurple} from "@mui/material/colors";
-import {useQuery} from "@tanstack/react-query";
 import PersonIcon from '@mui/icons-material/Person';
 import {User} from "../../models/user.model.ts";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import UserService from "../../services/user.service.ts";
+import AuthService from "../../services/auth.service.ts";
+import toast from "react-hot-toast";
 
 const ApplicationBar = () => {
-    const query = useQuery<User>({queryKey: ['user'], queryFn: UserService.getCurrentUser, retry: false});
+    const queryClient = useQueryClient();
+    const {
+        data: user,
+        isSuccess
+    } = useQuery<User>({queryKey: ['user'], queryFn: UserService.getCurrentUser, retry: false});
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -29,7 +35,13 @@ const ApplicationBar = () => {
         setAnchorElUser(null);
     };
 
-    const user: User | undefined = query.data;
+    const logoutMutation = useMutation({
+        mutationFn: AuthService.logout,
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: ['user']});
+            toast.success('Logged out successfully');
+        }
+    });
 
     return (
         <AppBar position={'static'}>
@@ -58,7 +70,7 @@ const ApplicationBar = () => {
                         variant="h5"
                         noWrap
                         component="a"
-                        href="#app-bar-with-responsive-menu"
+                        href="/"
                         sx={{
                             mr: 2,
                             display: {xs: 'flex', md: 'none'},
@@ -73,7 +85,8 @@ const ApplicationBar = () => {
                         🎁 Wishlists
                     </Typography>
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}></Box>
-                    {user ? (
+                    
+                    {isSuccess ? (
                         <Box sx={{flexGrow: 0}}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
@@ -100,6 +113,9 @@ const ApplicationBar = () => {
                             >
                                 <MenuItem onClick={handleCloseUserMenu}>
                                     <Link href={'/'} underline={'none'} color={'inherit'}>Home</Link>
+                                </MenuItem>
+                                <MenuItem onClick={() => logoutMutation.mutate()}>
+                                    <Link underline={'none'} color={'inherit'}>Logout</Link>
                                 </MenuItem>
                             </Menu>
                         </Box>

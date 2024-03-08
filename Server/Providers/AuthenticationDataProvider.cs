@@ -7,15 +7,11 @@ namespace Server.Providers;
 internal sealed class AuthenticationDataProvider(IHttpContextAccessor httpContextAccessor) : IAuthenticationDataProvider
 {
 	private User? _authenticatedUser;
-	public User AuthenticatedUser
+	public User? AuthenticatedUser
 	{
 		get
 		{
 			_authenticatedUser ??= GetAuthenticatedUser();
-			if (_authenticatedUser == null)
-			{
-				throw new InvalidOperationException("No authenticated user found.");
-			}
 			return _authenticatedUser;
 		}
 	}

@@ -4,7 +4,7 @@ import AuthenticationForm from "../AuthenticationForm/AuthenticationForm.tsx";
 import Copyright from "../Copyright/Copyright.tsx";
 import {useMutation} from "@tanstack/react-query";
 import AuthService from "../../services/auth.service.ts";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {UserLoginRequest} from "../../models/requests/user-login.model.ts";
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -29,6 +29,8 @@ const validationScheme: ObjectSchema<LoginFormData> = Yup.object({
 
 export default function LoginForm() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { from } = location.state || { from: { pathname: "/" } };
 
     const {
         register,
@@ -40,7 +42,7 @@ export default function LoginForm() {
         mutationFn: (data: UserLoginRequest) => AuthService.login(data),
         onSuccess: async () => {
             toast.success('Logged in successfully');
-            navigate('/');
+            navigate(from.pathname);
         }
     });
 

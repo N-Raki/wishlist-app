@@ -12,6 +12,7 @@ namespace Server.Controllers;
 [Authorize]
 public sealed class WishlistsController(ILogger<WishlistsController> logger, IWishlistsService wishlistsService, IWishlistMapper wishlistMapper): ControllerBase
 {
+	[AllowAnonymous]
 	[HttpGet("{wishlistId:guid}")]
 	public async Task<IActionResult> GetWishlist([FromRoute] Guid wishlistId)
 	{

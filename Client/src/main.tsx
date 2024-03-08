@@ -11,6 +11,7 @@ import WishlistsCreateForm from "./components/WishlistCreateForm/WishlistsCreate
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {Toaster} from "react-hot-toast";
 import WishlistView from "./components/WishlistView/WishlistView.tsx";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const router = createBrowserRouter([
     {
@@ -52,6 +53,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <QueryClientProvider client={queryClient}>
                 <RouterProvider router={router} />
                 <Toaster position="bottom-right" />
+                <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
         </CustomThemeProvider>
     </React.StrictMode>

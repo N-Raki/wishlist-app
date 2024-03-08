@@ -10,7 +10,7 @@ interface WishlistsListProps {
 
 const WishlistsList: FC<WishlistsListProps> = (props: WishlistsListProps) => {
     return (
-        <Paper>
+        <Paper sx={{width: '100%', maxWidth:'640px'}}>
             <List>
                 {props.wishlists.map((wishlist) =>
                     <ListItem key={wishlist.id}>

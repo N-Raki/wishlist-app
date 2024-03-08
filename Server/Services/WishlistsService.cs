@@ -15,6 +15,10 @@ internal sealed class WishlistsService(IWishlistsRepository wishlistsRepository,
 
 	public async Task<Wishlist> CreateWishlistAsync(CreateWishlistRequest createWishlistRequest, CancellationToken cancellationToken = default)
 	{
+		if (authenticationDataProvider.AuthenticatedUser is null)
+		{
+			throw new ArgumentException("User not authenticated");
+		}
 		var wishlist = new Wishlist
 		{
 			UserId = authenticationDataProvider.AuthenticatedUser.Id,
@@ -25,6 +29,10 @@ internal sealed class WishlistsService(IWishlistsRepository wishlistsRepository,
 
 	public async Task DeleteWishlistByGuidAsync(Guid guid, CancellationToken cancellationToken = default)
 	{
+		if (authenticationDataProvider.AuthenticatedUser is null)
+		{
+			throw new ArgumentException("User not authenticated");
+		}
 		var userId = authenticationDataProvider.AuthenticatedUser.Id;
 		var wishlist = await wishlistsRepository.GetWishlistByGuidAsync(guid, cancellationToken).ConfigureAwait(false);
 		if (wishlist == null || wishlist.UserId != userId)

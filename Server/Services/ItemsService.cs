@@ -10,7 +10,7 @@ internal sealed class ItemsService(IItemsRepository itemsRepository, IAuthentica
 {
 	public async Task<Item?> GetItemByGuidAsync(Guid guid, CancellationToken cancellationToken = default)
 	{
-		var userId = authenticationDataProvider.AuthenticatedUser.Id;
+		var userId = authenticationDataProvider.AuthenticatedUser?.Id;
 		var item = await itemsRepository.GetItemByGuidAsync(guid, cancellationToken).ConfigureAwait(false);
 		return item?.Wishlist.UserId == userId ? item : null;
 	}
@@ -30,7 +30,7 @@ internal sealed class ItemsService(IItemsRepository itemsRepository, IAuthentica
 	public async Task UpdateItemAsync(Guid wishlistId, Guid guid, CreateItemRequest request,
 		CancellationToken cancellationToken = default)
 	{
-		var userId = authenticationDataProvider.AuthenticatedUser.Id;
+		var userId = authenticationDataProvider.AuthenticatedUser?.Id;
 		var item = await itemsRepository.GetItemByGuidAsync(guid, cancellationToken).ConfigureAwait(false);
 		if (item is null || item.WishlistId != wishlistId || item.Wishlist.UserId != userId)
 		{
@@ -46,7 +46,7 @@ internal sealed class ItemsService(IItemsRepository itemsRepository, IAuthentica
 
 	public async Task DeleteItemByGuidAsync(Guid wishlistId, Guid guid, CancellationToken cancellationToken = default)
 	{
-		var userId = authenticationDataProvider.AuthenticatedUser.Id;
+		var userId = authenticationDataProvider.AuthenticatedUser?.Id;
 		var item = await itemsRepository.GetItemByGuidAsync(guid, cancellationToken).ConfigureAwait(false);
 		if (item is null || item.WishlistId != wishlistId || item.Wishlist.UserId != userId)
 		{
