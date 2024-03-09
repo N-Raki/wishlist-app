@@ -1,23 +1,17 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
 WORKDIR /app
-EXPOSE 5000
-EXPOSE 5001
+EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet dev-certs https --clean
-RUN dotnet dev-certs https -t
 WORKDIR /src
-COPY ["Server/Server.csproj", "Server/"]
-RUN dotnet restore "Server/Server.csproj"
+COPY ["Server.csproj", "./"]
+RUN dotnet restore "Server.csproj"
 COPY . .
-WORKDIR "/src/Server"
-RUN dotnet build "Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/."
+RUN dotnet build "Server.csproj" -c Release -o /app/build
 
 FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Server.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
