@@ -3,7 +3,6 @@ import {FC, useState} from "react";
 import {Navigate, useLocation, useNavigate, useParams} from "react-router-dom";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {Wishlist} from "../../models/wishlist.model.ts";
-import WishlistsService from "../../services/wishlists.service.ts";
 import toast from "react-hot-toast";
 import {
     Box,
@@ -14,7 +13,6 @@ import {
     Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField,
     Typography
 } from "@mui/material";
-import ItemsService from "../../services/items.service.ts";
 import {useForm} from "react-hook-form";
 import {ItemCreateRequest} from "../../models/requests/item-create.model.ts";
 import {ObjectSchema} from "yup";
@@ -23,8 +21,10 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import ConfirmationDialog from "../ConfirmationDialog/ConfirmationDialog.tsx";
 import ApplicationBar from "../ApplicationBar/ApplicationBar.tsx";
 import {User} from "../../models/user.model.ts";
-import UserService from "../../services/user.service.ts";
 import ItemTableRow from "../ItemTableRow/ItemTableRow.tsx";
+import {deleteWishlist, getWishlist} from "../../services/wishlists.service.ts";
+import {getCurrentUser} from "../../services/user.service.ts";
+import {createItem} from "../../services/items.service.ts";
 
 interface WishlistViewProps {
 }
@@ -54,7 +54,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
 
     const {
         isSuccess: userIsSuccess
-    } = useQuery<User>({queryKey: ['user'], queryFn: UserService.getCurrentUser, retry: false});
+    } = useQuery<User>({queryKey: ['user'], queryFn: getCurrentUser, retry: false});
 
     const {
         data: wishlist,
@@ -62,12 +62,12 @@ const WishlistView: FC<WishlistViewProps> = () => {
         isError
     } = useQuery<Wishlist>({
         queryKey: ['user', 'wishlist'],
-        queryFn: () => WishlistsService.getWishlist(guid),
+        queryFn: () => getWishlist(guid),
         retry: false
     });
 
     const deleteWishlistMutation = useMutation({
-        mutationFn: WishlistsService.deleteWishlist,
+        mutationFn: deleteWishlist,
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
             toast.success('Wishlist deleted');
@@ -75,7 +75,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
     });
 
     const createItemMutation = useMutation({
-        mutationFn: (data: ItemCreateRequest) => ItemsService.createItem(guid, data),
+        mutationFn: (data: ItemCreateRequest) => createItem(guid, data),
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
             toast.success('Item added');

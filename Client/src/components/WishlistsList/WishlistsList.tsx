@@ -1,29 +1,20 @@
 import './WishlistsList.css'
 import {FC} from "react";
 import {Wishlist} from "../../models/wishlist.model.ts";
-import {List, ListItem, ListItemButton, ListItemIcon, ListItemText, Paper} from "@mui/material";
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import {List, Paper} from "@mui/material";
+import WishlistPreview from "../WishlistPreview/WishlistPreview.tsx";
 
 interface WishlistsListProps {
     wishlists: Wishlist[];
+    showOwner: boolean;
 }
 
-const WishlistsList: FC<WishlistsListProps> = (props: WishlistsListProps) => {
+const WishlistsList: FC<WishlistsListProps> = ({wishlists, showOwner}) => {
     return (
         <Paper sx={{width: '100%', maxWidth:'640px'}}>
             <List>
-                {props.wishlists.map((wishlist) =>
-                    <ListItem key={wishlist.id}>
-                        <ListItemButton href={'/wishlists/' + wishlist.id}>
-                            <ListItemIcon>
-                                <ChevronRightIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary={wishlist.name}
-                                secondary={wishlist.items.length + ' items'}
-                            />
-                        </ListItemButton>
-                    </ListItem>
+                {wishlists.map((wishlist) =>
+                    <WishlistPreview wishlist={wishlist} showOwner={showOwner} key={wishlist.id} />
                 )}
             </List>
         </Paper>

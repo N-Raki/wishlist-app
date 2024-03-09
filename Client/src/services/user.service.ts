@@ -3,7 +3,7 @@ import {User} from "../models/user.model.ts";
 
 const API_URL: string = import.meta.env.VITE_API_URL;
 
-const getCurrentUser = async (): Promise<User> => {
+export async function getCurrentUser(): Promise<User> {
     try {
         const response: AxiosResponse<User> = await axios.get<User>(API_URL + '/api/users/me', {
             withCredentials: true
@@ -14,7 +14,7 @@ const getCurrentUser = async (): Promise<User> => {
     }
 }
 
-const getUserDisplayName = async (userId: string): Promise<string> => {
+export async function getUserDisplayName(userId: string): Promise<string> {
     try {
         const response: AxiosResponse<string> = await axios.get<string>(API_URL + '/api/users/' + userId + '/displayname', {
             withCredentials: true
@@ -25,10 +25,3 @@ const getUserDisplayName = async (userId: string): Promise<string> => {
         throw error;
     }
 }
-
-const UserService = {
-    getCurrentUser,
-    getUserDisplayName
-}
-
-export default UserService;

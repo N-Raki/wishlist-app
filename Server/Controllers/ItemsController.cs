@@ -72,4 +72,18 @@ public sealed class ItemsController(IItemsService itemsService, IItemMapper item
 			return NotFound();
 		}
 	}
+	
+	[HttpPost("{itemId:guid}/unpick")]
+	public async Task<IActionResult> UnpickItem([FromRoute] Guid wishlistId, [FromRoute] Guid itemId)
+	{
+		try
+		{
+			await itemsService.UnpickItemAsync(wishlistId, itemId, HttpContext.RequestAborted).ConfigureAwait(false);
+			return NoContent();
+		}
+		catch (ArgumentException)
+		{
+			return NotFound();
+		}
+	}
 }

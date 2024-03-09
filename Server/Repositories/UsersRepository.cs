@@ -10,4 +10,10 @@ internal sealed class UsersRepository(DatabaseContext databaseContext) : IUsersR
 	{
 		return await databaseContext.Users.FirstOrDefaultAsync(user => user.Id == guid, cancellationToken).ConfigureAwait(false);
 	}
+
+	public async Task UpdateUserAsync(User user, CancellationToken cancellationToken = default)
+	{
+		databaseContext.Users.Update(user);
+		await databaseContext.SaveChangesAsync(cancellationToken);
+	}
 }

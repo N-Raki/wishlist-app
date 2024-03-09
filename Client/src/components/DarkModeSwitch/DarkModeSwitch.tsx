@@ -12,7 +12,7 @@ export default function DarkModeSwitch() {
         setDarkMode(!darkMode);
     };
     return (
-        <IconButton sx={{ ml: 1 }} onClick={handleToggle} color="inherit">
+        <IconButton sx={{ ml: 1 }} onClick={handleToggle}>
             {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
         </IconButton>
     );

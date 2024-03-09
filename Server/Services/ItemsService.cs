@@ -71,4 +71,21 @@ internal sealed class ItemsService(IItemsRepository itemsRepository, IAuthentica
 		
 		await itemsRepository.UpdateItemAsync(item, cancellationToken).ConfigureAwait(false);
 	}
+
+	public async Task UnpickItemAsync(Guid wishlistId, Guid guid, CancellationToken cancellationToken = default)
+	{
+		if (authenticationDataProvider.AuthenticatedUser is null)
+		{
+			throw new ArgumentException("User not found");
+		}
+		var item = await itemsRepository.GetItemByGuidAsync(guid, cancellationToken).ConfigureAwait(false);
+		if (item is null || item.WishlistId != wishlistId)
+		{
+			throw new ArgumentException("Item not found");
+		}
+		
+		item.BuyerIds.Remove(authenticationDataProvider.AuthenticatedUser.Id);
+		
+		await itemsRepository.UpdateItemAsync(item, cancellationToken).ConfigureAwait(false);
+	}
 }

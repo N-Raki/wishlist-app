@@ -26,6 +26,20 @@ public sealed class WishlistsController(ILogger<WishlistsController> logger, IWi
 		return Ok(wishlistMapper.MapToResponse(wishlist));
 	}
 	
+	[HttpGet("recent")]
+	public async Task<IActionResult> GetRecentWishlists()
+	{
+		try
+		{
+			var recentWishlists = await wishlistsService.GetRecentWishlistsAsync(HttpContext.RequestAborted).ConfigureAwait(false);
+			return Ok(recentWishlists.Select(wishlistMapper.MapToResponse));
+		}
+		catch (ArgumentException)
+		{
+			return NotFound();
+		}
+	}
+	
 	[HttpPost]
 	public async Task<IActionResult> CreateWishlist([FromBody] CreateWishlistRequest createWishlistRequest)
 	{

@@ -3,28 +3,31 @@ import {
     Avatar,
     Box,
     Container,
-    IconButton, Link,
+    IconButton,
     Menu,
-    MenuItem,
+    MenuItem, Stack,
     Toolbar,
-    Tooltip,
     Typography
 } from "@mui/material";
 import React, {useState} from "react";
-import PersonIcon from '@mui/icons-material/Person';
 import {User} from "../../models/user.model.ts";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import UserService from "../../services/user.service.ts";
 import AuthService from "../../services/auth.service.ts";
 import toast from "react-hot-toast";
 import { stringToColor } from "../../helpers/avatarHelper.ts";
+import {getCurrentUser} from "../../services/user.service.ts";
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
+import DarkModeSwitch from "../DarkModeSwitch/DarkModeSwitch.tsx";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const ApplicationBar = () => {
     const queryClient = useQueryClient();
     const {
         data: user,
         isSuccess
-    } = useQuery<User>({queryKey: ['user'], queryFn: UserService.getCurrentUser, retry: false, staleTime: 1000 * 60 * 5});
+    } = useQuery<User>({queryKey: ['user'], queryFn: getCurrentUser, retry: false, staleTime: 1000 * 60 * 5});
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -42,6 +45,12 @@ const ApplicationBar = () => {
             toast.success('Logged out successfully');
         }
     });
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const handleLoginRedirect = () => {
+        navigate('/login', {state: {from: location}});
+    }
 
     return (
         <AppBar position={'static'}>
@@ -85,41 +94,56 @@ const ApplicationBar = () => {
                         🎁 Wishlists
                     </Typography>
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}></Box>
-                    
-                    {isSuccess ? (
-                        <Box sx={{flexGrow: 0}}>
-                            <Tooltip title="Open settings">
-                                <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                    <Avatar sx={{backgroundColor: stringToColor(user.displayName)}}>
-                                        {user.displayName ? user.displayName[0] : <PersonIcon color={'action'}/>}
-                                    </Avatar>
-                                </IconButton>
-                            </Tooltip>
-                            <Menu
-                                sx={{mt: '45px'}}
-                                id="menu-appbar"
-                                anchorEl={anchorElUser}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(anchorElUser)}
-                                onClose={handleCloseUserMenu}
-                            >
-                                <MenuItem onClick={handleCloseUserMenu}>
-                                    <Link href={'/'} underline={'none'} color={'inherit'}>Home</Link>
-                                </MenuItem>
-                                <MenuItem onClick={() => logoutMutation.mutate()}>
-                                    <Link underline={'none'} color={'inherit'}>Logout</Link>
-                                </MenuItem>
-                            </Menu>
-                        </Box>
-                    ) : null}
+
+                    <Box sx={{flexGrow: 0}}>
+                        <Stack direction={'row'} spacing={2}>
+                            {
+                                isSuccess
+                                    ? <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
+                                        <Avatar sx={{
+                                            width: 32,
+                                            height: 32,
+                                            fontSize: 18,
+                                            boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px',
+                                            backgroundColor: stringToColor(user.displayName)
+                                        }}>
+                                            {user.displayName ? user.displayName[0] : <PersonIcon color={'action'}/>}
+                                        </Avatar>
+                                    </IconButton>
+                                    : <IconButton onClick={handleLoginRedirect}>
+                                        <LoginIcon/>
+                                    </IconButton>
+                            }
+                            <DarkModeSwitch />
+                        </Stack>
+                        
+                        <Menu
+                            sx={{mt: '45px'}}
+                            id="menu-appbar"
+                            anchorEl={anchorElUser}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(anchorElUser)}
+                            onClose={handleCloseUserMenu}
+                        >
+                            <MenuItem onClick={() => {
+                                handleCloseUserMenu();
+                                logoutMutation.mutate();
+                            }}>
+                                <Stack direction={'row'} spacing={2}>
+                                    <LogoutIcon />
+                                    <Typography>Logout</Typography>
+                                </Stack>
+                            </MenuItem>
+                        </Menu>
+                    </Box>
                 </Toolbar>
             </Container>
         </AppBar>

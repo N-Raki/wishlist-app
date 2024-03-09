@@ -19,12 +19,12 @@ import * as Yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useMutation, useQueries, useQuery, useQueryClient} from "@tanstack/react-query";
 import {User} from "../../models/user.model.ts";
-import UserService from "../../services/user.service.ts";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import ItemsService from "../../services/items.service.ts";
 import toast from "react-hot-toast";
 import {useLocation, useNavigate} from "react-router-dom";
 import {stringToColor} from "../../helpers/avatarHelper.ts";
+import {getCurrentUser, getUserDisplayName} from "../../services/user.service.ts";
+import {deleteItem, pickItem, unpickItem, updateItem} from "../../services/items.service.ts";
 
 const itemSchema: ObjectSchema<ItemCreateRequest> = Yup.object({
     name: Yup.string().required('Name is required'),
@@ -55,20 +55,21 @@ const ItemTableRow: FC<ItemTableRowProps> = ({item, isOwner}) => {
     } = useForm<ItemCreateRequest>({resolver: yupResolver(itemSchema), mode: 'onChange'});
 
     const {
+        data: user,
         isSuccess: isUserAuthenticated
-    } = useQuery<User>({queryKey: ['user'], queryFn: UserService.getCurrentUser, retry: false});
+    } = useQuery<User>({queryKey: ['user'], queryFn: getCurrentUser, retry: false});
 
     const buyerQueries = useQueries({
         queries: item.buyerIds.map((userId) => {
             return {
                 queryKey: ['buyer', userId],
-                queryFn: () => UserService.getUserDisplayName(userId),
+                queryFn: () => getUserDisplayName(userId),
             };
         }),
     });
 
     const updateMutation = useMutation({
-        mutationFn: (data: ItemCreateRequest) => ItemsService.updateItem(item.wishlistId, item.id, data),
+        mutationFn: (data: ItemCreateRequest) => updateItem(item.wishlistId, item.id, data),
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
             toast.success('Item updated');
@@ -76,7 +77,7 @@ const ItemTableRow: FC<ItemTableRowProps> = ({item, isOwner}) => {
     });
 
     const deleteMutation = useMutation({
-        mutationFn: () => ItemsService.deleteItem(item.wishlistId, item.id),
+        mutationFn: () => deleteItem(item.wishlistId, item.id),
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
             toast.success('Item deleted');
@@ -84,10 +85,18 @@ const ItemTableRow: FC<ItemTableRowProps> = ({item, isOwner}) => {
     });
 
     const pickMutation = useMutation({
-        mutationFn: () => ItemsService.pickItem(item.wishlistId, item.id),
+        mutationFn: () => pickItem(item.wishlistId, item.id),
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
             toast.success('Item picked');
+        },
+    });
+    
+    const unpickMutation = useMutation({
+        mutationFn: () => unpickItem(item.wishlistId, item.id),
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
+            toast.success('Item unpicked');
         },
     });
 
@@ -233,8 +242,11 @@ const ItemTableRow: FC<ItemTableRowProps> = ({item, isOwner}) => {
                                     <DeleteOutlineIcon/>
                                 </IconButton>
                             </Stack>
-                        : <Button variant={'outlined'} color={'success'}
-                                  onClick={onPick}>Pick</Button>
+                        : isUserAuthenticated && item.buyerIds.includes(user.id)
+                            ? <Button variant={'outlined'} color={'error'}
+                                      onClick={() => unpickMutation.mutate()}>Unpick</Button>
+                            : <Button variant={'outlined'} color={'success'}
+                                      onClick={onPick}>Pick</Button>
                 }
             </TableCell>
 

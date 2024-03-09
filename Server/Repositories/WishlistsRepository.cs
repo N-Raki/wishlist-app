@@ -11,6 +11,11 @@ internal sealed class WishlistsRepository(DatabaseContext databaseContext) : IWi
 		return await databaseContext.Wishlists.FindAsync([guid], cancellationToken: cancellationToken).ConfigureAwait(false);
 	}
 
+	public async Task<IEnumerable<Wishlist>> GetWishlistsByGuidsAsync(IEnumerable<Guid> ids, CancellationToken cancellationToken = default)
+	{
+		return await databaseContext.Wishlists.Where(wishlist => ids.Contains(wishlist.Id)).ToListAsync(cancellationToken).ConfigureAwait(false);
+	}
+
 	public async Task<Wishlist> CreateWishlistAsync(Wishlist wishlist, CancellationToken cancellationToken = default)
 	{
 		databaseContext.Wishlists.Add(wishlist);
