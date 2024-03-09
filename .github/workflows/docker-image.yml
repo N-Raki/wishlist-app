@@ -1,0 +1,33 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build-server:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and push Docker image for server
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Server
+        file: ./Server/Dockerfile
+        push: true
+        tags: rakl/wishlist-server:latest
+
+  build-client:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build and push Docker image for client
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Client
+        file: ./Client/Dockerfile
+        push: true
+        tags: rakl/wishlist-client:latest
