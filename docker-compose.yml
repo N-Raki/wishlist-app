@@ -15,3 +15,13 @@
     environment:
       - ASPNETCORE_HTTP_PORT=7200
       - ASPNETCORE_HTTPS_PORT=7201
+        
+  postgres:
+    container_name: wishlist-database
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: wishlist
+    ports:
+      - 5432:5432
