@@ -33,4 +33,16 @@ public sealed class UsersController(ILogger<UsersController> logger, IUsersServi
 		
 		return Ok(response);
 	}
+	
+	[HttpGet("{userId:guid}/displayname")]
+	public async Task<IActionResult> GetUsername([FromRoute] Guid userId)
+	{
+		var user = await usersService.GetUserByGuidAsync(userId, HttpContext.RequestAborted).ConfigureAwait(false);
+		if (user is null)
+		{
+			return NotFound();
+		}
+		
+		return Ok(user.DisplayName);
+	}
 }

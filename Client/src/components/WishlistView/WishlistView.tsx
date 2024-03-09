@@ -4,21 +4,17 @@ import {Navigate, useLocation, useNavigate, useParams} from "react-router-dom";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {Wishlist} from "../../models/wishlist.model.ts";
 import WishlistsService from "../../services/wishlists.service.ts";
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import toast from "react-hot-toast";
 import {
-    Avatar,
     Box,
     Button,
     Container,
-    IconButton,
-    Link, Modal,
+    Modal,
     Paper,
     Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField,
     Typography
 } from "@mui/material";
 import ItemsService from "../../services/items.service.ts";
-import {deepOrange, deepPurple, pink} from "@mui/material/colors";
 import {useForm} from "react-hook-form";
 import {ItemCreateRequest} from "../../models/requests/item-create.model.ts";
 import {ObjectSchema} from "yup";
@@ -28,6 +24,7 @@ import ConfirmationDialog from "../ConfirmationDialog/ConfirmationDialog.tsx";
 import ApplicationBar from "../ApplicationBar/ApplicationBar.tsx";
 import {User} from "../../models/user.model.ts";
 import UserService from "../../services/user.service.ts";
+import ItemTableRow from "../ItemTableRow/ItemTableRow.tsx";
 
 interface WishlistViewProps {
 }
@@ -72,45 +69,24 @@ const WishlistView: FC<WishlistViewProps> = () => {
     const deleteWishlistMutation = useMutation({
         mutationFn: WishlistsService.deleteWishlist,
         onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: ['wishlist']});
+            await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
             toast.success('Wishlist deleted');
         },
     });
 
-    class DeleteItemMutationData {
-        itemId: string = '';
-        wishlistId: string = '';
-    }
-
     const createItemMutation = useMutation({
         mutationFn: (data: ItemCreateRequest) => ItemsService.createItem(guid, data),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: ['wishlist']});
+            await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
             toast.success('Item added');
             itemReset();
-        },
-    });
-
-    const updateItemMutation = useMutation({
-        mutationFn: (data: ItemCreateRequest) => ItemsService.updateItem(guid, editingItemId!, data),
-        onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: ['wishlist']});
-            toast.success('Item updated');
-        },
-    });
-
-    const deleteItemMutation = useMutation({
-        mutationFn: (data: DeleteItemMutationData) => ItemsService.deleteItem(data.wishlistId, data.itemId),
-        onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: ['wishlist']});
-            toast.success('Item deleted');
         },
     });
 
     const {
         register: itemRegister,
         handleSubmit: itemHandleSubmit,
-        formState: {errors: itemErrors, isDirty: itemIsDirty},
+        formState: {errors: itemErrors},
         reset: itemReset
     } = useForm<ItemCreateRequest>({resolver: yupResolver(itemSchema), mode: 'onChange'});
 
@@ -119,15 +95,6 @@ const WishlistView: FC<WishlistViewProps> = () => {
         setEditingItemId(undefined);
     }
 
-    const onEditItem = async (data: ItemCreateRequest) => {
-        if (itemIsDirty) await updateItemMutation.mutateAsync(data);
-        setEditingItemId(undefined);
-    }
-
-    const onCancel = () => {
-        setEditingItemId(undefined);
-    }
-    
     const navigate = useNavigate();
     const location = useLocation();
     const handleLoginRedirect = () => {
@@ -136,15 +103,6 @@ const WishlistView: FC<WishlistViewProps> = () => {
 
     const isAuthenticatedAndNotOwner = userIsSuccess && !wishlist?.isOwner;
 
-    const onPick = () => {
-        if (isAuthenticatedAndNotOwner) {
-            // Confirmation Modal + Add to buyer ids
-        } else if (!userIsSuccess) {
-            // Modal de connexion
-            setIsLoginModalOpen(true);
-        }
-    }
-
     if (isError) {
         return <Navigate to="/"/>;
     }
@@ -152,10 +110,11 @@ const WishlistView: FC<WishlistViewProps> = () => {
     if (isSuccess && wishlist) {
         return (
             <Box>
-                <Modal open={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                <Modal open={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)}
+                       aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
                     <Paper sx={{
                         position: 'absolute' as 'absolute',
-                        justifyContent:'center',
+                        justifyContent: 'center',
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
@@ -164,10 +123,12 @@ const WishlistView: FC<WishlistViewProps> = () => {
                         p: 4
                     }}>
                         {
-                                <Stack spacing={2} flexWrap="wrap" sx={{alignItems:'center'}}>
-                                    <Typography sx={{textAlign:'center'}}>You need to be logged in to pick an item</Typography>
-                                    <Button variant={'contained'} sx={{width:'fit-content'}} onClick={handleLoginRedirect}>Login</Button>
-                                </Stack>
+                            <Stack spacing={2} flexWrap="wrap" sx={{alignItems: 'center'}}>
+                                <Typography sx={{textAlign: 'center'}}>You need to be logged in to pick an
+                                    item</Typography>
+                                <Button variant={'contained'} sx={{width: 'fit-content'}}
+                                        onClick={handleLoginRedirect}>Login</Button>
+                            </Stack>
                         }
                     </Paper>
                 </Modal>
@@ -183,158 +144,33 @@ const WishlistView: FC<WishlistViewProps> = () => {
                         wishlist.items.length === 0 ?
                             <Typography variant={'h5'} sx={{my: '2rem'}}>This wishlist is empty</Typography> :
                             <TableContainer component={Paper} sx={{my: '2rem'}}>
-                                <Box component={'form'} noValidate onSubmit={itemHandleSubmit(onEditItem)}>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell><Typography variant={'h6'}>Name</Typography></TableCell>
-                                                {
-                                                    wishlist.isOwner ?
-                                                        <TableCell><Typography
-                                                            variant={'h6'}>Url</Typography></TableCell> :
-                                                        null
-                                                }
-                                                <TableCell><Typography variant={'h6'}>Price</Typography></TableCell>
-                                                {
-                                                    isAuthenticatedAndNotOwner ?
-                                                        <TableCell><Typography
-                                                            variant={'h6'}>Gifters</Typography></TableCell> :
-                                                        null
-                                                }
-                                                <TableCell sx={{width: '20%'}}><Typography
-                                                    variant={'h6'}>Actions</Typography></TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {wishlist.items.sort((a, b) => a.name.localeCompare(b.name)).map((item) => {
-                                                return (
-                                                    <TableRow key={item.id}
-                                                              sx={{'&:last-child td, &:last-child th': {border: 0}}}>
-                                                        <TableCell>
-                                                            {
-                                                                editingItemId === item.id ?
-                                                                    <TextField
-                                                                        required
-                                                                        autoFocus
-                                                                        fullWidth
-                                                                        label={'Name'}
-                                                                        size="small"
-                                                                        {...itemRegister('name')}
-                                                                        error={!!itemErrors.name}
-                                                                        helperText={itemErrors.name?.message}
-                                                                    /> :
-                                                                    wishlist.isOwner || !item.url ?
-                                                                        <Typography>{item.name}</Typography> :
-                                                                        <Link href={item.url} underline={'hover'}>
-                                                                            <Typography>{item.name}</Typography>
-                                                                        </Link>
-                                                            }
-                                                        </TableCell>
-                                                        {
-                                                            wishlist.isOwner ?
-                                                                <TableCell>
-                                                                    {
-                                                                        editingItemId === item.id ?
-                                                                            <TextField
-                                                                                fullWidth
-                                                                                label={'Url'}
-                                                                                size="small"
-                                                                                {...itemRegister('url')}
-                                                                                error={!!itemErrors.url}
-                                                                                helperText={itemErrors.url?.message}
-                                                                            /> :
-                                                                            item.url ?
-                                                                                <Link href={item.url} target={'_blank'}
-                                                                                      underline={'hover'}>
-                                                                                    <Typography>Link</Typography>
-                                                                                </Link> :
-                                                                                null
-                                                                    }
-                                                                </TableCell> :
-                                                                null
-                                                        }
-                                                        <TableCell>
-                                                            {
-                                                                editingItemId === item.id ?
-                                                                    <TextField
-                                                                        fullWidth
-                                                                        label={'Price'}
-                                                                        type={'number'}
-                                                                        size="small"
-                                                                        {...itemRegister('price')}
-                                                                        error={!!itemErrors.price}
-                                                                        helperText={itemErrors.price?.message}
-                                                                    /> :
-                                                                    <Typography>{item.price}</Typography>
-                                                            }
-                                                        </TableCell>
-                                                        {
-                                                            isAuthenticatedAndNotOwner ?
-                                                                <TableCell>
-                                                                    <Stack direction={'row'} spacing={2}>
-                                                                        <Avatar sx={{
-                                                                            width: '24px',
-                                                                            height: '24px',
-                                                                            fontSize: '14px',
-                                                                            backgroundColor: deepOrange[500]
-                                                                        }}>M</Avatar>
-                                                                        <Avatar sx={{
-                                                                            width: '24px',
-                                                                            height: '24px',
-                                                                            fontSize: '14px',
-                                                                            backgroundColor: pink[500]
-                                                                        }}>A</Avatar>
-                                                                        <Avatar sx={{
-                                                                            width: '24px',
-                                                                            height: '24px',
-                                                                            fontSize: '14px',
-                                                                            backgroundColor: deepPurple[500]
-                                                                        }}>C</Avatar>
-                                                                    </Stack>
-                                                                </TableCell> :
-                                                                null
-                                                        }
-                                                        <TableCell>
-                                                            {
-                                                                wishlist.isOwner ?
-                                                                    editingItemId === item.id ?
-                                                                        <Stack direction={'row'} spacing={1}>
-                                                                            <Button key={'saveButton'} type={'submit'}
-                                                                                    variant={'contained'}
-                                                                                    color={'success'}>Save</Button> :
-                                                                            <Button key={'cancelButton'}
-                                                                                    variant={'outlined'} color={'error'}
-                                                                                    onClick={onCancel}>Cancel</Button>
-                                                                        </Stack> :
-                                                                        <Stack direction={'row'} spacing={1}>
-                                                                            <Button key={'editButton'}
-                                                                                    variant={'outlined'}
-                                                                                    onClick={() => {
-                                                                                        itemReset(item);
-                                                                                        setEditingItemId(item.id);
-                                                                                    }}>Edit</Button>
-                                                                            <IconButton key={'deleteButton'}
-                                                                                        aria-label="delete"
-                                                                                        color={'error'}
-                                                                                        onClick={() => deleteItemMutation.mutate({
-                                                                                            wishlistId: guid,
-                                                                                            itemId: item.id
-                                                                                        })}>
-                                                                                <DeleteOutlineIcon/>
-                                                                            </IconButton>
-                                                                        </Stack> :
-                                                                    <Stack direction={'row'} spacing={1}>
-                                                                        <Button variant={'outlined'} color={'success'}
-                                                                                onClick={onPick}>Pick</Button>
-                                                                    </Stack>
-                                                            }
-                                                        </TableCell>
-                                                    </TableRow>
-                                                )
-                                            })}
-                                        </TableBody>
-                                    </Table>
-                                </Box>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell><Typography variant={'h6'}>Name</Typography></TableCell>
+                                            {
+                                                wishlist.isOwner ?
+                                                    <TableCell><Typography
+                                                        variant={'h6'}>Url</Typography></TableCell> :
+                                                    null
+                                            }
+                                            <TableCell><Typography variant={'h6'}>Price</Typography></TableCell>
+                                            {
+                                                isAuthenticatedAndNotOwner ?
+                                                    <TableCell><Typography
+                                                        variant={'h6'}>Gifters</Typography></TableCell> :
+                                                    null
+                                            }
+                                            <TableCell sx={{width: '20%'}}><Typography
+                                                variant={'h6'}>Actions</Typography></TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {wishlist.items.sort((a, b) => a.name.localeCompare(b.name)).map((item) =>
+                                            <ItemTableRow key={item.id} item={item} isOwner={wishlist.isOwner}/>
+                                        )}
+                                    </TableBody>
+                                </Table>
                             </TableContainer>
                     }
                     {

@@ -58,4 +58,18 @@ public sealed class ItemsController(IItemsService itemsService, IItemMapper item
 			return NotFound();
 		}
 	}
+	
+	[HttpPost("{itemId:guid}/pick")]
+	public async Task<IActionResult> PickItem([FromRoute] Guid wishlistId, [FromRoute] Guid itemId)
+	{
+		try
+		{
+			await itemsService.PickItemAsync(wishlistId, itemId, HttpContext.RequestAborted).ConfigureAwait(false);
+			return NoContent();
+		}
+		catch (ArgumentException)
+		{
+			return NotFound();
+		}
+	}
 }

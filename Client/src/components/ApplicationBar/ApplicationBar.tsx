@@ -11,20 +11,20 @@ import {
     Typography
 } from "@mui/material";
 import React, {useState} from "react";
-import {deepPurple} from "@mui/material/colors";
 import PersonIcon from '@mui/icons-material/Person';
 import {User} from "../../models/user.model.ts";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import UserService from "../../services/user.service.ts";
 import AuthService from "../../services/auth.service.ts";
 import toast from "react-hot-toast";
+import { stringToColor } from "../../helpers/avatarHelper.ts";
 
 const ApplicationBar = () => {
     const queryClient = useQueryClient();
     const {
         data: user,
         isSuccess
-    } = useQuery<User>({queryKey: ['user'], queryFn: UserService.getCurrentUser, retry: false});
+    } = useQuery<User>({queryKey: ['user'], queryFn: UserService.getCurrentUser, retry: false, staleTime: 1000 * 60 * 5});
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -90,7 +90,7 @@ const ApplicationBar = () => {
                         <Box sx={{flexGrow: 0}}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                    <Avatar sx={{backgroundColor: deepPurple[500]}}>
+                                    <Avatar sx={{backgroundColor: stringToColor(user.displayName)}}>
                                         {user.displayName ? user.displayName[0] : <PersonIcon color={'action'}/>}
                                     </Avatar>
                                 </IconButton>

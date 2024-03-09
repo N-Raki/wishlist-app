@@ -16,18 +16,21 @@ import {AxiosError} from "axios";
 import {AspNetValidationProblem} from "../../models/errors/AspNetValidationProblem.ts";
 
 class RegisterFormData {
+    displayName: string = '';
     email: string = '';
     password: string = '';
     confirmPassword: string = '';
 }
 
 const validationScheme: ObjectSchema<RegisterFormData> = Yup.object({
+    displayName: Yup.string()
+        .required('Display name is required'),
     email: Yup.string()
         .required('Email is required')
         .email('Invalid email address'),
     password: Yup.string()
         .required('Password is required')
-        .min(4, 'Password must be at least 4 characters'),
+        .min(6, 'Password must be at least 6 characters'),
     confirmPassword: Yup.string()
         .required('Confirm password is required')
         .oneOf([Yup.ref('password')], 'Passwords do not match')
@@ -46,7 +49,7 @@ export default function RegisterForm() {
         mutationFn: (data: UserRegisterRequest) => AuthService.register(data),
         onSuccess: async () => {
             toast.success('User registered successfully');
-            navigate('/login');
+            navigate('/');
         },
         onError: (error: AxiosError<AspNetValidationProblem>) => {
             let errors = error.response?.data.errors;
@@ -63,6 +66,7 @@ export default function RegisterForm() {
 
     const onSubmit = (data: RegisterFormData) => {
         const request: UserRegisterRequest = {
+            displayName: data.displayName,
             email: data.email,
             password: data.password
         }
@@ -77,6 +81,15 @@ export default function RegisterForm() {
                     Sign up
                 </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{mt: 1}}>
+                    <TextField
+                        required
+                        error={!!errors.displayName}
+                        helperText={errors.displayName?.message}
+                        margin="normal"
+                        fullWidth
+                        label="Display name"
+                        {...register('displayName')}
+                    />
                     <TextField
                         required
                         error={!!errors.email}

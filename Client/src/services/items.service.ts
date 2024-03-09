@@ -52,10 +52,22 @@ const deleteItem = async (wishlistId: string, itemId: string) => {
     }
 };
 
+const pickItem = async (wishlistId: string, itemId: string) => {
+    try {
+        const response: AxiosResponse<void> = await axios.post(API_URL + '/api/wishlists/' + wishlistId + '/items/' + itemId + '/pick', null, {
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
 const ItemsService = {
     createItem,
     updateItem,
-    deleteItem
+    deleteItem,
+    pickItem
 }
 
 export default ItemsService;

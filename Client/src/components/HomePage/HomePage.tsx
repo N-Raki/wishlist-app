@@ -21,8 +21,8 @@ const HomePage: FC<HomePageProps> = () => {
         <Box>
             <ApplicationBar />
             {
-                isSuccess ?
-                    <Container sx={{
+                isSuccess
+                    ? <Container sx={{
                         mt: '2rem',
                         display: 'flex',
                         flexDirection: 'column',
@@ -33,17 +33,17 @@ const HomePage: FC<HomePageProps> = () => {
                                 Hello {user?.displayName ? user.displayName + ' ' : null} !
                             </Typography>
                         </Box>
-                        {user?.wishlists.length === 0 ?
-                            <Typography variant="h5" sx={{textAlign:'center'}}>You don't have any wishlists yet.</Typography> :
-                            <Typography variant="h5" sx={{textAlign:'center'}}>Here are your wishlists:</Typography>
+                        {user?.wishlists.length === 0
+                            ? <Typography variant="h5" sx={{textAlign:'center'}}>You don't have any wishlists yet.</Typography>
+                            : <Typography variant="h5" sx={{textAlign:'center'}}>Here are your wishlists:</Typography>
                         }
                         <Stack spacing={2} sx={{my: '2rem', alignItems:'center', width:'100%'}}>
-                            <WishlistsList wishlists={user?.wishlists}/>
+                            {user?.wishlists.length === 0 ? null : <WishlistsList wishlists={user?.wishlists}/> }
                             <Button href="/wishlists/new" variant={'contained'} sx={{width:'fit-content'}}>Create a new wishlist</Button>
                         </Stack>
-                    </Container> :
-                    isError ?
-                        <Container sx={{
+                    </Container>
+                    : isError
+                        ? <Container sx={{
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
@@ -57,8 +57,8 @@ const HomePage: FC<HomePageProps> = () => {
                                 </Button>
                                 <Typography sx={{textAlign:'center'}}>You already have a wishlist ? <Link href="/login">Sign in</Link></Typography>
                             </Stack>
-                        </Container> :
-                        null
+                        </Container>
+                        : null
             }
         </Box>
     );

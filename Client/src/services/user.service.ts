@@ -14,8 +14,21 @@ const getCurrentUser = async (): Promise<User> => {
     }
 }
 
+const getUserDisplayName = async (userId: string): Promise<string> => {
+    try {
+        const response: AxiosResponse<string> = await axios.get<string>(API_URL + '/api/users/' + userId + '/displayname', {
+            withCredentials: true
+        });
+        return response.data;
+    }
+    catch (error) {
+        throw error;
+    }
+}
+
 const UserService = {
     getCurrentUser,
+    getUserDisplayName
 }
 
 export default UserService;

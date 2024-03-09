@@ -43,6 +43,9 @@ export default function LoginForm() {
         onSuccess: async () => {
             toast.success('Logged in successfully');
             navigate(from.pathname);
+        },
+        onError: (_: any) => {
+            toast.error('Incorrect email or password');
         }
     });
 

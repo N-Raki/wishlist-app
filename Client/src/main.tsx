@@ -52,8 +52,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <CssBaseline/>
             <QueryClientProvider client={queryClient}>
                 <RouterProvider router={router} />
+                <ReactQueryDevtools initialIsOpen={false} buttonPosition={'bottom-left'}/>
                 <Toaster position="bottom-right" />
-                <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
         </CustomThemeProvider>
     </React.StrictMode>

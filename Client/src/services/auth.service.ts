@@ -23,7 +23,7 @@ const login = async (data: UserLoginRequest): Promise<void> => {
 
 const logout = async (): Promise<void> => {
     try {
-        await axios.post(API_URL + '/api/auth/logout', 
+        await axios.post(API_URL + '/api/auth/logout',
             null,
             {
                 withCredentials: true
@@ -37,9 +37,14 @@ const logout = async (): Promise<void> => {
 const register = async (data: UserRegisterRequest): Promise<void> => {
     try {
         await axios.post<void, AxiosResponse<void>, UserRegisterRequest>(API_URL + '/api/auth/register', {
-            email: data.email,
-            password: data.password
-        });
+                displayName: data.displayName,
+                email: data.email,
+                password: data.password
+            },
+            {
+                withCredentials: true
+
+            });
     } catch (error) {
         console.error(error);
         throw error;

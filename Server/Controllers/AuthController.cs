@@ -40,12 +40,19 @@ public class AuthController : ControllerBase
         await userStore.SetUserNameAsync(user, registerRequest.Email, CancellationToken.None);
         await emailStore.SetEmailAsync(user, registerRequest.Email, CancellationToken.None);
         
+        user.DisplayName = registerRequest.DisplayName;
+        
         var result = await userManager.CreateAsync(user, registerRequest.Password);
 
         if (!result.Succeeded)
         {
             return CreateValidationProblem(result);
         }
+        
+        var signInManager = serviceProvider.GetRequiredService<SignInManager<User>>();
+        signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
+        
+        await signInManager.PasswordSignInAsync(user, registerRequest.Password, false, true);
             
         return TypedResults.Ok();
     }
