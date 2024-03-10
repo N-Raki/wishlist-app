@@ -20,6 +20,8 @@
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=https://+:7200
+    volumes:
+      - /etc/letsencrypt/live/wishlist.raki.app:/etc/letsencrypt/live/wishlist.raki.app
     links:
       - postgres
         
