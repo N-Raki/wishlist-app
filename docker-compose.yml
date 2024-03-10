@@ -21,7 +21,7 @@
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=https://+:7200
     volumes:
-      - /etc/letsencrypt:/https
+      - /etc/letsencrypt:/app/https
     links:
       - postgres
 

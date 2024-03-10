@@ -1,5 +1,5 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER Administrator
+USER $APP_UID
 WORKDIR /app
 EXPOSE 7200
 
