@@ -88,7 +88,17 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 
 	app.UseCors(corsPolicyBuilder => corsPolicyBuilder
-		.WithOrigins("https://localhost:8000", "https://wishlist.raki.app")
+		.WithOrigins("https://localhost:8000")
+		.AllowAnyMethod()
+		.AllowAnyHeader()
+		.AllowCredentials());
+	
+	app.ApplyMigrations();
+}
+else
+{
+	app.UseCors(corsPolicyBuilder => corsPolicyBuilder
+		.WithOrigins("https://wishlist.raki.app")
 		.AllowAnyMethod()
 		.AllowAnyHeader()
 		.AllowCredentials());

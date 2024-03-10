@@ -2,11 +2,9 @@ import axios, {AxiosResponse} from "axios";
 import {UserRegisterRequest} from "../models/requests/user-register.model.ts";
 import {UserLoginRequest} from "../models/requests/user-login.model.ts";
 
-const API_URL: string = import.meta.env.VITE_API_URL;
-
 const login = async (data: UserLoginRequest): Promise<void> => {
     try {
-        await axios.post<void, AxiosResponse<void>, UserLoginRequest>(API_URL + '/api/auth/login',
+        await axios.post<void, AxiosResponse<void>, UserLoginRequest>('/api/auth/login',
             {
                 email: data.email,
                 password: data.password,
@@ -23,7 +21,7 @@ const login = async (data: UserLoginRequest): Promise<void> => {
 
 const logout = async (): Promise<void> => {
     try {
-        await axios.post(API_URL + '/api/auth/logout',
+        await axios.post('/api/auth/logout',
             null,
             {
                 withCredentials: true
@@ -36,7 +34,7 @@ const logout = async (): Promise<void> => {
 
 const register = async (data: UserRegisterRequest): Promise<void> => {
     try {
-        await axios.post<void, AxiosResponse<void>, UserRegisterRequest>(API_URL + '/api/auth/register', {
+        await axios.post<void, AxiosResponse<void>, UserRegisterRequest>('/api/auth/register', {
                 displayName: data.displayName,
                 email: data.email,
                 password: data.password
