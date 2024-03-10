@@ -24,7 +24,7 @@
       - /etc/letsencrypt:/https
     links:
       - postgres
-   
+
   frontend:
     container_name: wishlist-client
     image: rakl/wishlist-client:latest
