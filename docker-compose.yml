@@ -1,5 +1,5 @@
 ﻿services:
-  
+
   postgres:
     container_name: wishlist-database
     image: postgres:latest
@@ -11,7 +11,7 @@
       - 5432:5432
     volumes:
       - wishlist-database:/var/lib/postgresql/data
-      
+
   backend:
     container_name: wishlist-server
     image: rakl/wishlist-server:latest
@@ -21,10 +21,10 @@
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=https://+:7200
     volumes:
-      - /etc/letsencrypt/live/wishlist.raki.app:/etc/letsencrypt/live/wishlist.raki.app
+      - /etc/letsencrypt:/https
     links:
       - postgres
-        
+   
   frontend:
     container_name: wishlist-client
     image: rakl/wishlist-client:latest
@@ -32,6 +32,6 @@
       - 8000:80
     links:
       - backend
-        
+
 volumes:
     wishlist-database:
