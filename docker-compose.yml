@@ -20,6 +20,7 @@
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=https://+:7200
+    working_dir: /app
     volumes:
       - /etc/letsencrypt:/app/https
     links:
