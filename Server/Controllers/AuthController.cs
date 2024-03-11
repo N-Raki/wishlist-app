@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Text;
+using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -118,6 +119,27 @@ public class AuthController : ControllerBase
         {
             return CreateValidationProblem(result);
         }
+        
+        return TypedResults.Ok();
+    }
+    
+    [Authorize]
+    [HttpPost("forgotPassword")]
+    public async Task<Results<Ok, ValidationProblem>> ForgotPassword([FromBody] ForgotPasswordRequest forgotPasswordRequest, [FromServices] IServiceProvider serviceProvider)
+    {
+        var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+        var user = await userManager.FindByEmailAsync(forgotPasswordRequest.Email);
+        
+        if (user is null)
+        {
+            return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(forgotPasswordRequest.Email)));
+        }
+        
+        var code = await userManager.GeneratePasswordResetTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        
+        var emailSender = serviceProvider.GetRequiredService<IEmailSender<User>>();
+        await emailSender.SendPasswordResetCodeAsync(user, forgotPasswordRequest.Email, HtmlEncoder.Default.Encode(code));
         
         return TypedResults.Ok();
     }
