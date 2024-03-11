@@ -5,7 +5,6 @@ import {Box, Button, Link, TextField, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import {useNavigate} from "react-router-dom";
 import {useMutation} from "@tanstack/react-query";
-import AuthService from "../../services/auth.service.ts";
 import * as Yup from 'yup';
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -14,6 +13,7 @@ import {ObjectSchema} from "yup";
 import toast from "react-hot-toast";
 import {AxiosError} from "axios";
 import {AspNetValidationProblem} from "../../models/errors/AspNetValidationProblem.ts";
+import {register} from "../../services/auth.service.ts";
 
 class RegisterFormData {
     displayName: string = '';
@@ -40,13 +40,13 @@ export default function RegisterForm() {
     const navigate = useNavigate();
     
     const {
-        register,
+        register: registerForm,
         handleSubmit,
         formState: { errors }
     } = useForm<RegisterFormData>({resolver: yupResolver(validationScheme), mode: 'onChange'});
     
     const mutation = useMutation({
-        mutationFn: (data: UserRegisterRequest) => AuthService.register(data),
+        mutationFn: (data: UserRegisterRequest) => register(data),
         onSuccess: async () => {
             toast.success('User registered successfully');
             navigate('/');
@@ -88,7 +88,7 @@ export default function RegisterForm() {
                         margin="normal"
                         fullWidth
                         label="Display name"
-                        {...register('displayName')}
+                        {...registerForm('displayName')}
                     />
                     <TextField
                         required
@@ -97,7 +97,7 @@ export default function RegisterForm() {
                         margin="normal"
                         fullWidth
                         label="Email Address"
-                        {...register('email')}
+                        {...registerForm('email')}
                     />
                     <TextField
                         required
@@ -106,7 +106,7 @@ export default function RegisterForm() {
                         margin="normal"
                         fullWidth
                         label="Password"
-                        {...register('password')}
+                        {...registerForm('password')}
                         type="password"
                     />
                     <TextField
@@ -116,7 +116,7 @@ export default function RegisterForm() {
                         margin="normal"
                         fullWidth
                         label="Confirm Password"
-                        {...register('confirmPassword')}
+                        {...registerForm('confirmPassword')}
                         type="password"
                     />
                     <Button

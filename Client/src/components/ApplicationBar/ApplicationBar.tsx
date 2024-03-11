@@ -12,7 +12,6 @@ import {
 import React, {useState} from "react";
 import {User} from "../../models/user.model.ts";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import AuthService from "../../services/auth.service.ts";
 import toast from "react-hot-toast";
 import { stringToColor } from "../../helpers/avatarHelper.ts";
 import {getCurrentUser} from "../../services/user.service.ts";
@@ -21,6 +20,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import DarkModeSwitch from "../DarkModeSwitch/DarkModeSwitch.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
+import {logout} from "../../services/auth.service.ts";
 
 const ApplicationBar = () => {
     const queryClient = useQueryClient();
@@ -39,7 +39,7 @@ const ApplicationBar = () => {
     };
 
     const logoutMutation = useMutation({
-        mutationFn: AuthService.logout,
+        mutationFn: logout,
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['user']});
             toast.success('Logged out successfully');
@@ -133,6 +133,15 @@ const ApplicationBar = () => {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
+                            <MenuItem onClick={() => {
+                                handleCloseUserMenu();
+                                navigate('/profile');
+                            }}>
+                                <Stack direction={'row'} spacing={2}>
+                                    <PersonIcon />
+                                    <Typography>Profile</Typography>
+                                </Stack>
+                            </MenuItem>
                             <MenuItem onClick={() => {
                                 handleCloseUserMenu();
                                 logoutMutation.mutate();

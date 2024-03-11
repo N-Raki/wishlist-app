@@ -1,10 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Server.Models;
 using Server.Models.Requests;
 
@@ -88,6 +90,36 @@ public class AuthController : ControllerBase
         var signInManager = serviceProvider.GetRequiredService<SignInManager<User>>();
         await signInManager.SignOutAsync().ConfigureAwait(false);
         return Ok();
+    }
+    
+    [Authorize]
+    [HttpPost("resetPassword")]
+    public async Task<Results<Ok, ValidationProblem>> ResetPassword([FromBody] ResetPasswordRequest resetPasswordRequest, [FromServices] IServiceProvider serviceProvider)
+    {
+        var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+        var user = await userManager.GetUserAsync(HttpContext.User);
+        
+        
+        if (user is null)
+        {
+            return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidToken()));
+        }
+        
+        var isPasswordValid = await userManager.CheckPasswordAsync(user, resetPasswordRequest.CurrentPassword);
+        if (!isPasswordValid)
+        {
+            return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.PasswordMismatch()));
+        }
+
+        var token = await userManager.GeneratePasswordResetTokenAsync(user);
+        var result = await userManager.ResetPasswordAsync(user, token, resetPasswordRequest.NewPassword);
+        
+        if (!result.Succeeded)
+        {
+            return CreateValidationProblem(result);
+        }
+        
+        return TypedResults.Ok();
     }
     
     private static ValidationProblem CreateValidationProblem(IdentityResult identityResult)

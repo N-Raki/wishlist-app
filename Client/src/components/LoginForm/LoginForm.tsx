@@ -3,7 +3,6 @@ import Grid from '@mui/material/Grid';
 import AuthenticationForm from "../AuthenticationForm/AuthenticationForm.tsx";
 import Copyright from "../Copyright/Copyright.tsx";
 import {useMutation} from "@tanstack/react-query";
-import AuthService from "../../services/auth.service.ts";
 import {useLocation, useNavigate} from "react-router-dom";
 import {UserLoginRequest} from "../../models/requests/user-login.model.ts";
 import {useForm} from "react-hook-form";
@@ -11,6 +10,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import {ObjectSchema} from "yup";
 import toast from "react-hot-toast";
+import {login} from "../../services/auth.service.ts";
 
 class LoginFormData {
     email: string = '';
@@ -39,7 +39,7 @@ export default function LoginForm() {
     } = useForm<LoginFormData>({resolver: yupResolver(validationScheme), mode: 'onChange'});
 
     const mutation = useMutation({
-        mutationFn: (data: UserLoginRequest) => AuthService.login(data),
+        mutationFn: (data: UserLoginRequest) => login(data),
         onSuccess: async () => {
             toast.success('Logged in successfully');
             navigate(from.pathname);

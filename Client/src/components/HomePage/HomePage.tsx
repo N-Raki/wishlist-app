@@ -21,7 +21,7 @@ const HomePage: FC<HomePageProps> = () => {
         isLoading
     } = useQuery<User>({queryKey: ['user'], queryFn: getCurrentUser, retry: false});
     
-    const { data: recentWishlists } = useQuery<Wishlist[]>({queryKey: ['recentWishlists'], queryFn: getRecentWishlists, retry: false});
+    const { data: recentWishlists } = useQuery<Wishlist[]>({queryKey: ['recentWishlists'], queryFn: getRecentWishlists, retry: false, enabled: isSuccess});
     
     if (isLoading) {
         return (

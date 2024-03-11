@@ -1,8 +1,9 @@
 import axios, {AxiosResponse} from "axios";
 import {UserRegisterRequest} from "../models/requests/user-register.model.ts";
 import {UserLoginRequest} from "../models/requests/user-login.model.ts";
+import {UserResetPasswordRequest} from "../models/requests/user-reset-password.model.ts";
 
-const login = async (data: UserLoginRequest): Promise<void> => {
+export async function login(data: UserLoginRequest): Promise<void> {
     try {
         await axios.post<void, AxiosResponse<void>, UserLoginRequest>('/api/auth/login',
             {
@@ -19,7 +20,7 @@ const login = async (data: UserLoginRequest): Promise<void> => {
     }
 }
 
-const logout = async (): Promise<void> => {
+export async function logout(): Promise<void> {
     try {
         await axios.post('/api/auth/logout',
             null,
@@ -32,7 +33,7 @@ const logout = async (): Promise<void> => {
     }
 }
 
-const register = async (data: UserRegisterRequest): Promise<void> => {
+export async function register(data: UserRegisterRequest): Promise<void> {
     try {
         await axios.post<void, AxiosResponse<void>, UserRegisterRequest>('/api/auth/register', {
                 displayName: data.displayName,
@@ -49,10 +50,17 @@ const register = async (data: UserRegisterRequest): Promise<void> => {
     }
 }
 
-const AuthService = {
-    login,
-    logout,
-    register
+export async function resetPassword(currentPassword: string, newPassword: string): Promise<void> {
+    try {
+        await axios.post<void, AxiosResponse<void>, UserResetPasswordRequest>('/api/auth/resetPassword', {
+                currentPassword: currentPassword,
+                newPassword: newPassword
+            },
+            {
+                withCredentials: true
+            });
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
 }
-
-export default AuthService;

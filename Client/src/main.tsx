@@ -12,6 +12,7 @@ import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {Toaster} from "react-hot-toast";
 import WishlistView from "./components/WishlistView/WishlistView.tsx";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import UserProfilePage from "./components/UserProfilePage/UserProfilePage.tsx";
 
 const router = createBrowserRouter([
     {
@@ -27,8 +28,8 @@ const router = createBrowserRouter([
         element: <RegisterForm />
     },
     {
-        path: '/profile/settings',
-        element: <div>Settings</div>
+        path: '/profile',
+        element: <UserProfilePage />
     },
     {
         path: '/wishlists/new',
