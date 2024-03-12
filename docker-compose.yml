@@ -5,8 +5,8 @@
     image: postgres:latest
     environment:
       POSTGRES_DB: wishlist
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: wishlist
+      POSTGRES_PASSWORD: abcd
     ports:
       - 5432:5432
     volumes:
@@ -20,9 +20,10 @@
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=https://+:7200
+      - CONNECTIONSTRINGS__DEFAULT=Host=postgres;Database=wishlist;User ID=wishlist;Password=abcd;Port=5432
     volumes:
       - /etc/letsencrypt:/app/https
-    links:
+    depends_on:
       - postgres
 
   frontend:
@@ -30,7 +31,7 @@
     image: rakl/wishlist-client:latest
     ports:
       - 8000:80
-    links:
+    depends_on:
       - backend
 
 volumes:
