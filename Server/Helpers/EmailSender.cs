@@ -2,19 +2,20 @@ using System.Net;
 using System.Net.Mail;
 using Microsoft.AspNetCore.Identity;
 using Server.Models;
+using Server.Models.Options;
 
 namespace Server.Helpers;
 
-public sealed class EmailSender : IEmailSender<User>
+public sealed class EmailSender(IConfiguration configuration) : IEmailSender<User>
 {
     public Task SendConfirmationLinkAsync(User user, string email, string confirmationLink)
     {
         throw new NotImplementedException();
     }
 
-    public Task SendPasswordResetLinkAsync(User user, string email, string resetLink)
+    public async Task SendPasswordResetLinkAsync(User user, string email, string resetLink)
     {
-        throw new NotImplementedException();
+        await SendEmailAsync(email, "Password reset code", $"Click here to reset your password: {resetLink}");
     }
 
     public Task SendPasswordResetCodeAsync(User user, string email, string resetCode)
@@ -24,15 +25,21 @@ public sealed class EmailSender : IEmailSender<User>
 
     private async Task SendEmailAsync(string email, string subject, string message)
     {
-        var client = new SmtpClient("pro1.mail.ovh.net", 993)
+        var emailOptions = configuration.GetSection(EmailOptions.Email).Get<EmailOptions>();
+        if (emailOptions is null)
         {
-            Credentials = new NetworkCredential("ncoustance@raki.app", "J6%ba%2XK#D9ojgtsrNC"),
+            throw new InvalidOperationException("Email options are not configured");
+        }
+        
+        var client = new SmtpClient(emailOptions.SmtpServer, emailOptions.SmtpPort)
+        {
+            Credentials = new NetworkCredential(emailOptions.SmtpUsername, emailOptions.SmtpPassword),
             EnableSsl = true
         };
 
         await client.SendMailAsync(new MailMessage
         {
-            From = new MailAddress("ncoustance@raki.app"),
+            From = new MailAddress(emailOptions.SmtpUsername),
             To = { email },
             Subject = subject,
             Body = message

@@ -1,4 +1,5 @@
 export class UserResetPasswordRequest {
-    public currentPassword: string = '';
+    public email: string = '';
+    public resetCode: string = '';
     public newPassword: string = '';
 }

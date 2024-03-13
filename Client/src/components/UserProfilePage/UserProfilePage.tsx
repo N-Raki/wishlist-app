@@ -7,11 +7,13 @@ import {ObjectSchema} from "yup";
 import * as Yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useMutation, useQuery} from "@tanstack/react-query";
-import {resetPassword} from "../../services/auth.service.ts";
+import {changePassword} from "../../services/auth.service.ts";
 import toast from "react-hot-toast";
 import {User} from "../../models/user.model.ts";
 import {getCurrentUser} from "../../services/user.service.ts";
 import {useNavigate} from "react-router-dom";
+import {AxiosError} from "axios";
+import {AspNetValidationProblem} from "../../models/errors/AspNetValidationProblem.ts";
 
 class ResetPasswordFormData {
     currentPassword: string = '';
@@ -45,11 +47,22 @@ const UserProfilePage: FC<UserProfilePageProps> = () => {
     } = useForm<ResetPasswordFormData>({resolver: yupResolver(validationScheme), mode: 'onChange'});
     
     const resetPasswordMutation = useMutation({
-        mutationFn: (data: ResetPasswordFormData) => resetPassword(data.currentPassword, data.newPassword),
+        mutationFn: (data: ResetPasswordFormData) => changePassword(data.currentPassword, data.newPassword),
         onSuccess: async () => {
             toast.success('Password reset successfully');
             resetPasswordReset(new ResetPasswordFormData());
         },
+        onError: async (error: AxiosError<AspNetValidationProblem>) => {
+        let errors = error.response?.data.errors;
+        if (errors) {
+            for (let key in errors) {
+                let message = errors[key].join(' ');
+                toast.error(message, { duration: 10000 });
+            }
+        } else {
+            toast.error('An error occurred while registering the user. ' + error.message, { duration: 10000 });
+        }
+    }
     });
 
     const onSubmit = (data: ResetPasswordFormData) => {

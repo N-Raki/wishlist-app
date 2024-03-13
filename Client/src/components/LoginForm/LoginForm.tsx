@@ -102,7 +102,7 @@ export default function LoginForm() {
                     </Button>
                     <Grid container>
                         <Grid item xs>
-                            <Link href="#" variant="body2" color={'inherit'}>
+                            <Link href="/forgotPassword" variant="body2" color={'inherit'}>
                                 Forgot password?
                             </Link>
                         </Grid>

@@ -13,6 +13,8 @@ import {Toaster} from "react-hot-toast";
 import WishlistView from "./components/WishlistView/WishlistView.tsx";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import UserProfilePage from "./components/UserProfilePage/UserProfilePage.tsx";
+import ForgotPasswordPage from "./components/ForgotPasswordPage/ForgotPasswordPage.tsx";
+import ResetPasswordPage from "./components/ResetPasswordPage/ResetPasswordPage.tsx";
 
 const router = createBrowserRouter([
     {
@@ -26,6 +28,14 @@ const router = createBrowserRouter([
     {
         path: '/register',
         element: <RegisterForm />
+    },
+    {
+        path: '/forgotPassword',
+        element: <ForgotPasswordPage />
+    },
+    {
+        path: '/resetPassword',
+        element: <ResetPasswordPage />
     },
     {
         path: '/profile',
