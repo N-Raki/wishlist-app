@@ -1,6 +1,8 @@
 import axios, {AxiosResponse} from "axios";
 import {UserRegisterRequest} from "../models/requests/user-register.model.ts";
 import {UserLoginRequest} from "../models/requests/user-login.model.ts";
+import {UserChangePasswordRequest} from "../models/requests/user-change-password.model.ts";
+import {UserForgotPasswordRequest} from "../models/requests/user-forgot-password.model.ts";
 import {UserResetPasswordRequest} from "../models/requests/user-reset-password.model.ts";
 
 export async function login(data: UserLoginRequest): Promise<void> {
@@ -50,10 +52,40 @@ export async function register(data: UserRegisterRequest): Promise<void> {
     }
 }
 
-export async function resetPassword(currentPassword: string, newPassword: string): Promise<void> {
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    try {
+        await axios.post<void, AxiosResponse<void>, UserChangePasswordRequest>('/api/auth/changePassword', {
+                currentPassword: currentPassword,
+                newPassword: newPassword
+            },
+            {
+                withCredentials: true
+            });
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function forgotPassword(email: string): Promise<void> {
+    try {
+        await axios.post<void, AxiosResponse<void>, UserForgotPasswordRequest>('/api/auth/forgotPassword', {
+                email: email
+            },
+            {
+                withCredentials: true
+            });
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
+export async function resetPassword(email: string, resetCode: string, newPassword: string): Promise<void> {
     try {
         await axios.post<void, AxiosResponse<void>, UserResetPasswordRequest>('/api/auth/resetPassword', {
-                currentPassword: currentPassword,
+                email: email,
+                resetCode: resetCode,
                 newPassword: newPassword
             },
             {

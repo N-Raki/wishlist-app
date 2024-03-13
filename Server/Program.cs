@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Serilog;
 using Server;
 using Server.Extensions;
+using Server.Helpers;
 using Server.Mappers;
 using Server.Mappers.Contracts;
 using Server.Models;
@@ -39,6 +39,9 @@ builder.Services.AddScoped<IItemsService, ItemsService>();
 builder.Services.AddScoped<IItemsRepository, ItemsRepository>();
 
 builder.Services.AddScoped<IAuthenticationDataProvider, AuthenticationDataProvider>();
+
+// Add emails sender
+builder.Services.AddScoped<IEmailSender<User>, EmailSender>();
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {

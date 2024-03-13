@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Text;
+using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -8,15 +9,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Server.Models;
+using Server.Models.Options;
 using Server.Models.Requests;
 
 namespace Server.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : ControllerBase
+public class AuthController(IConfiguration configuration) : ControllerBase
 {
     private readonly EmailAddressAttribute _emailAddressAttribute = new();
+    
+    private readonly NetworkOptions? _networkOptions = configuration.GetSection(NetworkOptions.Network).Get<NetworkOptions>();
     
     [HttpPost("register")]
     public async Task<Results<Ok, ValidationProblem>> Register([FromBody] RegisterRequest registerRequest, [FromServices] IServiceProvider serviceProvider)
@@ -93,26 +97,76 @@ public class AuthController : ControllerBase
     }
     
     [Authorize]
-    [HttpPost("resetPassword")]
-    public async Task<Results<Ok, ValidationProblem>> ResetPassword([FromBody] ResetPasswordRequest resetPasswordRequest, [FromServices] IServiceProvider serviceProvider)
+    [HttpPost("changePassword")]
+    public async Task<Results<Ok, ValidationProblem>> ChangePassword([FromBody] ChangePasswordRequest changePasswordRequest, [FromServices] IServiceProvider serviceProvider)
     {
         var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
         var user = await userManager.GetUserAsync(HttpContext.User);
-        
         
         if (user is null)
         {
             return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidToken()));
         }
         
-        var isPasswordValid = await userManager.CheckPasswordAsync(user, resetPasswordRequest.CurrentPassword);
+        var isPasswordValid = await userManager.CheckPasswordAsync(user, changePasswordRequest.CurrentPassword);
         if (!isPasswordValid)
         {
             return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.PasswordMismatch()));
         }
-
+        
         var token = await userManager.GeneratePasswordResetTokenAsync(user);
-        var result = await userManager.ResetPasswordAsync(user, token, resetPasswordRequest.NewPassword);
+        var result = await userManager.ResetPasswordAsync(user, token, changePasswordRequest.NewPassword);
+        
+        if (!result.Succeeded)
+        {
+            return CreateValidationProblem(result);
+        }
+        
+        return TypedResults.Ok();
+    }
+    
+    [HttpPost("forgotPassword")]
+    public async Task<Results<Ok, ValidationProblem>> ForgotPassword([FromBody] ForgotPasswordRequest forgotPasswordRequest, [FromServices] IServiceProvider serviceProvider)
+    {
+        var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+        var user = await userManager.FindByEmailAsync(forgotPasswordRequest.Email);
+        
+        if (user is null)
+        {
+            // Do not reveal that the user does not exist
+            await Task.Delay(new Random().Next(500, 650));
+            return TypedResults.Ok();
+        }
+        
+        var code = await userManager.GeneratePasswordResetTokenAsync(user);
+        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+        
+        if (_networkOptions is null)
+        {
+            throw new InvalidOperationException("NetworkOptions is not configured.");
+        }
+        var resetPasswordLink = $"{_networkOptions.ClientUrl}/resetPassword?email={forgotPasswordRequest.Email}&resetCode={code}";
+        
+        
+        var emailSender = serviceProvider.GetRequiredService<IEmailSender<User>>();
+        await emailSender.SendPasswordResetLinkAsync(user, forgotPasswordRequest.Email, resetPasswordLink);
+        
+        return TypedResults.Ok();
+    }
+    
+    [HttpPost("resetPassword")]
+    public async Task<Results<Ok, ValidationProblem>> ResetPassword([FromBody] ResetPasswordRequest resetPasswordRequest, [FromServices] IServiceProvider serviceProvider)
+    {
+        var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+        var user = await userManager.FindByEmailAsync(resetPasswordRequest.Email);
+        
+        if (user is null)
+        {
+            return CreateValidationProblem(IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(resetPasswordRequest.Email)));
+        }
+        
+        var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(resetPasswordRequest.ResetCode));
+        var result = await userManager.ResetPasswordAsync(user, code, resetPasswordRequest.NewPassword);
         
         if (!result.Succeeded)
         {
