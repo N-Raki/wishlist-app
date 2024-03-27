@@ -14,6 +14,7 @@ export default {
         extend: {
             backgroundImage: {
                 gifts: "url('./assets/gifts.png')",
+                wallpaper: "url('https://source.unsplash.com/random?wallpapers')"
             },
             boxShadow: {
                 btn: '0 15px 30px -5px rgba(151, 65, 252, 0.2)'

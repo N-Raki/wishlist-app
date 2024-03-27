@@ -1,6 +1,6 @@
 import {Box, Button, Checkbox, FormControlLabel, Link, TextField, Typography} from "@mui/material";
 import Grid from '@mui/material/Grid';
-import AuthenticationForm from "../AuthenticationForm/AuthenticationForm.tsx";
+import AuthenticationPage from "../AuthenticationPage/AuthenticationPage.tsx";
 import Copyright from "../Copyright/Copyright.tsx";
 import {useMutation} from "@tanstack/react-query";
 import {useLocation, useNavigate} from "react-router-dom";
@@ -27,7 +27,7 @@ const validationScheme: ObjectSchema<LoginFormData> = Yup.object({
     rememberMe: Yup.boolean().defined()
 });
 
-export default function LoginForm() {
+const LoginPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { from } = location.state || { from: { pathname: "/" } };
@@ -59,7 +59,7 @@ export default function LoginForm() {
     };
 
     return (
-        <AuthenticationForm>
+        <AuthenticationPage>
             <Box sx={{my: 2, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                 <Link href={'/'} underline={'none'} sx={{mb: '2rem', fontSize: '60px'}}>🎁</Link>
                 <Typography component="h1" variant="h5">
@@ -115,6 +115,8 @@ export default function LoginForm() {
                     <Copyright sx={{mt: 5}}/>
                 </Box>
             </Box>
-        </AuthenticationForm>
+        </AuthenticationPage>
     )
 }
+
+export default LoginPage;

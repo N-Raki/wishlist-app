@@ -1,5 +1,4 @@
-import './RegisterForm.css';
-import AuthenticationForm from "../AuthenticationForm/AuthenticationForm.tsx";
+import AuthenticationPage from "../AuthenticationPage/AuthenticationPage.tsx";
 import Copyright from "../Copyright/Copyright.tsx";
 import {Box, Button, Link, TextField, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
@@ -36,7 +35,7 @@ const validationScheme: ObjectSchema<RegisterFormData> = Yup.object({
         .oneOf([Yup.ref('password')], 'Passwords do not match')
 });
 
-export default function RegisterForm() {
+const RegisterPage = () => {
     const navigate = useNavigate();
     
     const {
@@ -72,13 +71,28 @@ export default function RegisterForm() {
         }
         mutation.mutate(request);
     };
+    
+    return (
+        <AuthenticationPage>
+            <div className="flex flex-col items-center w-full">
+                <h2 className="text-2xl mb-6">Registration</h2>
+                <form className="w-full px-24 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
+                    <div className="flex flex-col items-start">
+                        <label htmlFor="displayName" className="flex text-sm leading-6 justify-center font-semibold">
+                            Display Name
+                        </label>
+                        <input {...registerForm('displayName')} id="displayName" name="displayName" type="text" placeholder="Display Name" required className="flex w-full rounded-md border-0 px-2 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 sm:text-sm sm:leading-6"/>
+                    </div>
+                </form>
+            </div>
+        </AuthenticationPage>
+    );
 
     return (
-        <AuthenticationForm>
+        <AuthenticationPage>
             <Box sx={{my: 2, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Link href={'/'} underline={'none'} sx={{mb: '2rem', fontSize: '60px'}}>🎁</Link>
                 <Typography component="h1" variant="h5">
-                    Sign up
+                    Register
                 </Typography>
                 <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{mt: 1}}>
                     <TextField
@@ -138,6 +152,8 @@ export default function RegisterForm() {
                     <Copyright sx={{mt: 5}}/>
                 </Box>
             </Box>
-        </AuthenticationForm>
+        </AuthenticationPage>
     );
 }
+
+export default RegisterPage;

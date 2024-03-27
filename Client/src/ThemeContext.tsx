@@ -10,7 +10,7 @@ export const ThemeContext = createContext({
 });
 
 export const CustomThemeProvider = ({children}: any) => {
-    const [theme, setTheme] = useState(getLocalStorageItem<string>(themeLocalStorageKey) ?? darkTheme);
+    const [theme, setTheme] = useState(getLocalStorageItem<string>(themeLocalStorageKey) ?? lightTheme);
 
     useEffect(() => {
         const root = window.document.documentElement;
