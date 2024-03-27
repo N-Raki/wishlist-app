@@ -9,9 +9,15 @@ export default {
     darkMode: 'selector',
     theme: {
         fontFamily: {
-            sans: ['Inter', ...defaultTheme.fontFamily.sans],
+            sans: ['Epilogue', ...defaultTheme.fontFamily.sans],
         },
         extend: {
+            backgroundImage: {
+                gifts: "url('./assets/gifts.png')",
+            },
+            boxShadow: {
+                btn: '0 15px 30px -5px rgba(151, 65, 252, 0.2)'
+            },
             colors: {
                 primary: {
                     50: '#f5eaff',

@@ -44,7 +44,7 @@ const NavigationBar = () => {
                         type="button"
                         className="-m-1.5 p-1.5 text-3xl"
                         onClick={() => navigate("/")}>
-                        🎁
+                        ✨ Wishes
                         <span className="sr-only">Wishlists</span>
                     </button>
                 </div>
