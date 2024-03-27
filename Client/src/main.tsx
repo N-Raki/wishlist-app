@@ -59,11 +59,11 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <CustomThemeProvider>
-            <div className="h-screen bg-white dark:bg-black dark:text-white">
+            <div className="h-screen bg-background dark:bg-backgroundDark text-onBackground dark:text-onBackgroundDark transition-colors">
                 <QueryClientProvider client={queryClient}>
                     <RouterProvider router={router}/>
                     <ReactQueryDevtools initialIsOpen={false} buttonPosition={'bottom-left'}/>
-                    <Toaster position="bottom-right"/>
+                    <Toaster position="bottom-right" />
                 </QueryClientProvider>
             </div>
         </CustomThemeProvider>
