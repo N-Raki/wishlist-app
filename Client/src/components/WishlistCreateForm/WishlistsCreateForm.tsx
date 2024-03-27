@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import {useNavigate} from "react-router-dom";
 import {WishlistCreateRequest} from "../../models/requests/wishlist-create.model.ts";
 import {Wishlist} from "../../models/wishlist.model.ts";
-import ApplicationBar from "../ApplicationBar/ApplicationBar.tsx";
+import NavigationBar from "../NavigationBar/NavigationBar.tsx";
 import {createWishlist} from "../../services/wishlists.service.ts";
 
 const wishlistSchema: ObjectSchema<WishlistCreateRequest> = Yup.object({
@@ -51,7 +51,7 @@ const WishlistsCreateForm: FC<WishlistCreateFormProps> = () => {
 
     return (
         <Box>
-            <ApplicationBar />
+            <NavigationBar />
             <Container sx={{
                 mt: '2rem',
                 display: 'flex',

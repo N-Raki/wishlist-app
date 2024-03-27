@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, {FC} from 'react';
 import './AuthenticationForm.css';
 import Grid from "@mui/material/Grid";
 import {Paper, Toolbar} from "@mui/material";

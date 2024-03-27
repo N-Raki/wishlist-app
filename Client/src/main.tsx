@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import {CssBaseline} from "@mui/material";
 import {CustomThemeProvider} from "./ThemeContext.tsx";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import HomePage from "./components/HomePage/HomePage.tsx";
@@ -11,7 +10,7 @@ import WishlistsCreateForm from "./components/WishlistCreateForm/WishlistsCreate
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {Toaster} from "react-hot-toast";
 import WishlistView from "./components/WishlistView/WishlistView.tsx";
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import UserProfilePage from "./components/UserProfilePage/UserProfilePage.tsx";
 import ForgotPasswordPage from "./components/ForgotPasswordPage/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "./components/ResetPasswordPage/ResetPasswordPage.tsx";
@@ -19,35 +18,35 @@ import ResetPasswordPage from "./components/ResetPasswordPage/ResetPasswordPage.
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <HomePage />
+        element: <HomePage/>
     },
     {
         path: '/login',
-        element: <LoginForm />
+        element: <LoginForm/>
     },
     {
         path: '/register',
-        element: <RegisterForm />
+        element: <RegisterForm/>
     },
     {
         path: '/forgotPassword',
-        element: <ForgotPasswordPage />
+        element: <ForgotPasswordPage/>
     },
     {
         path: '/resetPassword',
-        element: <ResetPasswordPage />
+        element: <ResetPasswordPage/>
     },
     {
         path: '/profile',
-        element: <UserProfilePage />
+        element: <UserProfilePage/>
     },
     {
         path: '/wishlists/new',
-        element: <WishlistsCreateForm />
+        element: <WishlistsCreateForm/>
     },
     {
         path: '/wishlists/:guid',
-        element: <WishlistView />
+        element: <WishlistView/>
     },
     {
         path: '*',
@@ -60,12 +59,13 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <CustomThemeProvider>
-            <CssBaseline/>
-            <QueryClientProvider client={queryClient}>
-                <RouterProvider router={router} />
-                <ReactQueryDevtools initialIsOpen={false} buttonPosition={'bottom-left'}/>
-                <Toaster position="bottom-right" />
-            </QueryClientProvider>
+            <div className="h-screen bg-white dark:bg-black dark:text-white">
+                <QueryClientProvider client={queryClient}>
+                    <RouterProvider router={router}/>
+                    <ReactQueryDevtools initialIsOpen={false} buttonPosition={'bottom-left'}/>
+                    <Toaster position="bottom-right"/>
+                </QueryClientProvider>
+            </div>
         </CustomThemeProvider>
     </React.StrictMode>
 );

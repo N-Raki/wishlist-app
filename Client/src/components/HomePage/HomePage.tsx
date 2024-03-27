@@ -4,7 +4,7 @@ import {Box, Button, Container, Link, Stack, Typography} from "@mui/material";
 import {useQuery} from "@tanstack/react-query";
 import {User} from "../../models/user.model.ts";
 import WishlistsList from "../WishlistsList/WishlistsList.tsx";
-import ApplicationBar from "../ApplicationBar/ApplicationBar.tsx";
+import NavigationBar from "../NavigationBar/NavigationBar.tsx";
 import {Wishlist} from "../../models/wishlist.model.ts";
 import {getRecentWishlists} from "../../services/wishlists.service.ts";
 import Grid from "@mui/material/Grid";
@@ -26,14 +26,14 @@ const HomePage: FC<HomePageProps> = () => {
     if (isLoading) {
         return (
             <Box>
-                <ApplicationBar />
+                <NavigationBar />
             </Box>
         )
     }
     else if (isError) {
         return (
             <Box>
-                <ApplicationBar />
+                <NavigationBar />
             <Container sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -55,12 +55,12 @@ const HomePage: FC<HomePageProps> = () => {
     else if (isSuccess) {
         return (
             <Box>
-                <ApplicationBar />
+                <NavigationBar />
                 <Grid container spacing={2} sx={{mt: '2rem', px:'2rem'}}>
                     <Grid xs={12} sx={{mb:'2rem'}} item>
-                        <Typography variant="h3" sx={{textAlign:'center'}}>
+                        <h3 className="text-center">
                             Hello {user.displayName} !
-                        </Typography>
+                        </h3>
                     </Grid>
                     <Grid xs={12} md={recentWishlists && recentWishlists.length > 0 ? 6 : 12} item>
                         {user?.wishlists.length === 0

@@ -10,7 +10,7 @@ import * as Yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useForm} from "react-hook-form";
 import {Box, Button, Stack, TextField, Typography} from "@mui/material";
-import ApplicationBar from "../ApplicationBar/ApplicationBar.tsx";
+import NavigationBar from "../NavigationBar/NavigationBar.tsx";
 import Grid from "@mui/material/Grid";
 
 class ResetPasswordFormData {
@@ -70,7 +70,7 @@ const ResetPasswordPage: FC<ResetPasswordPageProps> = () => {
 
     return (
         <Box>
-            <ApplicationBar/>
+            <NavigationBar/>
             <Grid container display={'flex'} alignItems={'center'} justifyContent={'center'} textAlign={'center'} marginTop={2}>
                 <Grid xs={12} item>
                     <Typography variant={'h1'}>Reset your password</Typography>

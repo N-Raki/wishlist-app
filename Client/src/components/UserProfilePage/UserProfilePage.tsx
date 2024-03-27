@@ -1,6 +1,6 @@
 import {FC, useEffect} from "react";
 import {Box, Button, Stack, TextField, Typography} from "@mui/material";
-import ApplicationBar from "../ApplicationBar/ApplicationBar.tsx";
+import NavigationBar from "../NavigationBar/NavigationBar.tsx";
 import Grid from "@mui/material/Grid";
 import {useForm} from "react-hook-form";
 import {ObjectSchema} from "yup";
@@ -83,7 +83,7 @@ const UserProfilePage: FC<UserProfilePageProps> = () => {
 
         return (
             <Box>
-                <ApplicationBar/>
+                <NavigationBar/>
                 <Grid container display={'flex'} alignItems={'center'} justifyContent={'center'} textAlign={'center'} marginTop={2}>
                     <Grid xs={12} item>
                         <Typography variant={'h1'}>User Profile</Typography>
