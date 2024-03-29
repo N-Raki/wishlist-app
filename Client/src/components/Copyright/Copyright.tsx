@@ -8,7 +8,7 @@ interface CopyrightProps {
 const Copyright: FC<CopyrightProps> = ({className}) => (
     <div className={className}>
         Copyright © 
-        <button onClick={() => window.location.href = 'https://raki.app/'}>
+        <button onClick={() => window.open("https://raki.app", "_blank")}>
             Raki
         </button>{' '}
         {new Date().getFullYear()}
