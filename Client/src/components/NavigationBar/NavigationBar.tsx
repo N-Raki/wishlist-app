@@ -42,7 +42,7 @@ const NavigationBar = () => {
                 <div className="flex lg:flex-1">
                     <button
                         type="button"
-                        className="-m-1.5 p-1.5 text-3xl"
+                        className={"-m-1.5 p-1.5 text-3xl"}
                         onClick={() => navigate("/")}>
                         ✨ Wishes
                         <span className="sr-only">Wishlists</span>
@@ -101,20 +101,14 @@ const NavigationBar = () => {
                                 isUserLoggedIn
                                     ? <div className="space-y-2 py-6">
                                         <button type="button"
-                                                className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 hover:bg-background"
-                                                onClick={() => {
-                                                    navigate("/");
-                                                    setMobileMenuOpen(false);
-                                                }}
+                                                className={"-mx-3 block rounded-lg px-3 py-2 leading-7 hover:bg-background" + (location.pathname === '/' ? ' font-bold text-lg' : '')}
+                                                onClick={() => navigate("/")}
                                         >
                                             Wishlists
                                         </button>
                                         <button type="button"
-                                                className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7"
-                                                onClick={() => {
-                                                    navigate("/profile");
-                                                    setMobileMenuOpen(false);
-                                                }}
+                                                className={"-mx-3 block rounded-lg px-3 py-2 leading-7" + (location.pathname === '/profile' ? ' font-bold text-lg' : '')}
+                                                onClick={() => navigate("/profile")}
                                         >
                                             Profile
                                         </button>
@@ -126,13 +120,13 @@ const NavigationBar = () => {
                                     isUserLoggedIn
                                         ? <button
                                             type="button"
-                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7"
+                                            className="-mx-3 block rounded-lg px-3 py-2.5 leading-7"
                                             onClick={() => logoutMutation.mutate()}>
                                             Log out
                                         </button>
                                         : <button
                                             type="button"
-                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7"
+                                            className="-mx-3 block rounded-lg px-3 py-2.5 leading-7"
                                             onClick={handleLoginRedirect}>
                                             Log In
                                         </button>

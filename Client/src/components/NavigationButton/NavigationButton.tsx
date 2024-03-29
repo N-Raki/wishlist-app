@@ -13,7 +13,7 @@ export const NavigationButton: FC<NavigationButtonProps> = ({label, route}) => {
     return (
         <button
             type="button"
-            className={pathname === route ? "font-semibold leading-6" : "leading-6"}
+            className={"leading-6" + (pathname === route ? " font-bold" : " text-sm")}
             onClick={() => navigate(route)}
         >
             {label}

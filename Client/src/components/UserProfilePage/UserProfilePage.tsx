@@ -73,7 +73,6 @@ const UserProfilePage: FC<UserProfilePageProps> = () => {
 
     useEffect(() => {
         if (userQuery.isError) {
-            toast.error('You are not logged in');
             navigate("/");
         }
     }, [userQuery, navigate]);
