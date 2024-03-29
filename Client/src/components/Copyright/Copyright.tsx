@@ -1,20 +1,19 @@
-import {FC} from 'react';
 import './Copyright.css';
-import {Link, SxProps, Theme, Typography} from "@mui/material";
+import {FC} from "react";
 
 interface CopyrightProps {
-    sx?: SxProps<Theme>;
+    className?: string;
 }
 
-const Copyright: FC<CopyrightProps> = (props) => (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-        {'Copyright © '}
-        <Link color="inherit" href="https://raki.app/">
+const Copyright: FC<CopyrightProps> = ({className}) => (
+    <div className={className}>
+        Copyright © 
+        <button onClick={() => window.location.href = 'https://raki.app/'}>
             Raki
-        </Link>{' '}
+        </button>{' '}
         {new Date().getFullYear()}
-        {'.'}
-    </Typography>
+        .
+    </div>
 );
 
 export default Copyright;

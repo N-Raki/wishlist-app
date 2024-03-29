@@ -1,5 +1,3 @@
-import {Box, Button, Checkbox, FormControlLabel, Link, TextField, Typography} from "@mui/material";
-import Grid from '@mui/material/Grid';
 import AuthenticationPage from "../AuthenticationPage/AuthenticationPage.tsx";
 import Copyright from "../Copyright/Copyright.tsx";
 import {useMutation} from "@tanstack/react-query";
@@ -11,6 +9,9 @@ import * as Yup from "yup";
 import {ObjectSchema} from "yup";
 import toast from "react-hot-toast";
 import {login} from "../../services/auth.service.ts";
+import FormInput from "../FormInput/FormInput.tsx";
+import FormCheckbox from "../FormCheckbox/FormCheckbox.tsx";
+import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
 
 class LoginFormData {
     email: string = '';
@@ -57,66 +58,52 @@ const LoginPage = () => {
         }
         mutation.mutate(request);
     };
-
+    
     return (
         <AuthenticationPage>
-            <Box sx={{my: 2, mx: 4, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-                <Link href={'/'} underline={'none'} sx={{mb: '2rem', fontSize: '60px'}}>🎁</Link>
-                <Typography component="h1" variant="h5">
-                    Sign in
-                </Typography>
-                <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{mt: 1}}>
-                    <TextField
+            <h2 className="text-2xl mb-6">Login</h2>
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-xl px-5 flex-col flex-grow">
+                <div className="space-y-4">
+                    <FormInput
                         required
                         autoFocus
-                        error={!!errors.email}
-                        helperText={errors.email?.message}
-                        margin="normal"
-                        fullWidth
+                        id="email"
                         label="Email Address"
-                        autoComplete={'off'}
-                        {...register('email')}
+                        type="email"
+                        register={register}
+                        errorMessage={errors.email?.message}
                     />
-                    <TextField
+                    <FormInput
                         required
-                        error={!!errors.password}
-                        helperText={errors.password?.message}
-                        margin="normal"
-                        fullWidth
+                        id="password"
                         label="Password"
                         type="password"
-                        {...register('password')}
+                        register={register}
+                        errorMessage={errors.password?.message}
                     />
-                    <FormControlLabel
-                        control={<Checkbox color="primary" {...register('rememberMe')}/>}
-                        label="Remember me"
-                    />
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        sx={{mt: 3, mb: 2}}
-                        disabled={mutation.isPending}
-                    >
-                        Sign In
-                    </Button>
-                    <Grid container>
-                        <Grid item xs>
-                            <Link href="/forgotPassword" variant="body2" color={'inherit'}>
-                                Forgot password?
-                            </Link>
-                        </Grid>
-                        <Grid item>
-                            <Link href="/register" variant="body2" color={'inherit'}>
-                                {"Don't have an account? Sign Up"}
-                            </Link>
-                        </Grid>
-                    </Grid>
-                    <Copyright sx={{mt: 5}}/>
-                </Box>
-            </Box>
+                    <FormCheckbox id="rememberMe" label="Remember me" register={register}/>
+                </div>
+                <div className="flex flex-col sm:flex-row text-sm mt-6">
+                    <div className="flex flex-grow justify-end sm:justify-start">
+                        <button type="button" className="underline" onClick={() => navigate("/forgotPassword")}>
+                            Forgot password ?
+                        </button>
+                    </div>
+                    <div className="flex justify-end mt-1 sm:mt-0">
+                        <button type="button" className="underline" onClick={() => navigate("/register")}>
+                            Don't have an account? Sign Up
+                        </button>
+                    </div>
+                </div>
+                <div className="w-full flex justify-center mt-10">
+                    <ButtonCallToAction type="submit">
+                        Login
+                    </ButtonCallToAction>
+                </div>
+            </form>
+            <Copyright className="py-4"/>
         </AuthenticationPage>
-    )
+    );
 }
 
 export default LoginPage;

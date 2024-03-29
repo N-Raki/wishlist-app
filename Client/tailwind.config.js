@@ -17,7 +17,8 @@ export default {
                 wallpaper: "url('https://source.unsplash.com/random?wallpapers')"
             },
             boxShadow: {
-                btn: '0 15px 30px -5px rgba(151, 65, 252, 0.2)'
+                btn: '0 15px 30px -5px rgba(151, 65, 252, 0.2)',
+                elevation: 'rgba(0, 0, 0, 0.2) 0px 3px 5px -1px, rgba(0, 0, 0, 0.14) 0px 6px 10px 0px, rgba(0, 0, 0, 0.12) 0px 1px 18px 0px'
             },
             colors: {
                 primary: {

@@ -13,12 +13,14 @@ const AuthenticationPage: FC<AuthenticationFormProps> = ({children}) => {
     return (
         <div className="h-screen flex">
             <div className="flex-grow bg-wallpaper bg-no-repeat bg-cover"></div>
-            <div className="bg-background dark:bg-backgroundDark max-w-2xl w-full">
-                <header className="flex p-5 justify-end">
+            <div className="flex flex-col bg-background dark:bg-backgroundDark max-w-3xl w-full h-full shadow-elevation transition-colors">
+                <header className="flex p-5 mb-5 sm:mb-20">
+                    <div className="flex-grow">
+                        <button type="button" className="text-2xl" onClick={() => navigate("/")}>✨ Wishes</button>
+                    </div>
                     <DarkModeSwitch/>
                 </header>
-                <div className="flex flex-col items-center">
-                    <button type="button" className="text-6xl mb-5" onClick={() => navigate("/")}>✨</button>
+                <div className="flex flex-col items-center w-full flex-1 px-7">
                     {children}
                 </div>
             </div>
