@@ -19,7 +19,7 @@ import {ObjectSchema} from "yup";
 import * as Yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import ConfirmationDialog from "../ConfirmationDialog/ConfirmationDialog.tsx";
-import ApplicationBar from "../ApplicationBar/ApplicationBar.tsx";
+import NavigationBar from "../NavigationBar/NavigationBar.tsx";
 import {User} from "../../models/user.model.ts";
 import ItemTableRow from "../ItemTableRow/ItemTableRow.tsx";
 import {deleteWishlist, getWishlist} from "../../services/wishlists.service.ts";
@@ -132,7 +132,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
                         }
                     </Paper>
                 </Modal>
-                <ApplicationBar/>
+                <NavigationBar/>
                 <Container sx={{
                     mt: '2rem',
                     display: 'flex',

@@ -1,19 +1,21 @@
 import {useContext} from 'react';
 import './DarkModeSwitch.css';
-import {IconButton, useTheme} from "@mui/material";
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import {ThemeContext} from "../../ThemeContext.tsx";
+import {darkTheme, lightTheme, ThemeContext} from "../../ThemeContext.tsx";
+import {MoonIcon, SunIcon} from "@heroicons/react/24/outline";
 
 export default function DarkModeSwitch() {
-    const { darkMode, setDarkMode } = useContext(ThemeContext);
-    const theme = useTheme();
+    const { theme, setTheme } = useContext(ThemeContext);
+    
     const handleToggle = () => {
-        setDarkMode(!darkMode);
+        const newTheme = theme === darkTheme ? lightTheme : darkTheme;
+        setTheme(newTheme);
     };
     return (
-        <IconButton sx={{ ml: 1 }} onClick={handleToggle}>
-            {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-        </IconButton>
+        <button onClick={handleToggle}>
+            { theme === darkTheme
+                ? <MoonIcon className="w-6 h-6" />
+                : <SunIcon className="w-6 h-6" />
+            }
+        </button>
     );
 }

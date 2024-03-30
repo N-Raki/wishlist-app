@@ -1,14 +1,16 @@
 import {FC} from 'react';
 import './HomePage.css';
-import {Box, Button, Container, Link, Stack, Typography} from "@mui/material";
+import {Box, Button, Stack, Typography} from "@mui/material";
 import {useQuery} from "@tanstack/react-query";
 import {User} from "../../models/user.model.ts";
 import WishlistsList from "../WishlistsList/WishlistsList.tsx";
-import ApplicationBar from "../ApplicationBar/ApplicationBar.tsx";
+import NavigationBar from "../NavigationBar/NavigationBar.tsx";
 import {Wishlist} from "../../models/wishlist.model.ts";
 import {getRecentWishlists} from "../../services/wishlists.service.ts";
 import Grid from "@mui/material/Grid";
 import {getCurrentUser} from "../../services/user.service.ts";
+import {useNavigate} from "react-router-dom";
+import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
 
 interface HomePageProps {
 }
@@ -21,46 +23,46 @@ const HomePage: FC<HomePageProps> = () => {
         isLoading
     } = useQuery<User>({queryKey: ['user'], queryFn: getCurrentUser, retry: false});
     
-    const { data: recentWishlists } = useQuery<Wishlist[]>({queryKey: ['recentWishlists'], queryFn: getRecentWishlists, retry: false, enabled: isSuccess});
+    const {
+        data: recentWishlists
+    } = useQuery<Wishlist[]>({queryKey: ['recentWishlists'], queryFn: getRecentWishlists, retry: false, enabled: isSuccess});
+    
+    const navigate = useNavigate();
     
     if (isLoading) {
         return (
-            <Box>
-                <ApplicationBar />
-            </Box>
+            <div>
+                <NavigationBar />
+            </div>
         )
     }
-    else if (isError) {
+    
+    if (isError) {
         return (
-            <Box>
-                <ApplicationBar />
-            <Container sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column',
-                mt: '4rem'
-            }}>
-                <Stack spacing={6} sx={{alignItems: 'center'}}>
-                    <Typography variant={'h2'} sx={{textAlign:'center'}}>Create. Share. Give.</Typography>
-                    <Button variant="contained" href="/register">
+            <div className="h-screen bg-gifts bg-cover bg-right lg:bg-top">
+                <NavigationBar />
+                <div className="flex flex-col items-center pt-20">
+                    <h1 className="text-3xl lg:text-6xl lg:max-w-xl text-center font-bold mx-5 mb-4">Share your wishlist with your friends</h1>
+                    <h2 className="lg:text-xl">Create. Share. Receive.</h2>
+
+                    <ButtonCallToAction className="my-20" onClick={() => navigate('/register')}>
                         Create your wishlist
-                    </Button>
-                    <Typography sx={{textAlign:'center'}}>You already have a wishlist ? <Link href="/login">Sign in</Link></Typography>
-                </Stack>
-            </Container>
-            </Box>
+                    </ButtonCallToAction>
+                    
+                </div>
+            </div>
         );
     }
-    else if (isSuccess) {
+
+    if (isSuccess) {
         return (
             <Box>
-                <ApplicationBar />
-                <Grid container spacing={2} sx={{mt: '2rem', px:'2rem'}}>
+                <NavigationBar/>
+                <Grid container spacing={2} sx={{mt: '2rem', px: '2rem'}}>
                     <Grid xs={12} sx={{mb:'2rem'}} item>
-                        <Typography variant="h3" sx={{textAlign:'center'}}>
+                        <h3 className="text-center">
                             Hello {user.displayName} !
-                        </Typography>
+                        </h3>
                     </Grid>
                     <Grid xs={12} md={recentWishlists && recentWishlists.length > 0 ? 6 : 12} item>
                         {user?.wishlists.length === 0
