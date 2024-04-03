@@ -42,7 +42,7 @@ const RegisterPage = () => {
         register: registerForm,
         handleSubmit,
         formState: {errors}
-    } = useForm<RegisterFormData>({resolver: yupResolver(validationScheme), mode: 'onChange'});
+    } = useForm<RegisterFormData>({resolver: yupResolver(validationScheme), mode: 'onBlur'});
 
     const mutation = useMutation({
         mutationFn: (data: UserRegisterRequest) => register(data),

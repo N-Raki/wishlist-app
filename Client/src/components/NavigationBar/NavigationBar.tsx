@@ -37,7 +37,7 @@ const NavigationBar = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     return (
-        <header>
+        <header className="w-full">
             <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
                 <div className="flex lg:flex-1">
                     <button
@@ -45,7 +45,7 @@ const NavigationBar = () => {
                         className={"-m-1.5 p-1.5 text-3xl"}
                         onClick={() => navigate("/")}>
                         ✨ Wishes
-                        <span className="sr-only">Wishlists</span>
+                        <span className="sr-only">Wishes</span>
                     </button>
                 </div>
                 <div className="flex lg:hidden">
@@ -61,8 +61,9 @@ const NavigationBar = () => {
                 {
                     isUserLoggedIn
                         ? <div className="hidden lg:flex lg:gap-x-12">
-                            <NavigationButton label={'Wishlists'} route={'/'}/>
-                            <NavigationButton label={'Profile'} route={'/profile'}/>
+                            <NavigationButton label="My Wishlists" route="/"/>
+                            <NavigationButton label="Recents" route="/recents" />
+                            <NavigationButton label="Profile" route="/profile"/>
                         </div>
                         : null
                 }
@@ -104,7 +105,13 @@ const NavigationBar = () => {
                                                 className={"-mx-3 block rounded-lg px-3 py-2 leading-7 hover:bg-background" + (location.pathname === '/' ? ' font-bold text-lg' : '')}
                                                 onClick={() => navigate("/")}
                                         >
-                                            Wishlists
+                                            My Wishlists
+                                        </button>
+                                        <button type="button"
+                                                className={"-mx-3 block rounded-lg px-3 py-2 leading-7 hover:bg-background" + (location.pathname === '/recents' ? ' font-bold text-lg' : '')}
+                                                onClick={() => navigate("/recents")}
+                                        >
+                                            Recents
                                         </button>
                                         <button type="button"
                                                 className={"-mx-3 block rounded-lg px-3 py-2 leading-7" + (location.pathname === '/profile' ? ' font-bold text-lg' : '')}

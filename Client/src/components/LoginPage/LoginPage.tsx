@@ -37,7 +37,7 @@ const LoginPage = () => {
         register,
         handleSubmit,
         formState: {errors}
-    } = useForm<LoginFormData>({resolver: yupResolver(validationScheme), mode: 'onChange'});
+    } = useForm<LoginFormData>({resolver: yupResolver(validationScheme), mode: 'onBlur'});
 
     const mutation = useMutation({
         mutationFn: (data: UserLoginRequest) => login(data),
