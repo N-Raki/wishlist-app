@@ -17,7 +17,7 @@ const ButtonCallToAction: FC<ButtonCallToActionProps> = ({className, children, d
                 type={type || "button"}
                 onClick={onClick}
                 className={`items-center border-0 rounded-md box-border flex justify-center 
-                ${disabled ? "bg-black/20 text-black/20" : "bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white"}
+                ${disabled ? "bg-black/20 dark:bg-white/40 text-black/20 dark:text-white/20" : "bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white"}
                 ${
                     size === "sm"
                         ? "px-3 py-1 text-sm"

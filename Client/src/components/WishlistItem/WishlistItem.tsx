@@ -3,7 +3,7 @@ import {useMutation, useQueries, useQuery, useQueryClient} from "@tanstack/react
 import {getCurrentUser, getUserDisplayName} from "../../services/user.service.ts";
 import {Item} from "../../models/item.model.ts";
 import {
-    ArrowLeftEndOnRectangleIcon, ArrowLeftStartOnRectangleIcon, ArrowRightEndOnRectangleIcon,
+    ArrowLeftEndOnRectangleIcon,
     ArrowRightStartOnRectangleIcon,
     CheckIcon,
     LinkIcon,
@@ -16,13 +16,14 @@ import * as Yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useForm} from "react-hook-form";
 import {ItemCreateRequest} from "../../models/requests/item-create.model.ts";
-import {pickItem, unpickItem, updateItem} from "../../services/items.service.ts";
+import {deleteItem, pickItem, unpickItem, updateItem} from "../../services/items.service.ts";
 import toast from "react-hot-toast";
 import FormInput from "../FormInput/FormInput.tsx";
 import {XMarkIcon} from "@heroicons/react/24/outline";
 import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
 import {User} from "../../models/user.model.ts";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
+import Modal from "../Modal/Modal.tsx";
 
 interface WishlistItemProps {
     item: Item;
@@ -88,6 +89,14 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
         },
     });
 
+    const deleteMutation = useMutation({
+        mutationFn: () => deleteItem(item.wishlistId, item.id),
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
+            toast.success('Item deleted');
+        },
+    });
+
     const pickMutation = useMutation({
         mutationFn: () => pickItem(item.wishlistId, item.id),
         onSuccess: async () => {
@@ -113,6 +122,11 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
         if (isDirty) updateItemMutation.mutate(itemCreateRequest);
         else setOpenEditModal(false);
     }
+
+    const location = useLocation();
+    const handleLoginRedirect = () => {
+        navigate('/login', {state: {from: location}});
+    }
     
     const onEdit = () => {
         reset(item);
@@ -126,53 +140,21 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
             setOpenLoginModal(true);
         }
     }
-
+    
     return (
         <div key={item.id}
-             className="flex flex-col divide-y divide-gray-200 rounded-lg bg-surface dark:bg-surfaceDark text-center shadow-elevation">
-            
-            <Transition.Root show={openLoginModal} as={Fragment}>
-                <Dialog className="relative z-10" onClose={setOpenLoginModal}>
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                    >
-                        <div className="fixed inset-0 bg-backgroundDark/25 dark:bg-background/25 bg-opacity-75 transition-opacity"/>
-                    </Transition.Child>
-                    
-                    <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            >
-                                <Dialog.Panel
-                                    className="relative transform overflow-hidden rounded-lg bg-background dark:bg-surfaceDark text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm">
-                                    <div className="flex flex-col gap-y-4 py-4 px-8">
-                                        <p>You need to be logged in to pick an item.</p>
-                                        <div className="m-auto">
-                                            <ButtonCallToAction size="md" className="gap-x-3" onClick={() => navigate("/login")}>
-                                                <CheckIcon className="h-4 w-4" aria-hidden="true"/> Log in
-                                            </ButtonCallToAction>
-                                        </div>
+             className="flex flex-col divide-y dark:divide-gray-700 rounded-lg bg-surface dark:bg-surfaceDark text-center shadow-elevation transition-colors">
 
-                                    </div>
-                                </Dialog.Panel>
-                            </Transition.Child>
-                        </div>
+            <Modal openModal={openLoginModal} setOpenModal={setOpenLoginModal}>
+                <div className="flex flex-col gap-y-4 py-4 px-8">
+                    <p>You need to be logged in to pick an item.</p>
+                    <div className="m-auto">
+                        <ButtonCallToAction size="md" className="gap-x-3" onClick={handleLoginRedirect}>
+                            <CheckIcon className="h-4 w-4" aria-hidden="true"/> Log in
+                        </ButtonCallToAction>
                     </div>
-                </Dialog>
-            </Transition.Root>
+                </div>
+            </Modal>
 
             <Transition.Root show={openEditModal} as={Fragment}>
                 <Dialog className="relative z-10" onClose={setOpenEditModal}>
@@ -188,8 +170,8 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                         <div className="fixed inset-0 bg-backgroundDark/25 dark:bg-background/25 bg-opacity-75 transition-opacity"/>
                     </Transition.Child>
 
-                    <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div className="fixed inset-0 z-10 w-screen overflow-y-auto content-center">
+                        <div className="flex items-end justify-center p-4 text-center sm:items-center sm:p-0">
                             <Transition.Child
                                 as={Fragment}
                                 enter="ease-out duration-300"
@@ -273,7 +255,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                 }
             </div>
             <div>
-                <div className="-mt-px flex divide-x divide-gray-200">
+                <div className="-mt-px flex divide-x divide-gray-200 dark:divide-gray-700">
                     {
                         mode == "owner"
                             ? (
@@ -306,7 +288,10 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                             mode == "owner"
                                 ? (
                                     <button
-                                        className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-3 text-sm font-semibold">
+                                        type="button"
+                                        className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-3 text-sm font-semibold"
+                                        onClick={() => deleteMutation.mutate()}
+                                    >
                                         <TrashIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/> Delete
                                     </button>
                                 )

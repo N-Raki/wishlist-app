@@ -92,14 +92,14 @@ const NavigationBar = () => {
                 <Dialog as="div" className="lg:hidden" onClose={setMobileMenuOpen}>
                     <Transition.Child
                         as={Fragment}
-                        enter="transition-opacity ease-linear duration-300"
+                        enter="transition-opacity ease-linear duration-100"
                         enterFrom="opacity-0"
                         enterTo="opacity-100"
-                        leave="transition-opacity ease-linear duration-300"
+                        leave="transition-opacity ease-linear duration-100"
                         leaveFrom="opacity-100"
                         leaveTo="opacity-0"
                     >
-                        <div className="fixed inset-0 bg-gray-900/80"/>
+                        <div className="fixed inset-0 bg-gray-900/80 dark:bg-backgroundDark/70"/>
                     </Transition.Child>
                     <Transition.Child
                         as={Fragment}
