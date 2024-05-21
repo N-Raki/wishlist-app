@@ -1,5 +1,5 @@
 import './WishlistView.css'
-import {FC, useState} from "react";
+import React, {FC, useState} from "react";
 import {Navigate, useLocation, useNavigate, useParams} from "react-router-dom";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {Wishlist} from "../../models/wishlist.model.ts";
@@ -7,16 +7,22 @@ import toast from "react-hot-toast";
 import {
     Box,
     Button,
-    Container,
     Modal,
     Paper,
-    Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField,
+    Stack,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TextField,
     Typography
 } from "@mui/material";
 import {useForm} from "react-hook-form";
 import {ItemCreateRequest} from "../../models/requests/item-create.model.ts";
-import {ObjectSchema} from "yup";
 import * as Yup from "yup";
+import {ObjectSchema} from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import ConfirmationDialog from "../ConfirmationDialog/ConfirmationDialog.tsx";
 import NavigationBar from "../NavigationBar/NavigationBar.tsx";
@@ -25,6 +31,10 @@ import ItemTableRow from "../ItemTableRow/ItemTableRow.tsx";
 import {deleteWishlist, getWishlist} from "../../services/wishlists.service.ts";
 import {getCurrentUser} from "../../services/user.service.ts";
 import {createItem} from "../../services/items.service.ts";
+import Container from "../Container/Container.tsx";
+import {stringToColor} from "../../helpers/avatarHelper.ts";
+import {EnvelopeIcon, PhoneIcon} from "@heroicons/react/20/solid";
+import WishlistItem from "../WishlistItem/WishlistItem.tsx";
 
 interface WishlistViewProps {
 }
@@ -103,9 +113,36 @@ const WishlistView: FC<WishlistViewProps> = () => {
 
     const isAuthenticatedAndNotOwner = userIsSuccess && !wishlist?.isOwner;
 
+    let content: React.ReactNode = null;
+
     if (isError) {
-        return <Navigate to="/"/>;
+        content = (
+            <Navigate to="/"/>
+        );
     }
+
+    if (isSuccess && wishlist) {
+        content = (
+            <>
+                <h1 className="text-2xl font-bold my-10">{wishlist.name}</h1>
+                {
+                    wishlist.items.length === 0
+                        ? <h5 className="pt-20">This wishlist is empty</h5>
+                        : <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                            {wishlist.items.map((item) =>
+                                <WishlistItem item={item} />
+                            )}
+                        </div>
+                }
+            </>
+        );
+    }
+
+    return (
+        <Container>
+            {content}
+        </Container>
+    );
 
     if (isSuccess && wishlist) {
         return (

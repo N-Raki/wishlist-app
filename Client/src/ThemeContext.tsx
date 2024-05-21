@@ -6,7 +6,7 @@ export const darkTheme = 'dark';
 export const lightTheme = 'light';
 
 export const ThemeContext = createContext({
-    theme: darkTheme, setTheme: (_: string) => {}
+    theme: lightTheme, setTheme: (_: string) => {}
 });
 
 export const CustomThemeProvider = ({children}: any) => {

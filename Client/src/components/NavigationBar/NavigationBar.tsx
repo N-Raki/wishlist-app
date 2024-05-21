@@ -15,8 +15,7 @@ const NavigationBar = () => {
     const {isSuccess: isUserLoggedIn} = useQuery<User>({
         queryKey: ['user'],
         queryFn: getCurrentUser,
-        retry: false,
-        staleTime: 1000 * 60 * 5
+        retry: false
     });
 
     const logoutMutation = useMutation({
@@ -44,11 +43,14 @@ const NavigationBar = () => {
                         type="button"
                         className={"-m-1.5 p-1.5 text-3xl"}
                         onClick={() => navigate("/")}>
-                        ✨ Wishes
+                        ✨ <span className="hidden md:inline">Wishes</span>
                         <span className="sr-only">Wishes</span>
                     </button>
                 </div>
-                <div className="flex lg:hidden">
+                <button className="flex-1 md:hidden text-center text-3xl" onClick={() => navigate("/")}>
+                    Wishes
+                </button>
+                <div className="flex mx-2 lg:hidden">
                     <button
                         type="button"
                         className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5"
