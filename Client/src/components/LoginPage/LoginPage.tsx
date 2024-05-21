@@ -96,7 +96,7 @@ const LoginPage = () => {
                     </div>
                 </div>
                 <div className="w-full flex justify-center mt-10">
-                    <ButtonCallToAction type="submit">
+                    <ButtonCallToAction size="lg" type="submit">
                         Login
                     </ButtonCallToAction>
                 </div>

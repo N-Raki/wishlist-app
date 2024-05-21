@@ -61,7 +61,7 @@ function WishlistsCreateForm() {
                     />
                 </div>
                 <div className="w-full flex justify-center mt-10">
-                    <ButtonCallToAction type="submit" className="py-1.5">
+                    <ButtonCallToAction size="lg" type="submit" className="py-1.5">
                         Next
                     </ButtonCallToAction>
                 </div>

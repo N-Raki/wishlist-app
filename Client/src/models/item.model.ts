@@ -2,7 +2,7 @@
     id: string = '';
     wishlistId: string = '';
     name: string = '';
-    url: string = '';
-    price: number = 0;
+    url?: string | null;
+    price?: number | null;
     buyerIds: string[] = [];
 }

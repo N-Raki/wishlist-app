@@ -34,6 +34,7 @@ public sealed class UsersController(ILogger<UsersController> logger, IUsersServi
 		return Ok(response);
 	}
 	
+	[AllowAnonymous]
 	[HttpGet("{userId:guid}/displayname")]
 	public async Task<IActionResult> GetUsername([FromRoute] Guid userId)
 	{

@@ -118,7 +118,7 @@ const RegisterPage = () => {
                 </div>
 
                 <div className="w-full flex justify-center mt-8">
-                    <ButtonCallToAction type="submit">
+                    <ButtonCallToAction size="lg" type="submit">
                         Register
                     </ButtonCallToAction>
                 </div>

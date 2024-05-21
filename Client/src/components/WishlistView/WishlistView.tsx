@@ -1,5 +1,5 @@
 import './WishlistView.css'
-import React, {FC, useState} from "react";
+import {FC, useState} from "react";
 import {Navigate, useLocation, useNavigate, useParams} from "react-router-dom";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {Wishlist} from "../../models/wishlist.model.ts";
@@ -29,12 +29,11 @@ import NavigationBar from "../NavigationBar/NavigationBar.tsx";
 import {User} from "../../models/user.model.ts";
 import ItemTableRow from "../ItemTableRow/ItemTableRow.tsx";
 import {deleteWishlist, getWishlist} from "../../services/wishlists.service.ts";
-import {getCurrentUser} from "../../services/user.service.ts";
+import {getCurrentUser, getUserDisplayName} from "../../services/user.service.ts";
 import {createItem} from "../../services/items.service.ts";
 import Container from "../Container/Container.tsx";
-import {stringToColor} from "../../helpers/avatarHelper.ts";
-import {EnvelopeIcon, PhoneIcon} from "@heroicons/react/20/solid";
 import WishlistItem from "../WishlistItem/WishlistItem.tsx";
+import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
 
 interface WishlistViewProps {
 }
@@ -63,7 +62,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
     }
 
     const {
-        isSuccess: userIsSuccess
+        isSuccess: isUserConnected
     } = useQuery<User>({queryKey: ['user'], queryFn: getCurrentUser, retry: false});
 
     const {
@@ -74,6 +73,15 @@ const WishlistView: FC<WishlistViewProps> = () => {
         queryKey: ['user', 'wishlist'],
         queryFn: () => getWishlist(guid),
         retry: false
+    });
+    
+    const ownerUserId = wishlist?.userId;
+    const {
+        data: ownerDisplayName
+    } = useQuery<string>({
+        queryKey: ['owner', ownerUserId],
+        queryFn: () => getUserDisplayName(ownerUserId!),
+        enabled: !!wishlist && !wishlist.isOwner && !!ownerUserId
     });
 
     const deleteWishlistMutation = useMutation({
@@ -110,39 +118,56 @@ const WishlistView: FC<WishlistViewProps> = () => {
     const handleLoginRedirect = () => {
         navigate('/login', {state: {from: location}});
     }
-
-    const isAuthenticatedAndNotOwner = userIsSuccess && !wishlist?.isOwner;
-
-    let content: React.ReactNode = null;
+    
+    const mode = wishlist?.isOwner ? "owner" : isUserConnected ? "user" : "anonymous";
 
     if (isError) {
-        content = (
-            <Navigate to="/"/>
-        );
+        return <Navigate to="/"/>;
     }
+    
+    if (isSuccess) {
+        return (
+            <Container>
+                {/* Title */}
+                <div className="mt-4 mb-8 text-center">
+                    <h1 className="text-3xl font-bold">{wishlist.name}</h1>
+                    {
+                        !wishlist.isOwner && ownerDisplayName
+                            ? <p className="italic">by {ownerDisplayName}</p>
+                            : null
+                    }
+                </div>
 
-    if (isSuccess && wishlist) {
-        content = (
-            <>
-                <h1 className="text-2xl font-bold my-10">{wishlist.name}</h1>
+                {/* Items */}
                 {
                     wishlist.items.length === 0
-                        ? <h5 className="pt-20">This wishlist is empty</h5>
-                        : <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                            {wishlist.items.map((item) =>
-                                <WishlistItem item={item} />
-                            )}
-                        </div>
+                        ? (
+                            <div className="flex flex-col gap-4">
+                                <h5 className="pt-20">This wishlist is empty</h5>
+                                <div className="m-auto">
+                                    <ButtonCallToAction size="md" type="button">Add item</ButtonCallToAction>
+                                </div>
+                            </div>
+                        )
+                        : (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-8 w-full max-w-3xl">
+                                {wishlist.items.map((item) =>
+                                    <WishlistItem item={item} mode={mode} />
+                                )}
+                            </div>
+                        )
                 }
-            </>
+
+            </Container>
         );
     }
-
-    return (
-        <Container>
-            {content}
-        </Container>
-    );
+    else {
+        return (
+            <Container>
+                {null}
+            </Container>
+        )
+    }
 
     if (isSuccess && wishlist) {
         return (
