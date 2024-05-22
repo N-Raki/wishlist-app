@@ -53,7 +53,7 @@ function HomePage() {
                     <Container>
                         <div className="mt-20 md:mt-36">
                             <h3 className="py-4">You don't have any wishlist yet.</h3>
-                            <ButtonCallToAction size="lg" onClick={() => navigate("/wishlists/new")}>Create a wishlist</ButtonCallToAction>
+                            <ButtonCallToAction size="lg" onClick={() => navigate("/wishlists/new")} className="m-auto">Create a wishlist</ButtonCallToAction>
                         </div>
                     </Container>
                 )
