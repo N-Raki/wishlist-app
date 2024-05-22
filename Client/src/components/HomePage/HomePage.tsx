@@ -38,7 +38,7 @@ function HomePage() {
                         <div className={`mt-20 md:mt-36 px-6 w-full max-w-xl grid grid-cols-1 ${user.wishlists.length > 1 ? "lg:grid-cols-2" : ""} gap-4`}>
                             {
                                 user.wishlists.map(wishlist => (
-                                    <button className="flex text-left rounded-xl bg-surface dark:bg-surfaceDark shadow-elevation p-4" onClick={() => navigate(`/wishlists/${wishlist.id}`)}>
+                                    <button key={wishlist.id} className="flex text-left rounded-xl bg-surface dark:bg-surfaceDark shadow-elevation p-4" onClick={() => navigate(`/wishlists/${wishlist.id}`)}>
                                         <div className="flex-1">
                                             <h2 className="text-xl font-bold">{wishlist.name}</h2>
                                             <h5>{wishlist.items.length} items</h5>

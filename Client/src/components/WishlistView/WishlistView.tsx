@@ -36,6 +36,7 @@ const itemSchema: ObjectSchema<ItemCreateRequest> = Yup.object({
 
 const WishlistView: FC<WishlistViewProps> = () => {
     const [openAddItemModal, setOpenAddItemModal] = useState(false);
+    const [openDeleteWishlistModal, setOpenDeleteWishlistModal] = useState(false);
 
     const queryClient = useQueryClient();
     const {guid} = useParams();
@@ -133,6 +134,24 @@ const WishlistView: FC<WishlistViewProps> = () => {
                     </form>
                 </Modal>
                 
+                <Modal openModal={openDeleteWishlistModal} setOpenModal={setOpenDeleteWishlistModal}>
+                    <div className="text-center p-4 space-y-2">
+                        <h2 className="p-2">Are you sure you want to delete this wishlist ?</h2>
+                        <div className="flex">
+                            <div className="flex flex-1 justify-center">
+                                <button type="button" className="shadow-md bg-secondary-300 rounded-md py-1 px-4 text-white" onClick={() => setOpenDeleteWishlistModal(false)}>
+                                    Cancel
+                                </button>
+                            </div>
+                            <div className="flex flex-1 justify-center">
+                                <button type="button" className="flex flex-inline gap-x-2 items-center shadow-md bg-red-500 rounded-md py-1.5 px-4 text-white" onClick={() => deleteWishlistMutation.mutateAsync(guid)}>
+                                    <TrashIcon className="h-4 w-4 text-white"/>Delete wishlist
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </Modal>
+                
                 {/* Title */}
                 <div className="mt-4 mb-8 text-center">
                     <h1 className="text-3xl font-bold">{wishlist.name}</h1>
@@ -172,7 +191,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
                                     <PlusIcon aria-hidden={true}/>
                                 </button>
                                 <div className="justify-center">
-                                    <button className="flex flex-inline shadow-btn bg-red-500 rounded-md text-white px-3 py-1.5 items-center gap-x-3 text-sm" onClick={() => deleteWishlistMutation.mutate(wishlist.id)}>
+                                    <button className="flex flex-inline shadow-btn bg-red-500 rounded-md text-white px-3 py-1.5 items-center gap-x-3 text-sm" onClick={() => setOpenDeleteWishlistModal(true)}>
                                         <TrashIcon className="h-4 w-4 text-white"/>Delete wishlist
                                     </button>
                                 </div>
