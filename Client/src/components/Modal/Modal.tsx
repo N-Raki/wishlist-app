@@ -4,13 +4,13 @@ import {Dialog, Transition} from "@headlessui/react";
 interface ModalProps {
     children: React.ReactNode;
     openModal: boolean;
-    setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+    onClose: (value: boolean) => void;
 }
 
-const Modal: React.FC<ModalProps> = ({children, openModal, setOpenModal}) => {
+const Modal: React.FC<ModalProps> = ({children, openModal, onClose}) => {
     return (
         <Transition.Root show={openModal} as={Fragment}>
-            <Dialog className="relative z-10" onClose={setOpenModal}>
+            <Dialog className="relative z-10" onClose={onClose}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-300"

@@ -1,4 +1,4 @@
-﻿import {FC, Fragment, useState} from "react";
+﻿import {FC, useState} from "react";
 import {useMutation, useQueries, useQuery, useQueryClient} from "@tanstack/react-query";
 import {getCurrentUser, getUserDisplayName} from "../../services/user.service.ts";
 import {Item} from "../../models/item.model.ts";
@@ -11,7 +11,6 @@ import {
     TrashIcon
 } from "@heroicons/react/20/solid";
 import {stringToColor} from "../../helpers/avatarHelper.ts";
-import {Dialog, Transition} from "@headlessui/react";
 import * as Yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useForm} from "react-hook-form";
@@ -23,6 +22,7 @@ import {XMarkIcon} from "@heroicons/react/24/outline";
 import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
 import {User} from "../../models/user.model.ts";
 import {useNavigate} from "react-router-dom";
+import Modal from "../Modal/Modal.tsx";
 
 interface WishlistItemProps {
     item: Item;
@@ -50,6 +50,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [openEditModal, setOpenEditModal] = useState(false);
+    const [openDeleteModal, setOpenDeleteModal] = useState(false);
     const [openLoginModal, setOpenLoginModal] = useState(false);
 
     const buyerQueries = useQueries({
@@ -140,105 +141,61 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
         <div key={item.id}
              className="flex flex-col divide-y divide-gray-200 rounded-lg bg-surface dark:bg-surfaceDark text-center shadow-elevation">
             
-            <Transition.Root show={openLoginModal} as={Fragment}>
-                <Dialog className="relative z-10" onClose={setOpenLoginModal}>
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                    >
-                        <div className="fixed inset-0 bg-backgroundDark/25 dark:bg-background/25 bg-opacity-75 transition-opacity"/>
-                    </Transition.Child>
-                    
-                    <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            >
-                                <Dialog.Panel
-                                    className="relative transform overflow-hidden rounded-lg bg-background dark:bg-surfaceDark text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm">
-                                    <div className="flex flex-col gap-y-4 py-4 px-8">
-                                        <p>You need to be logged in to pick an item.</p>
-                                        <div className="m-auto">
-                                            <ButtonCallToAction size="md" className="gap-x-3" onClick={() => navigate("/login")}>
-                                                <CheckIcon className="h-4 w-4" aria-hidden="true"/> Log in
-                                            </ButtonCallToAction>
-                                        </div>
-
-                                    </div>
-                                </Dialog.Panel>
-                            </Transition.Child>
+            <Modal openModal={openDeleteModal} onClose={setOpenDeleteModal}>
+                <div className="text-center p-4 space-y-2">
+                    <h2 className="p-2">Are you sure you want to delete this item ?</h2>
+                    <div className="flex">
+                        <div className="flex flex-1 justify-center">
+                            <button type="button" className="shadow-md bg-secondary-300 rounded-md py-1 px-4 text-white" onClick={() => setOpenDeleteModal(false)}>
+                                Cancel
+                            </button>
+                        </div>
+                        <div className="flex flex-1 justify-center">
+                            <button type="button" className="flex flex-inline gap-x-2 items-center shadow-md bg-red-500 rounded-md py-1.5 px-4 text-white" onClick={() => deleteItemMutation.mutate()}>
+                                <TrashIcon className="h-4 w-4 text-white"/>Delete item
+                            </button>
                         </div>
                     </div>
-                </Dialog>
-            </Transition.Root>
-
-            <Transition.Root show={openEditModal} as={Fragment}>
-                <Dialog className="relative z-10" onClose={setOpenEditModal}>
-                    <Transition.Child
-                        as={Fragment}
-                        enter="ease-out duration-300"
-                        enterFrom="opacity-0"
-                        enterTo="opacity-100"
-                        leave="ease-in duration-200"
-                        leaveFrom="opacity-100"
-                        leaveTo="opacity-0"
-                    >
-                        <div className="fixed inset-0 bg-backgroundDark/25 dark:bg-background/25 bg-opacity-75 transition-opacity"/>
-                    </Transition.Child>
-
-                    <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-                        <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            >
-                                <Dialog.Panel
-                                    className="relative transform overflow-hidden rounded-lg bg-background dark:bg-surfaceDark text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm">
-                                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 py-4 px-8">
-                                        <FormInput required autoFocus id="name" label="Name" register={register}
-                                                   errorMessage={errors.name?.message}/>
-                                        <FormInput autoFocus id="price" type="number" label="Price (€)"
-                                                   register={register} errorMessage={errors.price?.message}/>
-                                        <FormInput autoFocus id="url" label="Url" register={register}
-                                                   errorMessage={errors.url?.message}/>
-                                        <div className="flex flex-row gap-4 m-auto">
-                                            <div className="flex-1">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setOpenEditModal(false)}
-                                                    className="rounded-md bg-red-500 shadow-btn inline-flex gap-x-3 items-center px-4 py-2 text-white">
-                                                    <XMarkIcon className="h-4 w-4" aria-hidden="true"/> Cancel
-                                                </button>
-                                            </div>
-                                            <div className="flex-1">
-                                                <ButtonCallToAction size="md" className="gap-x-3" type="submit" disabled={!isDirty}>
-                                                    <CheckIcon className="h-4 w-4" aria-hidden="true"/> Save
-                                                </ButtonCallToAction>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </Dialog.Panel>
-                            </Transition.Child>
+                </div>
+            </Modal>
+            
+            <Modal openModal={openLoginModal} onClose={setOpenLoginModal}>
+                <div className="flex flex-col gap-y-4 py-4 px-8">
+                    <p>You need to be logged in to pick an item.</p>
+                    <div className="m-auto">
+                        <ButtonCallToAction size="md" className="gap-x-3" onClick={() => navigate("/login")}>
+                            <CheckIcon className="h-4 w-4" aria-hidden="true"/> Log in
+                        </ButtonCallToAction>
+                    </div>
+                </div>
+            </Modal>
+            
+            <Modal openModal={openEditModal} onClose={setOpenEditModal}>
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 py-4 px-8">
+                    <FormInput required autoFocus id="name" label="Name" register={register}
+                               errorMessage={errors.name?.message}/>
+                    <FormInput autoFocus id="price" type="number" label="Price (€)"
+                               register={register} errorMessage={errors.price?.message}/>
+                    <FormInput autoFocus id="url" label="Url" register={register}
+                               errorMessage={errors.url?.message}/>
+                    <div className="flex flex-row gap-4 m-auto">
+                        <div className="flex-1">
+                            <button
+                                type="button"
+                                onClick={() => setOpenEditModal(false)}
+                                className="rounded-md bg-red-500 shadow-btn inline-flex gap-x-3 items-center px-4 py-2 text-white">
+                                <XMarkIcon className="h-4 w-4" aria-hidden="true"/> Cancel
+                            </button>
+                        </div>
+                        <div className="flex-1">
+                            <ButtonCallToAction size="md" className="gap-x-3" type="submit" disabled={!isDirty}>
+                                <CheckIcon className="h-4 w-4" aria-hidden="true"/> Save
+                            </ButtonCallToAction>
                         </div>
                     </div>
-                </Dialog>
-            </Transition.Root>
+                </form>
+            </Modal>
+
             <div className="flex flex-col flex-1 p-3">
                 <div className="text-left">
                     <h2>{item.name}</h2>
@@ -287,7 +244,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                         mode == "owner"
                             ? (
                                 <button
-                                    className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-3 text-sm font-semibold"
+                                    className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-3 text-sm font-semibold focus-visible:outline-0"
                                     onClick={onEdit}
                                 >
                                     <PencilSquareIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/> Edit
@@ -300,7 +257,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                                         <a
                                             href={item.url}
                                             target="_blank"
-                                            className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-3 text-sm font-semibold"
+                                            className="relative -mr-px inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-3 text-sm font-semibold focus-visible:outline-0"
                                         >
                                             <LinkIcon className="h-5 w-5 text-gray-400"
                                                       aria-hidden="true"/>
@@ -316,8 +273,8 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                                 ? (
                                     <button
                                         type="button"
-                                        className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-3 text-sm font-semibold"
-                                        onClick={() => deleteItemMutation.mutate()}
+                                        className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-3 text-sm font-semibold focus-visible:outline-0"
+                                        onClick={() => setOpenDeleteModal(true)}
                                     >
                                         <TrashIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/> Delete
                                     </button>
@@ -326,7 +283,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                                     ? (
                                         <button
                                             type="button"
-                                            className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-3 text-sm font-semibold"
+                                            className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-3 text-sm font-semibold focus-visible:outline-0"
                                             onClick={() => unpickMutation.mutate()}
                                         >
                                             <ArrowRightStartOnRectangleIcon className="h-5 w-5 text-gray-400"
@@ -336,7 +293,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                                     : (
                                         <button
                                             type="button"
-                                            className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-3 text-sm font-semibold"
+                                            className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-3 text-sm font-semibold focus-visible:outline-0"
                                             onClick={() => onPick()}
                                         >
                                             <ArrowLeftEndOnRectangleIcon className="h-5 w-5 text-gray-400"

@@ -90,7 +90,11 @@ const WishlistView: FC<WishlistViewProps> = () => {
         handleSubmit: itemHandleSubmit,
         formState: {errors: itemErrors, isDirty},
         reset: itemReset
-    } = useForm<ItemCreateRequest>({resolver: yupResolver(itemSchema), mode: 'onChange'});
+    } = useForm<ItemCreateRequest>({resolver: yupResolver(itemSchema), mode: 'onChange', defaultValues: {
+        name: '',
+        url: '',
+        price: null
+    }});
 
     const onAddItem = async (data: ItemCreateRequest) => {
         await createItemMutation.mutateAsync(data);
@@ -108,7 +112,10 @@ const WishlistView: FC<WishlistViewProps> = () => {
             <Container>
 
                 {/* Add item modal */}
-                <Modal openModal={openAddItemModal} setOpenModal={setOpenAddItemModal}>
+                <Modal openModal={openAddItemModal} onClose={(value: boolean) => {
+                    setOpenAddItemModal(value);
+                    itemReset();
+                }}>
                     <form onSubmit={itemHandleSubmit(onAddItem)} className="flex flex-col gap-y-4 py-4 px-8">
                         <FormInput required autoFocus id="name" label="Name" register={itemRegister}
                                    errorMessage={itemErrors.name?.message}/>
@@ -134,17 +141,17 @@ const WishlistView: FC<WishlistViewProps> = () => {
                     </form>
                 </Modal>
                 
-                <Modal openModal={openDeleteWishlistModal} setOpenModal={setOpenDeleteWishlistModal}>
+                <Modal openModal={openDeleteWishlistModal} onClose={setOpenDeleteWishlistModal}>
                     <div className="text-center p-4 space-y-2">
                         <h2 className="p-2">Are you sure you want to delete this wishlist ?</h2>
                         <div className="flex">
                             <div className="flex flex-1 justify-center">
-                                <button type="button" className="shadow-md bg-secondary-300 rounded-md py-1 px-4 text-white" onClick={() => setOpenDeleteWishlistModal(false)}>
+                                <button type="button" className="shadow-md bg-secondary-300 rounded-md py-1.5 px-4 text-white" onClick={() => setOpenDeleteWishlistModal(false)}>
                                     Cancel
                                 </button>
                             </div>
                             <div className="flex flex-1 justify-center">
-                                <button type="button" className="flex flex-inline gap-x-2 items-center shadow-md bg-red-500 rounded-md py-1.5 px-4 text-white" onClick={() => deleteWishlistMutation.mutateAsync(guid)}>
+                                <button type="button" className="flex flex-inline gap-x-2 items-center shadow-md bg-red-500 rounded-md py-1.5 px-2 sm:px-4 text-white" onClick={() => deleteWishlistMutation.mutateAsync(guid)}>
                                     <TrashIcon className="h-4 w-4 text-white"/>Delete wishlist
                                 </button>
                             </div>
@@ -166,7 +173,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
                 {
                     wishlist.items.length === 0
                         ? (
-                            <h5 className="py-20">This wishlist is empty</h5>
+                            <h5 className="py-20 flex-1">This wishlist is empty</h5>
                         )
                         : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-8 mb-10 w-full max-w-3xl">
@@ -183,8 +190,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
                         ? (
                             <div className="flex flex-col gap-y-4">
                                 <div className="justify-center hidden sm:flex">
-                                    <ButtonCallToAction size="md" type="button" onClick={() => setOpenAddItemModal(true)}>Add
-                                        item</ButtonCallToAction>
+                                    <ButtonCallToAction size="md" type="button" onClick={() => setOpenAddItemModal(true)}>Add item</ButtonCallToAction>
                                 </div>
                                 <button onClick={() => setOpenAddItemModal(true)}
                                         className="justify-center mt-10 sm:hidden rounded-full fixed w-12 h-12 bottom-6 right-6 bg-gradient-to-br from-violet-500 to-fuchsia-500 p-2 text-white shadow-btn">
