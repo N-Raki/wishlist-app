@@ -37,7 +37,7 @@ const LoginPage = () => {
         register,
         handleSubmit,
         formState: {errors}
-    } = useForm<LoginFormData>({resolver: yupResolver(validationScheme), mode: 'onChange'});
+    } = useForm<LoginFormData>({resolver: yupResolver(validationScheme), mode: 'onBlur'});
 
     const mutation = useMutation({
         mutationFn: (data: UserLoginRequest) => login(data),
@@ -96,7 +96,7 @@ const LoginPage = () => {
                     </div>
                 </div>
                 <div className="w-full flex justify-center mt-10">
-                    <ButtonCallToAction type="submit">
+                    <ButtonCallToAction size="lg" type="submit">
                         Login
                     </ButtonCallToAction>
                 </div>

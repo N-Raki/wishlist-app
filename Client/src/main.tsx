@@ -14,11 +14,16 @@ import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import UserProfilePage from "./components/UserProfilePage/UserProfilePage.tsx";
 import ForgotPasswordPage from "./components/ForgotPasswordPage/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "./components/ResetPasswordPage/ResetPasswordPage.tsx";
+import RecentPage from "./components/RecentPage/RecentPage.tsx";
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <HomePage/>
+    },
+    {
+        path: "/recent",
+        element: <RecentPage/>
     },
     {
         path: '/login',
@@ -59,7 +64,7 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
         <CustomThemeProvider>
-            <div className="h-screen bg-background dark:bg-backgroundDark text-onBackground dark:text-onBackgroundDark transition-colors">
+            <div className="min-h-screen bg-background dark:bg-backgroundDark text-onBackground dark:text-onBackgroundDark transition-colors">
                 <QueryClientProvider client={queryClient}>
                     <RouterProvider router={router}/>
                     <ReactQueryDevtools initialIsOpen={false} buttonPosition={'bottom-left'}/>

@@ -3,6 +3,7 @@
 export class Wishlist {
     id: string = '';
     userId: string = '';
+    ownerName: string = "";
     name: string = '';
     items: Item[] = [];
     isOwner: boolean = false;

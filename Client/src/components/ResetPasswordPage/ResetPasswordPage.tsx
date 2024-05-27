@@ -9,9 +9,9 @@ import {ObjectSchema} from "yup";
 import * as Yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {useForm} from "react-hook-form";
-import {Box, Button, Stack, TextField, Typography} from "@mui/material";
-import NavigationBar from "../NavigationBar/NavigationBar.tsx";
-import Grid from "@mui/material/Grid";
+import FormInput from "../FormInput/FormInput.tsx";
+import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
+import Container from "../Container/Container.tsx";
 
 class ResetPasswordFormData {
     newPassword: string = '';
@@ -19,7 +19,7 @@ class ResetPasswordFormData {
 }
 
 const validationScheme: ObjectSchema<ResetPasswordFormData> = Yup.object({
-    newPassword: Yup.string().min(6).required(),
+    newPassword: Yup.string().min(6, "Password must be at least 6 characters.").required(),
     confirmNewPassword: Yup.string().oneOf([Yup.ref('newPassword')], 'Passwords must match').required()
 });
 
@@ -43,7 +43,7 @@ const ResetPasswordPage: FC<ResetPasswordPageProps> = () => {
         register,
         handleSubmit,
         formState: {errors}
-    } = useForm<ResetPasswordFormData>({resolver: yupResolver(validationScheme), mode: 'onChange'});
+    } = useForm<ResetPasswordFormData>({resolver: yupResolver(validationScheme), mode: 'onSubmit'});
 
     const resetPasswordMutation = useMutation({
         mutationFn: (data: ResetPasswordFormData) => resetPassword(email, resetCode, data.newPassword),
@@ -67,39 +67,39 @@ const ResetPasswordPage: FC<ResetPasswordPageProps> = () => {
     const onSubmit = (data: ResetPasswordFormData) => {
         resetPasswordMutation.mutate(data);
     }
-
-    return (
-        <Box>
-            <NavigationBar/>
-            <Grid container display={'flex'} alignItems={'center'} justifyContent={'center'} textAlign={'center'} marginTop={2}>
-                <Grid xs={12} item>
-                    <Typography variant={'h1'}>Reset your password</Typography>
-                </Grid>
-                <Grid xs={12} sm={6} md={4} item component={'form'} noValidate onSubmit={handleSubmit(onSubmit)}>
-                    <Stack spacing={2} sx={{p: 2}} alignItems={'stretch'} textAlign={'center'}>
-                        <TextField
-                            required
-                            label={'New password'}
-                            type={'password'}
-                            error={!!errors.newPassword}
-                            helperText={errors.newPassword?.message}
-                            {...register('newPassword')}
-                        />
-                        <TextField
-                            required
-                            label={'Confirm new password'}
-                            type={'password'}
-                            error={!!errors.confirmNewPassword}
-                            helperText={errors.confirmNewPassword?.message}
-                            {...register('confirmNewPassword')}
-                        />
-                        <Button type={'submit'} variant={'contained'}>Reset password</Button>
-                    </Stack>
-                </Grid>
-            </Grid>
-        </Box>
-    );
     
+    return (
+        <Container>
+            <h2 className="my-10 text-xl font-bold">Reset your password</h2>
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-xl px-5 flex-col flex-grow space-y-5">
+                <div className="space-y-4">
+                    <FormInput
+                        required
+                        id="newPassword"
+                        label="New password"
+                        type="password"
+                        register={register}
+                        errorMessage={errors.newPassword?.message}
+                    />
+                </div>
+                <div className="space-y-4">
+                    <FormInput
+                        required
+                        id="confirmNewPassword"
+                        label="Confirm new password"
+                        type="password"
+                        register={register}
+                        errorMessage={errors.confirmNewPassword?.message}
+                    />
+                </div>
+                <div className="w-full flex justify-center mt-10">
+                    <ButtonCallToAction size="lg" type="submit" className="py-1.5">
+                        Reset password
+                    </ButtonCallToAction>
+                </div>
+            </form>
+        </Container>
+    );
 }
 
 export default ResetPasswordPage;

@@ -1,21 +1,43 @@
-import './HomePage.css';
+import './RecentPage.css';
 import {User} from "../../models/user.model.ts";
 import {useNavigate} from "react-router-dom";
 import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
 import Container from "../Container/Container.tsx";
 import {useQuery} from "@tanstack/react-query";
 import {getCurrentUser} from "../../services/user.service.ts";
+import {Wishlist} from "../../models/wishlist.model.ts";
+import {getRecentWishlists} from "../../services/wishlists.service.ts";
 
-function HomePage() {
+function RecentPage() {
     const {
         data: user,
         isSuccess: isConnected,
         isLoading
     } = useQuery<User>({queryKey: ['user'], queryFn: getCurrentUser, retry: false});
+
+    const {
+        data: recentWishlists,
+        isLoading: isLoadingRecentWishlists
+    } = useQuery<Wishlist[]>({
+        queryKey: ['recentWishlists'],
+        queryFn: getRecentWishlists,
+        retry: false,
+        enabled: isConnected
+    });
+
+    // const ownerQueries = useQueries({
+    //     queries: recentWishlists!.map((wishlist) => {
+    //         return {
+    //             queryKey: ['buyer', wishlist.userId],
+    //             queryFn: () => getUserDisplayName(wishlist.userId),
+    //             enabled: !!recentWishlists
+    //         };
+    //     })
+    // });
     
     const navigate = useNavigate();
     
-    if (isLoading) {
+    if (isLoading || isLoadingRecentWishlists) {
         return (
             <Container>{null}</Container>
         );
@@ -23,29 +45,31 @@ function HomePage() {
     
     if (isConnected) {
         return (
-            user && user.wishlists.length > 0
+            user && recentWishlists && recentWishlists.length > 0
                 ? (
                     <Container>
                         <div className={`mt-20 md:mt-36 px-6 w-full max-w-xl grid grid-cols-1 ${user.wishlists.length > 1 ? "lg:grid-cols-2" : ""} gap-4`}>
                             {
-                                user.wishlists.map(wishlist => (
+                                recentWishlists.map(wishlist => (
                                     <button key={wishlist.id} className="flex text-left rounded-xl bg-surface dark:bg-surfaceDark shadow-elevation p-4" onClick={() => navigate(`/wishlists/${wishlist.id}`)}>
                                         <div className="flex-1">
-                                            <h2 className="text-xl font-bold">{wishlist.name}</h2>
+                                            <div className="flex space-x-2 items-center">
+                                                <h2 className="text-xl font-bold">{wishlist.name}</h2>
+                                                <p className="text-sm">by {wishlist.ownerName}</p>
+                                            </div>
                                             <h5>{wishlist.items.length} item{wishlist.items.length > 1 ? 's' : null}</h5>
                                         </div>
                                     </button>
                                 ))
                             }
                         </div>
-                        <ButtonCallToAction size="lg" onClick={() => navigate("/wishlists/new")} className="mt-10">Create a wishlist</ButtonCallToAction>
                     </Container>
                 )
                 : (
                     <Container>
                         <div className="mt-20 md:mt-36 text-center">
-                            <h3 className="py-4">You don't have any wishlist yet.</h3>
-                            <ButtonCallToAction size="lg" onClick={() => navigate("/wishlists/new")} className="m-auto">Create a wishlist</ButtonCallToAction>
+                            <h2 className="py-4 text-lg">No recent wishlist.</h2>
+                            <h3 className="">Visit someone's wishlist and find it here later.</h3>
                         </div>
                     </Container>
                 )
@@ -67,4 +91,4 @@ function HomePage() {
     }
 }
 
-export default HomePage;
+export default RecentPage;

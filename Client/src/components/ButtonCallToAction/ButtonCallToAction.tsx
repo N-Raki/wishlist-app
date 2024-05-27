@@ -3,19 +3,34 @@
 interface ButtonCallToActionProps {
     className?: string;
     children: React.ReactNode;
+    disabled?: boolean;
     onClick?: () => void;
+    size?: "sm" | "md" | "lg";
     type?: "button" | "submit" | "reset";
 }
 
-const ButtonCallToAction: FC<ButtonCallToActionProps> = ({className, children, onClick, type}) => {
+const ButtonCallToAction: FC<ButtonCallToActionProps> = ({className, children, disabled = false, onClick, size, type}) => {
     return (
-        <button
-            type={type || "button"}
-            onClick={onClick}
-            className={"items-center bg-gradient-to-br from-violet-500 to-fuchsia-500 border-0 rounded-md box-border flex justify-center px-8 py-3 shadow-btn text-xl text-white " + className}
-        >
-            {children}
-        </button>
+        <>
+            <button
+                disabled={disabled}
+                type={type || "button"}
+                onClick={onClick}
+                className={`items-center border-0 rounded-md box-border flex justify-center focus-visible:outline-0
+                ${disabled ? "bg-black/20 dark:bg-white/40 text-black/20 dark:text-white/20" : "bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white"}
+                ${
+                    size === "sm"
+                        ? "px-3 py-1 text-sm"
+                        : size === "md"
+                            ? "px-4 py-2 text-md"
+                            : size === "lg"
+                                ? "px-6 py-2.5 text-xl"
+                                : null
+                } shadow-btn ${className}`}
+            >
+                {children}
+            </button>
+        </>
     );
 }
 

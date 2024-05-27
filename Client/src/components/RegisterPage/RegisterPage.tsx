@@ -42,7 +42,7 @@ const RegisterPage = () => {
         register: registerForm,
         handleSubmit,
         formState: {errors}
-    } = useForm<RegisterFormData>({resolver: yupResolver(validationScheme), mode: 'onChange'});
+    } = useForm<RegisterFormData>({resolver: yupResolver(validationScheme), mode: 'onBlur'});
 
     const mutation = useMutation({
         mutationFn: (data: UserRegisterRequest) => register(data),
@@ -118,7 +118,7 @@ const RegisterPage = () => {
                 </div>
 
                 <div className="w-full flex justify-center mt-8">
-                    <ButtonCallToAction type="submit">
+                    <ButtonCallToAction size="lg" type="submit">
                         Register
                     </ButtonCallToAction>
                 </div>

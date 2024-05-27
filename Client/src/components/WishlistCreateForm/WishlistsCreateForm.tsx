@@ -1,6 +1,4 @@
 import './WishlistCreateForm.css'
-import {FC} from "react";
-import {Box, Button, Container, Stack, styled, TextField, Typography} from "@mui/material";
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {ObjectSchema} from "yup";
@@ -10,34 +8,29 @@ import toast from "react-hot-toast";
 import {useNavigate} from "react-router-dom";
 import {WishlistCreateRequest} from "../../models/requests/wishlist-create.model.ts";
 import {Wishlist} from "../../models/wishlist.model.ts";
-import NavigationBar from "../NavigationBar/NavigationBar.tsx";
 import {createWishlist} from "../../services/wishlists.service.ts";
+import FormInput from "../FormInput/FormInput.tsx";
+import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
+import Container from "../Container/Container.tsx";
 
-const wishlistSchema: ObjectSchema<WishlistCreateRequest> = Yup.object({
-    name: Yup.string().required('Name is required')
-});
-
-interface WishlistCreateFormProps {
+class WishlistCreateFormData {
+    name: string = '';
 }
 
-const CustomTextField = styled(TextField)({
-    '& .MuiFormHelperText-root.Mui-error': {
-        position: 'absolute',
-        top: '100%'
-    }
+const validationScheme: ObjectSchema<WishlistCreateFormData> = Yup.object({
+    name: Yup.string().required("Name is required")
 });
 
-const WishlistsCreateForm: FC<WishlistCreateFormProps> = () => {
-    const {
-        register: wishlistRegister,
-        handleSubmit: wishlistHandleSubmit,
-        getValues: wishlistGetValues,
-        formState: {errors: wishlistErrors}
-    } = useForm<WishlistCreateRequest>({resolver: yupResolver(wishlistSchema), mode: 'onChange'});
-    
+function WishlistsCreateForm() {
     const navigate = useNavigate();
     
-    const wishlistMutation = useMutation({
+    const {
+        register,
+        handleSubmit,
+        formState: {errors}
+    } = useForm<WishlistCreateFormData>({resolver: yupResolver(validationScheme), mode: 'onSubmit'});
+    
+    const mutation = useMutation({
         mutationFn: createWishlist,
         onSuccess: async (wishlist: Wishlist) => {
             toast.success('Wishlist created successfully');
@@ -45,36 +38,36 @@ const WishlistsCreateForm: FC<WishlistCreateFormProps> = () => {
         }
     });
     
-    const onCreateWishlist = async () => {
-        await wishlistMutation.mutateAsync(wishlistGetValues());
+    const onSubmit = async (data: WishlistCreateFormData) => {
+        const request: WishlistCreateRequest = {
+            name: data.name
+        }
+        await mutation.mutateAsync(request);
     }
-
+    
     return (
-        <Box>
-            <NavigationBar />
-            <Container sx={{
-                mt: '2rem',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center'
-            }}>
-                <Typography variant="h4">Create a new wishlist</Typography>
-                <Box component={'form'} noValidate onSubmit={wishlistHandleSubmit(onCreateWishlist)} sx={{mt: '1rem'}}>
-                    <Stack direction="row" spacing={2} alignItems={'center'} sx={{my: '1rem'}}>
-                        <CustomTextField
-                            required
-                            fullWidth
-                            label="Enter a name"
-                            error={!!wishlistErrors.name}
-                            helperText={wishlistErrors.name?.message}
-                            {...wishlistRegister('name')}
-                        />
-                        <Button variant="contained" size="large" type={'submit'}>Next</Button>
-                    </Stack>
-                </Box>
-            </Container>
-        </Box>
+        <Container>
+            <h2 className="text-2xl mb-6 mt-20">Create a new wishlist</h2>
+            <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-xl px-5 flex-col flex-grow">
+                <div className="space-y-4">
+                    <FormInput
+                        required
+                        autoFocus
+                        id="name"
+                        label="Name"
+                        type="text"
+                        register={register}
+                        errorMessage={errors.name?.message}
+                    />
+                </div>
+                <div className="w-full flex justify-center mt-10">
+                    <ButtonCallToAction size="lg" type="submit" className="py-1.5">
+                        Next
+                    </ButtonCallToAction>
+                </div>
+            </form>
+        </Container>
     );
-};
+}
 
 export default WishlistsCreateForm;
