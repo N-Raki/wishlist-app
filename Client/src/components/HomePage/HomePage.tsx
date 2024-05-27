@@ -38,6 +38,7 @@ function HomePage() {
                                 ))
                             }
                         </div>
+                        <ButtonCallToAction size="lg" onClick={() => navigate("/wishlists/new")} className="mt-10">Create a wishlist</ButtonCallToAction>
                     </Container>
                 )
                 : (

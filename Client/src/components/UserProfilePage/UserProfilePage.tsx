@@ -1,7 +1,4 @@
 import {FC, useEffect} from "react";
-import {Box, Button, Stack, TextField, Typography} from "@mui/material";
-import NavigationBar from "../NavigationBar/NavigationBar.tsx";
-import Grid from "@mui/material/Grid";
 import {useForm} from "react-hook-form";
 import {ObjectSchema} from "yup";
 import * as Yup from "yup";
@@ -14,6 +11,9 @@ import {getCurrentUser} from "../../services/user.service.ts";
 import {useNavigate} from "react-router-dom";
 import {AxiosError} from "axios";
 import {AspNetValidationProblem} from "../../models/errors/AspNetValidationProblem.ts";
+import FormInput from "../FormInput/FormInput.tsx";
+import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
+import Container from "../Container/Container.tsx";
 
 class ResetPasswordFormData {
     currentPassword: string = '';
@@ -42,9 +42,8 @@ const UserProfilePage: FC<UserProfilePageProps> = () => {
         register: resetPasswordRegister,
         handleSubmit: resetPasswordHandleSubmit,
         formState: {errors: resetPasswordErrors},
-        reset: resetPasswordReset,
-        watch: resetPasswordWatch
-    } = useForm<ResetPasswordFormData>({resolver: yupResolver(validationScheme), mode: 'onChange'});
+        reset: resetPasswordReset
+    } = useForm<ResetPasswordFormData>({resolver: yupResolver(validationScheme), mode: 'onSubmit'});
     
     const resetPasswordMutation = useMutation({
         mutationFn: (data: ResetPasswordFormData) => changePassword(data.currentPassword, data.newPassword),
@@ -76,60 +75,51 @@ const UserProfilePage: FC<UserProfilePageProps> = () => {
             navigate("/");
         }
     }, [userQuery, navigate]);
-
-    if (userQuery.isSuccess)
-    {
-
+    
+    if (userQuery.isSuccess) {
         return (
-            <Box>
-                <NavigationBar/>
-                <Grid container display={'flex'} alignItems={'center'} justifyContent={'center'} textAlign={'center'} marginTop={2}>
-                    <Grid xs={12} item>
-                        <Typography variant={'h1'}>User Profile</Typography>
-                    </Grid>
-                    <Grid xs={12} sm={6} md={4} item component={'form'} noValidate onSubmit={resetPasswordHandleSubmit(onSubmit)}>
-                        <Stack spacing={2} sx={{p: 2}} alignItems={'stretch'} textAlign={'center'}>
-                            <Typography variant={'h5'}>Reset password</Typography>
-                            <TextField
-                                required
-                                defaultValue={''}
-                                label="Password"
-                                type="password"
-                                InputLabelProps={{ shrink: !!resetPasswordWatch('currentPassword') }}
-                                error={!!resetPasswordErrors.currentPassword}
-                                helperText={resetPasswordErrors.currentPassword?.message}
-                                {...resetPasswordRegister('currentPassword')}
-                            />
-                            <TextField
-                                required
-                                defaultValue={''}
-                                label="New password"
-                                type="password"
-                                InputLabelProps={{ shrink: !!resetPasswordWatch('newPassword') }}
-                                error={!!resetPasswordErrors.newPassword}
-                                helperText={resetPasswordErrors.newPassword?.message}
-                                {...resetPasswordRegister('newPassword')}
-                            />
-                            <TextField
-                                required
-                                defaultValue={''}
-                                label="Confirm new password"
-                                type="password"
-                                InputLabelProps={{ shrink: !!resetPasswordWatch('confirmNewPassword') }}
-                                error={!!resetPasswordErrors.confirmNewPassword}
-                                helperText={resetPasswordErrors.confirmNewPassword?.message}
-                                {...resetPasswordRegister('confirmNewPassword')}
-                            />
-                            <Button type={'submit'} variant={'contained'} sx={{mt:1}}>
-                                Reset password
-                            </Button>
-                        </Stack>
-                    </Grid>
-                </Grid>
-            </Box>
+            <Container>
+                <h2 className="my-10 text-xl font-bold">Change your password</h2>
+                <form onSubmit={resetPasswordHandleSubmit(onSubmit)} className="w-full max-w-xl px-5 flex-col flex-grow space-y-5">
+                    <div className="space-y-4">
+                        <FormInput
+                            required
+                            autoFocus
+                            id="currentPassword"
+                            label="Password"
+                            type="password"
+                            register={resetPasswordRegister}
+                            errorMessage={resetPasswordErrors.currentPassword?.message}
+                        />
+                    </div>
+                    <div className="space-y-4">
+                        <FormInput
+                            required
+                            id="newPassword"
+                            label="New password"
+                            type="password"
+                            register={resetPasswordRegister}
+                            errorMessage={resetPasswordErrors.newPassword?.message}
+                        />
+                    </div>
+                    <div className="space-y-4">
+                        <FormInput
+                            required
+                            id="confirmNewPassword"
+                            label="Confirm new password"
+                            type="password"
+                            register={resetPasswordRegister}
+                            errorMessage={resetPasswordErrors.confirmNewPassword?.message}
+                        />
+                    </div>
+                    <div className="w-full flex justify-center mt-10">
+                        <ButtonCallToAction size="lg" type="submit" className="py-1.5">
+                            Change password
+                        </ButtonCallToAction>
+                    </div>
+                </form>
+            </Container>
         );
-    } else {
-        return <Box>Loading...</Box>
     }
 };
 
