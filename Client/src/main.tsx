@@ -14,11 +14,16 @@ import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import UserProfilePage from "./components/UserProfilePage/UserProfilePage.tsx";
 import ForgotPasswordPage from "./components/ForgotPasswordPage/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "./components/ResetPasswordPage/ResetPasswordPage.tsx";
+import RecentPage from "./components/RecentPage/RecentPage.tsx";
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <HomePage/>
+    },
+    {
+        path: "/recent",
+        element: <RecentPage/>
     },
     {
         path: '/login',

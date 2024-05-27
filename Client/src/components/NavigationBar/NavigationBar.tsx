@@ -64,7 +64,7 @@ const NavigationBar = () => {
                     isUserLoggedIn
                         ? <div className="hidden lg:flex lg:gap-x-12">
                             <NavigationButton label="My Wishlists" route="/"/>
-                            <NavigationButton label="Recents" route="/recents" />
+                            <NavigationButton label="Recent" route="/recent" />
                             <NavigationButton label="Profile" route="/profile"/>
                         </div>
                         : null
@@ -142,10 +142,10 @@ const NavigationBar = () => {
                                                     My Wishlists
                                                 </button>
                                                 <button type="button"
-                                                        className={"-mx-3 block rounded-lg px-3 py-2 leading-7 hover:bg-background" + (location.pathname === '/recents' ? ' font-bold text-lg' : '')}
-                                                        onClick={() => navigate("/recents")}
+                                                        className={"-mx-3 block rounded-lg px-3 py-2 leading-7 hover:bg-background" + (location.pathname === '/recent' ? ' font-bold text-lg' : '')}
+                                                        onClick={() => navigate("/recent")}
                                                 >
-                                                    Recents
+                                                    Recent
                                                 </button>
                                                 <button type="button"
                                                         className={"-mx-3 block rounded-lg px-3 py-2 leading-7" + (location.pathname === '/profile' ? ' font-bold text-lg' : '')}

@@ -17,5 +17,7 @@ internal sealed partial class WishlistMapper(IItemMapper itemMapper, IAuthentica
 		response.IsOwner = authenticationDataProvider.AuthenticatedUser?.Id == wishlist.UserId;
 		return response;
 	}
+   
+   [MapProperty(nameof(@Wishlist.User.DisplayName), nameof(@WishlistResponse.OwnerName))]
 	private partial WishlistResponse ToResponse(Wishlist wishlist);
 }

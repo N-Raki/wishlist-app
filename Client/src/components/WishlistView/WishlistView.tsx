@@ -51,10 +51,11 @@ const WishlistView: FC<WishlistViewProps> = () => {
 
     const {
         data: wishlist,
+        isLoading,
         isSuccess,
         isError
     } = useQuery<Wishlist>({
-        queryKey: ['user', 'wishlist'],
+        queryKey: ['user', 'wishlist', guid],
         queryFn: () => getWishlist(guid),
         retry: false
     });
@@ -102,6 +103,10 @@ const WishlistView: FC<WishlistViewProps> = () => {
     }
     
     const mode = wishlist?.isOwner ? "owner" : isUserConnected ? "user" : "anonymous";
+    
+    if (isLoading) {
+        return <Container>{null}</Container>;
+    }
 
     if (isError) {
         return <Navigate to="/"/>;

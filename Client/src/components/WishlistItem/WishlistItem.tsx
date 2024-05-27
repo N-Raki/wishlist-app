@@ -21,7 +21,7 @@ import FormInput from "../FormInput/FormInput.tsx";
 import {XMarkIcon} from "@heroicons/react/24/outline";
 import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
 import {User} from "../../models/user.model.ts";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import Modal from "../Modal/Modal.tsx";
 
 interface WishlistItemProps {
@@ -48,6 +48,7 @@ const validationScheme = Yup.object({
 const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
 
     const navigate = useNavigate();
+    const location = useLocation();
     const queryClient = useQueryClient();
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -114,6 +115,10 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
         },
     });
 
+    const handleLoginRedirect = () => {
+        navigate('/login', {state: {from: location}});
+    }
+
     const onSubmit = (data: EditItemFormData) => {
         const itemCreateRequest: ItemCreateRequest = {
             name: data.name,
@@ -160,10 +165,10 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
             </Modal>
             
             <Modal openModal={openLoginModal} onClose={setOpenLoginModal}>
-                <div className="flex flex-col gap-y-4 py-4 px-8">
+                <div className="flex flex-col gap-y-4 py-4 px-8 text-center">
                     <p>You need to be logged in to pick an item.</p>
                     <div className="m-auto">
-                        <ButtonCallToAction size="md" className="gap-x-3" onClick={() => navigate("/login")}>
+                        <ButtonCallToAction size="md" className="gap-x-3" onClick={handleLoginRedirect}>
                             <CheckIcon className="h-4 w-4" aria-hidden="true"/> Log in
                         </ButtonCallToAction>
                     </div>
