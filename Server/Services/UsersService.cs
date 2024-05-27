@@ -18,6 +18,8 @@ internal sealed class UsersService(IUsersRepository usersRepository) : IUsersSer
 		{
 			throw new ArgumentException("User not found");
 		}
+      
+      if (user.RecentWishlistIds.Contains(wishlistId)) return;
 		user.RecentWishlistIds.Add(wishlistId);
 		await usersRepository.UpdateUserAsync(user, cancellationToken);
 	}

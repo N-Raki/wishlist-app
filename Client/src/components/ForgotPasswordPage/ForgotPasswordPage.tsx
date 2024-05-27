@@ -48,7 +48,6 @@ const ForgotPasswordPage: FC<ForgotPasswordPageProps> = () => {
                 <div className="space-y-4">
                     <FormInput
                         required
-                        autoFocus
                         id="email"
                         label="Enter your account's email address"
                         type="text"

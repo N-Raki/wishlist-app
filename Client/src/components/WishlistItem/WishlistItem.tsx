@@ -177,7 +177,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
             
             <Modal openModal={openEditModal} onClose={setOpenEditModal}>
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 py-4 px-8">
-                    <FormInput required autoFocus id="name" label="Name" register={register}
+                    <FormInput required id="name" label="Name" register={register}
                                errorMessage={errors.name?.message}/>
                     <FormInput autoFocus id="price" type="number" label="Price (€)"
                                register={register} errorMessage={errors.price?.message}/>

@@ -11,6 +11,7 @@ public class Item
 	[MaxLength(255)] public string? Url { get; set; }
 	public float? Price { get; set; }
 	public List<Guid> BuyerIds { get; set; } = [];
+   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 	
 	// Navigation properties
 	public virtual Wishlist Wishlist { get; } = null!;

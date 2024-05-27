@@ -10,4 +10,5 @@ public class ItemResponse
 	[MaxLength(255)] public string? Url { get; init; }
 	public float? Price { get; init; }
 	public List<Guid> BuyerIds { get; init; } = [];
+   public DateTime CreatedAt { get; init; }
 }

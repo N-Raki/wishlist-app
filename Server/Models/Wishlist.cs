@@ -8,6 +8,7 @@ public class Wishlist
 	public Guid Id { get; init; }
 	public Guid UserId { get; init; }
 	[MaxLength(30)] public string Name { get; init; } = string.Empty;
+   public DateTime CreatedAt { get; init; } = DateTime.UtcNow;
 
 	// Navigation properties
 	public virtual User User { get; } = null!;

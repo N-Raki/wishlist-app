@@ -48,7 +48,8 @@ function RecentPage() {
             user && recentWishlists && recentWishlists.length > 0
                 ? (
                     <Container>
-                        <div className={`mt-20 md:mt-36 px-6 w-full max-w-xl grid grid-cols-1 ${user.wishlists.length > 1 ? "lg:grid-cols-2" : ""} gap-4`}>
+                        <h2 className="my-10 font-bold text-xl">Hello {user.displayName} !</h2>
+                        <div className={`px-6 w-full max-w-xl grid grid-cols-1 ${user.wishlists.length > 1 ? "lg:grid-cols-2" : ""} gap-4`}>
                             {
                                 recentWishlists.map(wishlist => (
                                     <button key={wishlist.id} className="flex text-left rounded-xl bg-surface dark:bg-surfaceDark shadow-elevation p-4" onClick={() => navigate(`/wishlists/${wishlist.id}`)}>
@@ -67,10 +68,12 @@ function RecentPage() {
                 )
                 : (
                     <Container>
-                        <div className="mt-20 md:mt-36 text-center">
+                        <h2 className="my-10 font-bold text-xl">Hello {user.displayName} !</h2>
+                        <div className="px-6 text-center">
                             <h2 className="py-4 text-lg">No recent wishlist.</h2>
                             <h3 className="">Visit someone's wishlist and find it here later.</h3>
                         </div>
+                        <ButtonCallToAction size="sm" onClick={() => navigate("/")} className="mt-10">Go to your wishlists</ButtonCallToAction>
                     </Container>
                 )
         );

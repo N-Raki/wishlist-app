@@ -26,7 +26,8 @@ function HomePage() {
             user && user.wishlists.length > 0
                 ? (
                     <Container>
-                        <div className={`mt-20 md:mt-36 px-6 w-full max-w-xl grid grid-cols-1 ${user.wishlists.length > 1 ? "lg:grid-cols-2" : ""} gap-4`}>
+                        <h2 className="my-10 font-bold text-xl">Hello {user.displayName} !</h2>
+                        <div className={`px-6 w-full max-w-xl grid grid-cols-1 ${user.wishlists.length > 1 ? "lg:grid-cols-2" : ""} gap-4`}>
                             {
                                 user.wishlists.map(wishlist => (
                                     <button key={wishlist.id} className="flex text-left rounded-xl bg-surface dark:bg-surfaceDark shadow-elevation p-4" onClick={() => navigate(`/wishlists/${wishlist.id}`)}>

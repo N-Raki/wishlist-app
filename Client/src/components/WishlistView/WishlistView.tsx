@@ -122,11 +122,11 @@ const WishlistView: FC<WishlistViewProps> = () => {
                     itemReset();
                 }}>
                     <form onSubmit={itemHandleSubmit(onAddItem)} className="flex flex-col gap-y-4 py-4 px-8">
-                        <FormInput required autoFocus id="name" label="Name" register={itemRegister}
+                        <FormInput required id="name" label="Name" register={itemRegister}
                                    errorMessage={itemErrors.name?.message}/>
-                        <FormInput autoFocus id="price" type="number" label="Price (€)"
+                        <FormInput id="price" type="number" label="Price (€)"
                                    register={itemRegister} errorMessage={itemErrors.price?.message}/>
-                        <FormInput autoFocus id="url" label="Url" register={itemRegister}
+                        <FormInput id="url" label="Url" register={itemRegister}
                                    errorMessage={itemErrors.url?.message}/>
                         <div className="flex flex-row gap-4 m-auto">
                             <div className="flex-1">
