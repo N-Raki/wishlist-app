@@ -123,7 +123,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
             <Container>
 
                 {/* Add item modal */}
-                <Modal openModal={openAddItemModal} onClose={(value: boolean) => {
+                <Modal title="Add a new item" openModal={openAddItemModal} onClose={(value: boolean) => {
                     setOpenAddItemModal(value);
                     itemReset();
                 }}>

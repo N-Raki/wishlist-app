@@ -176,7 +176,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                 </div>
             </Modal>
             
-            <Modal openModal={openEditModal} onClose={setOpenEditModal}>
+            <Modal title="Edit item" openModal={openEditModal} onClose={setOpenEditModal}>
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 py-4 px-8">
                     <FormInput required id="name" label="Name" register={register}
                                errorMessage={errors.name?.message}/>
