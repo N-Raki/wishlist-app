@@ -67,8 +67,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <div className="min-h-screen bg-background dark:bg-backgroundDark text-onBackground dark:text-onBackgroundDark transition-colors">
                 <QueryClientProvider client={queryClient}>
                     <RouterProvider router={router}/>
-                    <ReactQueryDevtools initialIsOpen={false} buttonPosition={'bottom-left'}/>
-                    <Toaster position="bottom-right" />
+                    <ReactQueryDevtools initialIsOpen={false} buttonPosition={'top-left'}/>
+                    <Toaster position="top-right" />
                 </QueryClientProvider>
             </div>
         </CustomThemeProvider>
