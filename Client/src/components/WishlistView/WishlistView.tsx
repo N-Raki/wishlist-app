@@ -16,7 +16,7 @@ import {createItem} from "../../services/items.service.ts";
 import Container from "../Container/Container.tsx";
 import WishlistItem from "../WishlistItem/WishlistItem.tsx";
 import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
-import {PlusIcon, TrashIcon} from "@heroicons/react/20/solid";
+import {LinkIcon, PlusIcon, TrashIcon} from "@heroicons/react/20/solid";
 import FormInput from "../FormInput/FormInput.tsx";
 import {XMarkIcon} from "@heroicons/react/24/outline";
 import Modal from "../Modal/Modal.tsx";
@@ -102,6 +102,12 @@ const WishlistView: FC<WishlistViewProps> = () => {
         setOpenAddItemModal(false);
     }
     
+    const onCopyLink = () => {
+        navigator.clipboard.writeText(window.location.href).then(_ =>
+            toast.success('Link copied to clipboard')
+        );
+    }
+    
     const mode = wishlist?.isOwner ? "owner" : isUserConnected ? "user" : "anonymous";
     
     if (isLoading) {
@@ -178,7 +184,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
                 {
                     wishlist.items.length === 0
                         ? (
-                            <h5 className="py-20 flex-1">This wishlist is empty</h5>
+                            <h5 className="py-20">This wishlist is empty</h5>
                         )
                         : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-8 mb-10 w-full max-w-3xl">
@@ -193,18 +199,35 @@ const WishlistView: FC<WishlistViewProps> = () => {
                 {
                     wishlist.isOwner
                         ? (
-                            <div className="flex flex-col gap-y-4">
-                                <div className="justify-center hidden sm:flex">
-                                    <ButtonCallToAction size="md" type="button" onClick={() => setOpenAddItemModal(true)}>Add item</ButtonCallToAction>
-                                </div>
-                                <button onClick={() => setOpenAddItemModal(true)}
-                                        className="justify-center mt-10 sm:hidden rounded-full fixed w-12 h-12 bottom-6 right-6 bg-gradient-to-br from-violet-500 to-fuchsia-500 p-2 text-white shadow-btn">
-                                    <PlusIcon aria-hidden={true}/>
-                                </button>
-                                <div className="justify-center">
+                            <div className="flex flex-col gap-y-4 items-center">
+                                <div className="justify-center hidden sm:flex gap-x-2">
+                                    <ButtonCallToAction size="md" type="button" onClick={() => setOpenAddItemModal(true)}>
+                                        <PlusIcon className="h-6 w-6" aria-hidden={true}/>
+                                        Add item
+                                    </ButtonCallToAction>
+                                    <button type="button" onClick={onCopyLink} className="flex flex-auto rounded-md text-white bg-gradient-to-br from-violet-500 to-fuchsia-500 items-center px-2 text-sm gap-x-1">
+                                        <LinkIcon className="h-5 w-5" aria-hidden={true}/>
+                                        Copy link
+                                    </button>
                                     <button className="flex flex-inline shadow-btn bg-red-500 rounded-md text-white px-3 py-1.5 items-center gap-x-3 text-sm" onClick={() => setOpenDeleteWishlistModal(true)}>
                                         <TrashIcon className="h-4 w-4 text-white"/>Delete wishlist
                                     </button>
+                                </div>
+                                <div className="fixed bottom-6 right-6 flex gap-x-3 items-center">
+                                    <button onClick={() => setOpenDeleteWishlistModal(true)}
+                                            className="justify-center mt-10 sm:hidden rounded-full w-10 h-10 bg-red-500 p-2 text-white shadow-btn">
+                                        <TrashIcon className="h-5 w-5 m-auto" aria-hidden={true}/>
+                                    </button>
+                                    <button onClick={onCopyLink}
+                                            className="justify-center mt-10 sm:hidden rounded-full w-12 h-12 bg-gradient-to-br from-violet-500 to-fuchsia-500 p-2 text-white shadow-btn">
+                                        <LinkIcon className="h-7 w-7 m-auto" aria-hidden={true}/>
+                                    </button>
+                                    <button onClick={() => setOpenAddItemModal(true)}
+                                            className="justify-center mt-10 sm:hidden rounded-full w-12 h-12 bg-gradient-to-br from-violet-500 to-fuchsia-500 p-2 text-white shadow-btn">
+                                        <PlusIcon aria-hidden={true}/>
+                                    </button>
+                                </div>
+                                <div className="justify-center">
                                 </div>
                             </div>
                         )
