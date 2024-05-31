@@ -23,6 +23,7 @@ import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
 import {User} from "../../models/user.model.ts";
 import {useLocation, useNavigate} from "react-router-dom";
 import Modal from "../Modal/Modal.tsx";
+import { Tooltip } from 'react-tooltip'
 
 interface WishlistItemProps {
     item: Item;
@@ -116,7 +117,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
     });
 
     const handleLoginRedirect = () => {
-        navigate('/login', {state: {from: location}});
+        navigate('/login', {state: {from: location.pathname}});
     }
 
     const onSubmit = (data: EditItemFormData) => {
@@ -223,11 +224,15 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                                             buyerQueries.map((buyerQuery, index) => {
                                                 if (buyerQuery.isSuccess) {
                                                     const displayName: string = buyerQuery.data;
-                                                    return <div key={index}
+                                                    return <a key={index}
+                                                                data-tooltip-id="avatar-tooltip"
+                                                                data-tooltip-content={displayName}
+                                                                data-tooltip-place="top"
                                                                 className="h-7 w-7 flex-shrink-0 rounded-full p-1"
                                                                 style={{backgroundColor: stringToColor(displayName)}}>
                                                         <p>{displayName[0].toUpperCase()}</p>
-                                                    </div>
+                                                        <Tooltip id="avatar-tooltip" />
+                                                    </a>
                                                 }
                                                 return null;
                                             })

@@ -1,6 +1,6 @@
 import AuthenticationPage from "../AuthenticationPage/AuthenticationPage.tsx";
 import Copyright from "../Copyright/Copyright.tsx";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useMutation} from "@tanstack/react-query";
 import * as Yup from 'yup';
 import {ObjectSchema} from 'yup';
@@ -37,6 +37,8 @@ const validationScheme: ObjectSchema<RegisterFormData> = Yup.object({
 
 const RegisterPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const from = (location.state as { from: string })?.from || '/';
 
     const {
         register: registerForm,
@@ -48,7 +50,7 @@ const RegisterPage = () => {
         mutationFn: (data: UserRegisterRequest) => register(data),
         onSuccess: async () => {
             toast.success('User registered successfully');
-            navigate('/');
+            navigate(from);
         },
         onError: (error: AxiosError<AspNetValidationProblem>) => {
             let errors = error.response?.data.errors;
@@ -112,7 +114,7 @@ const RegisterPage = () => {
                 </div>
 
                 <div className="mt-3 flex justify-end underline text-sm">
-                    <button type="button" onClick={() => navigate("/login")}>
+                    <button type="button" onClick={() => navigate("/login", {state: { from } })}>
                         Already have an account? Sign in
                     </button>
                 </div>

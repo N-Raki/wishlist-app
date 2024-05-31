@@ -30,8 +30,8 @@ const validationScheme: ObjectSchema<LoginFormData> = Yup.object({
 
 const LoginPage = () => {
     const navigate = useNavigate();
-    const location = useLocation();
-    const { from } = location.state || { from: { pathname: "/" } };
+    const location = useLocation()
+    const from = (location.state as { from: string })?.from || '/';
 
     const {
         register,
@@ -43,7 +43,7 @@ const LoginPage = () => {
         mutationFn: (data: UserLoginRequest) => login(data),
         onSuccess: async () => {
             toast.success('Logged in successfully');
-            navigate(from.pathname);
+            navigate(from);
         },
         onError: (_: any) => {
             toast.error('Incorrect email or password');
@@ -90,7 +90,7 @@ const LoginPage = () => {
                         </button>
                     </div>
                     <div className="flex justify-end mt-1 sm:mt-0">
-                        <button type="button" className="underline" onClick={() => navigate("/register")}>
+                        <button type="button" className="underline" onClick={() => navigate("/register", {state: { from } })}>
                             Don't have an account? Sign Up
                         </button>
                     </div>

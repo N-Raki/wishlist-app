@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
+import 'react-tooltip/dist/react-tooltip.css'
 import {CustomThemeProvider} from "./ThemeContext.tsx";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import HomePage from "./components/HomePage/HomePage.tsx";
