@@ -48,7 +48,7 @@ const UserProfilePage: FC<UserProfilePageProps> = () => {
     const resetPasswordMutation = useMutation({
         mutationFn: (data: ResetPasswordFormData) => changePassword(data.currentPassword, data.newPassword),
         onSuccess: async () => {
-            toast.success('Password reset successfully');
+            toast.success('Password changed successfully');
             resetPasswordReset(new ResetPasswordFormData());
         },
         onError: async (error: AxiosError<AspNetValidationProblem>) => {
