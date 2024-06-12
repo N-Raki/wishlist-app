@@ -16,6 +16,7 @@ import UserProfilePage from "./components/UserProfilePage/UserProfilePage.tsx";
 import ForgotPasswordPage from "./components/ForgotPasswordPage/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "./components/ResetPasswordPage/ResetPasswordPage.tsx";
 import RecentPage from "./components/RecentPage/RecentPage.tsx";
+import {GoogleOAuthProvider} from "@react-oauth/google";
 
 const router = createBrowserRouter([
     {
@@ -62,16 +63,20 @@ const router = createBrowserRouter([
 
 const queryClient = new QueryClient();
 
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '';
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <CustomThemeProvider>
-            <div className="min-h-screen bg-background dark:bg-backgroundDark text-onBackground dark:text-onBackgroundDark transition-colors">
-                <QueryClientProvider client={queryClient}>
-                    <RouterProvider router={router}/>
-                    <ReactQueryDevtools initialIsOpen={false} buttonPosition={'top-left'}/>
-                    <Toaster position="top-right" />
-                </QueryClientProvider>
-            </div>
-        </CustomThemeProvider>
-    </React.StrictMode>
+    <GoogleOAuthProvider clientId={googleClientId}>
+        <React.StrictMode>
+            <CustomThemeProvider>
+                <div className="min-h-screen bg-background dark:bg-backgroundDark text-onBackground dark:text-onBackgroundDark transition-colors">
+                    <QueryClientProvider client={queryClient}>
+                        <RouterProvider router={router}/>
+                        <ReactQueryDevtools initialIsOpen={false} buttonPosition={'top-left'}/>
+                        <Toaster position="bottom-left" />
+                    </QueryClientProvider>
+                </div>
+            </CustomThemeProvider>
+        </React.StrictMode>
+    </GoogleOAuthProvider>
 );

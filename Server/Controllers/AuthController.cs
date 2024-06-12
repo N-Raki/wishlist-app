@@ -1,8 +1,12 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
+using Google.Apis.Auth;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
@@ -85,6 +89,55 @@ public class AuthController(IConfiguration configuration) : ControllerBase
         
         // The signInManager already produced the needed response in the form of a cookie.
         return TypedResults.Empty;
+    }
+
+    [HttpPost("signin-google")]
+    public async Task<IActionResult> GoogleLogin([FromServices] IServiceProvider serviceProvider, [FromBody] GoogleSignInRequest request)
+    {
+        var signInManager = serviceProvider.GetRequiredService<SignInManager<User>>();
+        var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+        
+        // Getting the payload from the Google token
+        var payload = await GoogleJsonWebSignature.ValidateAsync(request.Token);
+        if (payload is null) return Unauthorized();
+
+        const string loginProvider = "Google";
+        var claimsPrincipal = new ClaimsPrincipal();
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, payload.Subject),
+            new(ClaimTypes.Email, payload.Email),
+            new(ClaimTypes.Name, payload.Name),
+            new(ClaimTypes.GivenName, payload.GivenName),
+            new(ClaimTypes.Surname, payload.FamilyName)
+        };
+        claimsPrincipal.AddIdentity(new ClaimsIdentity(claims, loginProvider));
+        
+        var externalLoginInfo = new ExternalLoginInfo(claimsPrincipal, loginProvider, payload.Subject, payload.Name);
+
+        // If the user is already signed in, return
+        var signInResult = await signInManager.ExternalLoginSignInAsync(externalLoginInfo.LoginProvider, externalLoginInfo.ProviderKey, true);
+        if (signInResult.Succeeded) { return Ok(); }
+        
+        var email = payload.Email;
+        if (string.IsNullOrEmpty(email)) return BadRequest();
+
+        // Get the user by email
+        var user = await userManager.FindByEmailAsync(email);
+        
+        // If the user does not exist, create a new user
+        if (user == null)
+        {
+            var displayName = !string.IsNullOrWhiteSpace(payload.GivenName) && !string.IsNullOrWhiteSpace(payload.FamilyName)
+                ? $"{payload.GivenName} {payload.FamilyName[0]}"
+                : payload.Name;
+            user = new User { UserName = email, Email = email, DisplayName = displayName };
+            await userManager.CreateAsync(user);
+        }
+        await userManager.AddLoginAsync(user, externalLoginInfo);
+        await signInManager.SignInAsync(user, true);
+
+        return Ok();
     }
     
     [Authorize]

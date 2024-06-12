@@ -22,6 +22,15 @@ export async function login(data: UserLoginRequest): Promise<void> {
     }
 }
 
+export async function signInWithGoogle(token: string): Promise<void> {
+    try {
+        await axios.post('/api/auth/signin-google', { token }, { withCredentials: true });
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
+}
+
 export async function logout(): Promise<void> {
     try {
         await axios.post('/api/auth/logout',

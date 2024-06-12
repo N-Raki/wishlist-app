@@ -20,7 +20,7 @@ const AuthenticationPage: FC<AuthenticationFormProps> = ({children}) => {
                     </div>
                     <DarkModeSwitch/>
                 </header>
-                <div className="flex flex-col items-center w-full flex-1 px-7">
+                <div className="flex flex-col items-center w-full flex-1 px-4">
                     {children}
                 </div>
             </div>
