@@ -16,7 +16,7 @@ const AuthenticationPage: FC<AuthenticationFormProps> = ({children}) => {
             <div className="flex flex-col bg-background dark:bg-backgroundDark max-w-3xl w-full h-full shadow-elevation transition-colors">
                 <header className="flex p-5 mb-5 sm:mb-20">
                     <div className="flex-grow">
-                        <button type="button" className="text-2xl" onClick={() => navigate("/")}>✨ Wishes</button>
+                        <button type="button" className="text-2xl" onClick={() => navigate("/")}>✨ Wish me</button>
                     </div>
                     <DarkModeSwitch/>
                 </header>
