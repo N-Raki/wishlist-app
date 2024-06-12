@@ -21,7 +21,7 @@ const FormInput: FC<FormInputProps> = ({id, required, autoFocus, label, type, re
                 autoFocus={autoFocus}
                 id={id}
                 type={type || "text"}
-                className="w-full text-onSurface dark:text-onSurfaceDark bg-surface dark:bg-surfaceDark rounded-md px-3 py-2 leading-2 border-2 border-onBackground/20 dark:border-onBackgroundDark/20 focus:border-primary-700 dark:focus:border-primary-300 focus:outline-none transition-colors"
+                className="w-full text-onSurface dark:text-onSurfaceDark bg-surface dark:bg-surfaceDark rounded-md px-3 py-1 leading-2 border-2 border-onBackground/20 dark:border-onBackgroundDark/20 focus:border-primary-700 dark:focus:border-primary-300 focus:outline-none transition-colors"
                 autoComplete="off"
                 {...register(id)}
             />

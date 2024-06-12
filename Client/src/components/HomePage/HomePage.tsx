@@ -44,7 +44,8 @@ function HomePage() {
                 )
                 : (
                     <Container>
-                        <div className="mt-20 md:mt-36 text-center">
+                        <h2 className="my-10 font-bold text-xl">Hello {user.displayName} !</h2>
+                        <div className="text-center">
                             <h3 className="py-4">You don't have any wishlist yet.</h3>
                             <ButtonCallToAction size="lg" onClick={() => navigate("/wishlists/new")} className="m-auto">Create a wishlist</ButtonCallToAction>
                         </div>
