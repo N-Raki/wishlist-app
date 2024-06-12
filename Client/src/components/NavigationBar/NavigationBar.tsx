@@ -43,12 +43,12 @@ const NavigationBar = () => {
                         type="button"
                         className={"-m-1.5 p-1.5 text-3xl"}
                         onClick={() => navigate("/")}>
-                        ✨ <span className="hidden md:inline">Wishes</span>
-                        <span className="sr-only">Wishes</span>
+                        ✨ <span className="hidden md:inline">Wish me</span>
+                        <span className="sr-only">Wish me</span>
                     </button>
                 </div>
                 <button className="flex-1 md:hidden text-center text-3xl" onClick={() => navigate("/")}>
-                    Wishes
+                    Wish me
                 </button>
                 <div className="flex mx-2 lg:hidden">
                     <button
