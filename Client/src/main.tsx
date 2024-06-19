@@ -1,11 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import "./i18n/config.ts";
 import './index.css'
 import 'react-tooltip/dist/react-tooltip.css'
 import {CustomThemeProvider} from "./ThemeContext.tsx";
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import HomePage from "./components/HomePage/HomePage.tsx";
-import LoginForm from "./components/LoginPage/LoginPage.tsx";
+import LoginPage from "./components/LoginPage/LoginPage.tsx";
 import RegisterPage from "./components/RegisterPage/RegisterPage.tsx";
 import WishlistsCreateForm from "./components/WishlistCreateForm/WishlistsCreateForm.tsx";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
@@ -29,7 +30,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/login',
-        element: <LoginForm/>
+        element: <LoginPage/>
     },
     {
         path: '/register',
@@ -57,7 +58,7 @@ const router = createBrowserRouter([
     },
     {
         path: '*',
-        element: <div>Not Found</div>
+        element: <Navigate to="/" />
     }
 ]);
 

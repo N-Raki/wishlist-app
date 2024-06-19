@@ -14,6 +14,7 @@ import {register, signInWithGoogle} from "../../services/auth.service.ts";
 import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
 import FormInput from "../FormInput/FormInput.tsx";
 import {GoogleLogin} from "@react-oauth/google";
+import {useTranslation} from "react-i18next";
 
 class RegisterFormData {
     displayName: string = '';
@@ -22,24 +23,25 @@ class RegisterFormData {
     confirmPassword: string = '';
 }
 
-const validationScheme: ObjectSchema<RegisterFormData> = Yup.object({
-    displayName: Yup.string()
-        .required('Display name is required'),
-    email: Yup.string()
-        .required('Email is required')
-        .email('Invalid email address'),
-    password: Yup.string()
-        .required('Password is required')
-        .min(6, 'Password must be at least 6 characters'),
-    confirmPassword: Yup.string()
-        .required('Confirm password is required')
-        .oneOf([Yup.ref('password')], 'Passwords do not match')
-});
-
 const RegisterPage = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
     const from = (location.state as { from: string })?.from || '/';
+
+    const validationScheme: ObjectSchema<RegisterFormData> = Yup.object({
+        displayName: Yup.string()
+            .required(t("validation_display_name_required")),
+        email: Yup.string()
+            .required(t("validation_email_required"))
+            .email(t("validation_email")),
+        password: Yup.string()
+            .required(t("validation_password_required"))
+            .min(6, t("validation_password_min_length", { count: 6 })),
+        confirmPassword: Yup.string()
+            .required(t("validation_password_confirm_required"))
+            .oneOf([Yup.ref('password')], t("validation_password_confirm"))
+    });
 
     const {
         register: registerForm,
@@ -50,7 +52,7 @@ const RegisterPage = () => {
     const mutation = useMutation({
         mutationFn: (data: UserRegisterRequest) => register(data),
         onSuccess: async () => {
-            toast.success('User registered successfully');
+            toast.success(t("register_toast_success"));
             navigate(from);
         },
         onError: (error: AxiosError<AspNetValidationProblem>) => {
@@ -58,10 +60,10 @@ const RegisterPage = () => {
             if (errors) {
                 for (let key in errors) {
                     let message = errors[key].join(' ');
-                    toast.error(message, {duration: 10000});
+                    toast.error(t("register_toast_error", { message: message }), {duration: 10000});
                 }
             } else {
-                toast.error('An error occurred while registering the user. ' + error.message, {duration: 10000});
+                toast.error(t("register_toast_error", { message: error.message }), {duration: 10000});
             }
         }
     });
@@ -79,19 +81,19 @@ const RegisterPage = () => {
         if (response.credential) {
             const { credential } = response;
             await signInWithGoogle(credential);
-            toast.success('Logged in successfully');
+            toast.success(t("login_toast_success"));
             navigate(from);
         }
     };
 
     return (
         <AuthenticationPage>
-            <h2 className="text-2xl mb-6">Register</h2>
-            <div className="flex flex-1 flex-col gap-y-6 w-full items-center">
+            <h2 className="text-2xl mb-6">{t("register_title")}</h2>
+            <div className="flex flex-1 flex-col gap-y-2.5 w-full items-center">
                 <GoogleLogin onSuccess={handleGoogleLoginSuccess} />
                 <div className="inline-flex items-center justify-center w-full">
                     <hr className="absolute w-64 h-px bg-gray-200 border-0 dark:bg-gray-700"/>
-                    <span className="px-3 font-medium text-gray-900 bg-background left-1/2 z-0">or</span>
+                    <span className="px-3 font-medium text-gray-900 bg-background left-1/2 z-0">{t("login_separator")}</span>
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-lg">
                     <div className="space-y-2">
@@ -99,14 +101,14 @@ const RegisterPage = () => {
                             required
                             autoFocus
                             id="displayName"
-                            label="Display Name"
+                            label={t("register_label_display_name")}
                             register={registerForm}
                             errorMessage={errors.displayName?.message}
                         />
                         <FormInput
                             required
                             id="email"
-                            label="Email Address"
+                            label={t("register_label_email")}
                             type="email"
                             register={registerForm}
                             errorMessage={errors.email?.message}
@@ -116,7 +118,7 @@ const RegisterPage = () => {
                             <FormInput
                                 required
                                 id="password"
-                                label="Password"
+                                label={t("register_label_password")}
                                 type="password"
                                 register={registerForm}
                                 errorMessage={errors.password?.message}
@@ -124,7 +126,7 @@ const RegisterPage = () => {
                             <FormInput
                                 required
                                 id="confirmPassword"
-                                label="Confirm Password"
+                                label={t("register_label_password_confirm")}
                                 type="password"
                                 register={registerForm}
                                 errorMessage={errors.confirmPassword?.message}
@@ -133,15 +135,16 @@ const RegisterPage = () => {
                     </div>
 
 
-                    <div className="mt-3 flex justify-end underline text-sm">
-                        <button type="button" onClick={() => navigate("/login", {state: {from}})}>
-                            Already have an account? Sign in
+                    <div className="mt-3 flex justify-end text-sm gap-x-1">
+                        {t("register_login")}
+                        <button type="button" className="underline" onClick={() => navigate("/login", {state: {from}})}>
+                            {t("register_login_link")}
                         </button>
                     </div>
 
                     <div className="w-full flex justify-center mt-10">
                         <ButtonCallToAction size="lg" type="submit">
-                            Register
+                            {t("register_submit")}
                         </ButtonCallToAction>
                     </div>
                 </form>

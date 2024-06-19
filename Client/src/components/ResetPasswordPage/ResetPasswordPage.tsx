@@ -12,20 +12,17 @@ import {useForm} from "react-hook-form";
 import FormInput from "../FormInput/FormInput.tsx";
 import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
 import Container from "../Container/Container.tsx";
+import {useTranslation} from "react-i18next";
 
 class ResetPasswordFormData {
     newPassword: string = '';
     confirmNewPassword: string = '';
 }
 
-const validationScheme: ObjectSchema<ResetPasswordFormData> = Yup.object({
-    newPassword: Yup.string().min(6, "Password must be at least 6 characters.").required(),
-    confirmNewPassword: Yup.string().oneOf([Yup.ref('newPassword')], 'Passwords must match').required()
-});
-
 interface ResetPasswordPageProps {}
 
 const ResetPasswordPage: FC<ResetPasswordPageProps> = () => {
+    const { t } = useTranslation();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     
@@ -38,6 +35,15 @@ const ResetPasswordPage: FC<ResetPasswordPageProps> = () => {
         }, [email, resetCode]);
         return null;
     }
+
+    const validationScheme: ObjectSchema<ResetPasswordFormData> = Yup.object({
+        newPassword: Yup.string()
+            .required(t("validation_password_required"))
+            .min(6, t("validation_password_min_length", { count: 6 })),
+        confirmNewPassword: Yup.string()
+            .required(t("validation_password_confirm_required"))
+            .oneOf([Yup.ref('newPassword')], t("validation_password_confirm"))
+    });
     
     const {
         register,
@@ -48,7 +54,7 @@ const ResetPasswordPage: FC<ResetPasswordPageProps> = () => {
     const resetPasswordMutation = useMutation({
         mutationFn: (data: ResetPasswordFormData) => resetPassword(email, resetCode, data.newPassword),
         onSuccess: async () => {
-            toast.success('Password reset successfully');
+            toast.success(t("register_toast_success"));
             navigate('/login');
         },
         onError: async (error: AxiosError<AspNetValidationProblem>) => {
@@ -56,10 +62,10 @@ const ResetPasswordPage: FC<ResetPasswordPageProps> = () => {
             if (errors) {
                 for (let key in errors) {
                     let message = errors[key].join(' ');
-                    toast.error(message, { duration: 10000 });
+                    toast.error(t("reset_password_toast_error", { message: message }), { duration: 10000 });
                 }
             } else {
-                toast.error('An error occurred while registering the user. ' + error.message, { duration: 10000 });
+                toast.error(t("reset_password_toast_error", { message: error.message }), { duration: 10000 });
             }
         }
     });
@@ -70,13 +76,13 @@ const ResetPasswordPage: FC<ResetPasswordPageProps> = () => {
     
     return (
         <Container>
-            <h2 className="my-10 text-xl font-bold">Reset your password</h2>
+            <h2 className="my-10 text-xl font-bold">{t("reset_password_title")}</h2>
             <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-xl px-5 flex-col flex-grow space-y-5">
                 <div className="space-y-4">
                     <FormInput
                         required
                         id="newPassword"
-                        label="New password"
+                        label={t("reset_password_label_new_password")}
                         type="password"
                         register={register}
                         errorMessage={errors.newPassword?.message}
@@ -86,7 +92,7 @@ const ResetPasswordPage: FC<ResetPasswordPageProps> = () => {
                     <FormInput
                         required
                         id="confirmNewPassword"
-                        label="Confirm new password"
+                        label={t("reset_password_label_new_password_confirm")}
                         type="password"
                         register={register}
                         errorMessage={errors.confirmNewPassword?.message}
@@ -94,7 +100,7 @@ const ResetPasswordPage: FC<ResetPasswordPageProps> = () => {
                 </div>
                 <div className="w-full flex justify-center mt-10">
                     <ButtonCallToAction size="lg" type="submit" className="py-1.5">
-                        Reset password
+                        {t("reset_password_submit")}
                     </ButtonCallToAction>
                 </div>
             </form>

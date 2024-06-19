@@ -1,4 +1,3 @@
-import './WishlistView.css'
 import {FC, useState} from "react";
 import {Navigate, useParams} from "react-router-dom";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
@@ -20,30 +19,19 @@ import {LinkIcon, PlusIcon, TrashIcon} from "@heroicons/react/20/solid";
 import FormInput from "../FormInput/FormInput.tsx";
 import {XMarkIcon} from "@heroicons/react/24/outline";
 import Modal from "../Modal/Modal.tsx";
+import {useTranslation} from "react-i18next";
 
 interface WishlistViewProps {
 }
 
-const itemSchema: ObjectSchema<ItemCreateRequest> = Yup.object({
-    name: Yup.string().required('Name is required'),
-    url: Yup.string().url('Invalid URL'),
-    price: Yup.number()
-        .nullable()
-        .transform((val, originalValue) => originalValue === "" ? undefined : val)
-        .typeError('Price must be a number')
-        .positive('Price must be positive')
-});
-
 const WishlistView: FC<WishlistViewProps> = () => {
+    const { t } = useTranslation();
     const [openAddItemModal, setOpenAddItemModal] = useState(false);
     const [openDeleteWishlistModal, setOpenDeleteWishlistModal] = useState(false);
 
     const queryClient = useQueryClient();
     const {guid} = useParams();
-    if (!guid) {
-        toast.error('No wishlist guid provided');
-        return <Navigate to="/"/>;
-    }
+    if (!guid) return <Navigate to="/" />;
 
     const {
         isSuccess: isUserConnected
@@ -73,7 +61,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
         mutationFn: deleteWishlist,
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
-            toast.success('Wishlist deleted');
+            toast.success(t("wishlist_delete_toast_success"));
         },
     });
 
@@ -81,9 +69,18 @@ const WishlistView: FC<WishlistViewProps> = () => {
         mutationFn: (data: ItemCreateRequest) => createItem(guid, data),
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
-            toast.success('Item added');
+            toast.success(t("wishlist_item_create_toast_success"));
             itemReset();
         },
+    });
+
+    const itemSchema: ObjectSchema<ItemCreateRequest> = Yup.object({
+        name: Yup.string().required(t("validation_name_required")),
+        url: Yup.string().url(t("validation_url_invalid")),
+        price: Yup.number()
+            .nullable()
+            .transform((val, originalValue) => originalValue === "" ? undefined : val)
+            .min(0, t("validation_no_negative_price"))
     });
 
     const {
@@ -91,20 +88,25 @@ const WishlistView: FC<WishlistViewProps> = () => {
         handleSubmit: itemHandleSubmit,
         formState: {errors: itemErrors, isDirty},
         reset: itemReset
-    } = useForm<ItemCreateRequest>({resolver: yupResolver(itemSchema), mode: 'onChange', defaultValues: {
+    } = useForm<ItemCreateRequest>({resolver: yupResolver(itemSchema), mode: 'onSubmit', defaultValues: {
         name: '',
         url: '',
         price: null
     }});
 
-    const onAddItem = async (data: ItemCreateRequest) => {
+    const onSubmit = async (data: ItemCreateRequest) => {
         await createItemMutation.mutateAsync(data);
         setOpenAddItemModal(false);
+    }
+
+    const onAddItem = () => {
+        itemReset();
+        setOpenAddItemModal(true);
     }
     
     const onCopyLink = () => {
         navigator.clipboard.writeText(window.location.href).then(_ =>
-            toast.success('Link copied to clipboard')
+            toast.success(t("wishlist_link_copy_toast_success"))
         );
     }
     
@@ -123,16 +125,16 @@ const WishlistView: FC<WishlistViewProps> = () => {
             <Container>
 
                 {/* Add item modal */}
-                <Modal title="Add a new item" openModal={openAddItemModal} onClose={(value: boolean) => {
+                <Modal title={t("wishlist_item_create_modal_title")} openModal={openAddItemModal} onClose={(value: boolean) => {
                     setOpenAddItemModal(value);
                     itemReset();
                 }}>
-                    <form onSubmit={itemHandleSubmit(onAddItem)} className="flex flex-col gap-y-4 py-4 px-8">
-                        <FormInput required id="name" label="Name" register={itemRegister}
+                    <form onSubmit={itemHandleSubmit(onSubmit)} className="flex flex-col gap-y-4 py-4 px-8">
+                        <FormInput required id="name" label={t("wishlist_item_edit_label_name")} register={itemRegister}
                                    errorMessage={itemErrors.name?.message}/>
-                        <FormInput id="price" type="number" label="Price (€)"
+                        <FormInput id="price" type="number" label={t("wishlist_item_edit_label_price")}
                                    register={itemRegister} errorMessage={itemErrors.price?.message}/>
-                        <FormInput id="url" label="Url" register={itemRegister}
+                        <FormInput id="url" label={t("wishlist_item_edit_label_url")} register={itemRegister}
                                    errorMessage={itemErrors.url?.message}/>
                         <div className="flex flex-row gap-4 m-auto">
                             <div className="flex-1">
@@ -140,12 +142,12 @@ const WishlistView: FC<WishlistViewProps> = () => {
                                     type="button"
                                     onClick={() => setOpenAddItemModal(false)}
                                     className="rounded-md bg-red-500 shadow-btn inline-flex gap-x-3 items-center px-4 py-2 text-white">
-                                    <XMarkIcon className="h-4 w-4" aria-hidden="true"/> Cancel
+                                    <XMarkIcon className="h-4 w-4" aria-hidden="true"/> {t("wishlist_item_create_cancel")}
                                 </button>
                             </div>
                             <div className="flex-1">
                                 <ButtonCallToAction size="md" className="gap-x-3" type="submit" disabled={!isDirty}>
-                                    <PlusIcon className="h-4 w-4" aria-hidden="true"/> Add
+                                    <PlusIcon className="h-4 w-4" aria-hidden="true"/> {t("wishlist_item_create_submit")}
                                 </ButtonCallToAction>
                             </div>
                         </div>
@@ -154,16 +156,16 @@ const WishlistView: FC<WishlistViewProps> = () => {
                 
                 <Modal openModal={openDeleteWishlistModal} onClose={setOpenDeleteWishlistModal}>
                     <div className="text-center p-4 space-y-2">
-                        <h2 className="p-2">Are you sure you want to delete this wishlist ?</h2>
+                        <h2 className="p-2">{t("wishlist_delete_modal_title")}</h2>
                         <div className="flex">
                             <div className="flex flex-1 justify-center">
                                 <button type="button" className="shadow-md bg-secondary-300 rounded-md py-1.5 px-4 text-white" onClick={() => setOpenDeleteWishlistModal(false)}>
-                                    Cancel
+                                    {t("wishlist_delete_modal_cancel")}
                                 </button>
                             </div>
                             <div className="flex flex-1 justify-center">
                                 <button type="button" className="flex flex-inline gap-x-2 items-center shadow-md bg-red-500 rounded-md py-1.5 px-2 sm:px-4 text-white" onClick={() => deleteWishlistMutation.mutateAsync(guid)}>
-                                    <TrashIcon className="h-4 w-4 text-white"/>Delete wishlist
+                                    <TrashIcon className="h-4 w-4 text-white"/>{t("wishlist_delete_modal_submit")}
                                 </button>
                             </div>
                         </div>
@@ -175,7 +177,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
                     <h1 className="text-3xl font-bold">{wishlist.name}</h1>
                     {
                         !wishlist.isOwner && ownerDisplayName
-                            ? <p className="italic">by {ownerDisplayName}</p>
+                            ? <p className="italic">{t("wishlist_by", { ownerName: ownerDisplayName })}</p>
                             : null
                     }
                 </div>
@@ -184,7 +186,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
                 {
                     wishlist.items.length === 0
                         ? (
-                            <h5 className="py-20">This wishlist is empty</h5>
+                            <h5 className="py-20">{t("wishlist_empty")}</h5>
                         )
                         : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 px-8 mb-10 w-full max-w-3xl">
@@ -201,16 +203,16 @@ const WishlistView: FC<WishlistViewProps> = () => {
                         ? (
                             <div className="flex flex-col gap-y-4 items-center">
                                 <div className="justify-center hidden sm:flex gap-x-2">
-                                    <ButtonCallToAction size="md" type="button" onClick={() => setOpenAddItemModal(true)}>
+                                    <ButtonCallToAction size="md" type="button" onClick={onAddItem}>
                                         <PlusIcon className="h-6 w-6" aria-hidden={true}/>
-                                        Add item
+                                        {t("wishlist_add_wish")}
                                     </ButtonCallToAction>
                                     <button type="button" onClick={onCopyLink} className="flex flex-auto rounded-md text-white bg-gradient-to-br from-violet-500 to-fuchsia-500 items-center px-2 text-sm gap-x-1">
                                         <LinkIcon className="h-5 w-5" aria-hidden={true}/>
-                                        Copy link
+                                        {t("wishlist_copy_link")}
                                     </button>
                                     <button className="flex flex-inline shadow-btn bg-red-500 rounded-md text-white px-3 py-1.5 items-center gap-x-3 text-sm" onClick={() => setOpenDeleteWishlistModal(true)}>
-                                        <TrashIcon className="h-4 w-4 text-white"/>Delete wishlist
+                                        <TrashIcon className="h-4 w-4 text-white"/>{t("wishlist_delete")}
                                     </button>
                                 </div>
                                 <div className="fixed bottom-6 right-6 flex gap-x-3 items-center">
