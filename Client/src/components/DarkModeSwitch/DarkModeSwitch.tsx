@@ -1,5 +1,4 @@
 import {useContext} from 'react';
-import './DarkModeSwitch.css';
 import {darkTheme, lightTheme, ThemeContext} from "../../ThemeContext.tsx";
 import {MoonIcon, SunIcon} from "@heroicons/react/24/outline";
 

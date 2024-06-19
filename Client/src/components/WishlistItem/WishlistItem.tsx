@@ -24,6 +24,7 @@ import {User} from "../../models/user.model.ts";
 import {useLocation, useNavigate} from "react-router-dom";
 import Modal from "../Modal/Modal.tsx";
 import { Tooltip } from 'react-tooltip'
+import {useTranslation} from "react-i18next";
 
 interface WishlistItemProps {
     item: Item;
@@ -36,18 +37,9 @@ class EditItemFormData {
     url?: string | null;
 }
 
-const validationScheme = Yup.object({
-    name: Yup.string().required("Name is required"),
-    price: Yup.number()
-        .nullable()
-        .transform((val, originalValue) => originalValue === "" ? undefined : val)
-        .typeError('Price must be a number')
-        .positive('Price must be positive'),
-    url: Yup.string().url("Invalid URL").nullable()
-});
-
 const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
 
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation();
     const queryClient = useQueryClient();
@@ -69,6 +61,15 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
         isSuccess: isUserAuthenticated
     } = useQuery<User>({queryKey: ['user'], queryFn: getCurrentUser, retry: false});
 
+    const validationScheme = Yup.object({
+        name: Yup.string().required(t("validation_name_required")),
+        price: Yup.number()
+            .nullable()
+            .transform((val, originalValue) => originalValue === "" ? undefined : val)
+            .min(0, t("validation_no_negative_price")),
+        url: Yup.string().url(t("validation_url_invalid")).nullable()
+    });
+
     const {
         register,
         reset,
@@ -87,7 +88,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
             setOpenEditModal(false);
-            toast.success('Item updated');
+            toast.success(t("wishlist_item_update_toast_success"));
         },
     });
 
@@ -96,7 +97,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
         mutationFn: () => deleteItem(item.wishlistId, item.id),
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
-            toast.success('Item deleted');
+            toast.success(t("wishlist_item_delete_toast_success"));
         },
     });
 
@@ -104,7 +105,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
         mutationFn: () => pickItem(item.wishlistId, item.id),
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
-            toast.success('Item picked');
+            toast.success(t("wishlist_item_pick_toast_success"));
         },
     });
 
@@ -112,7 +113,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
         mutationFn: () => unpickItem(item.wishlistId, item.id),
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['user', 'wishlist']});
-            toast.success('Item unpicked');
+            toast.success(t("wishlist_item_unpick_toast_success"));
         },
     });
 
@@ -144,21 +145,20 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
     }
 
     return (
-        <div key={item.id}
-             className="flex flex-col divide-y divide-gray-200 rounded-lg bg-surface dark:bg-surfaceDark text-center shadow-elevation">
+        <div key={item.id} className="flex flex-col divide-y divide-gray-200 rounded-lg bg-surface dark:bg-surfaceDark text-center shadow-elevation">
             
             <Modal openModal={openDeleteModal} onClose={setOpenDeleteModal}>
                 <div className="text-center p-4 space-y-2">
-                    <h2 className="p-2">Are you sure you want to delete this item ?</h2>
+                    <h2 className="p-2">{t("wishlist_item_delete_modal_title")}</h2>
                     <div className="flex">
                         <div className="flex flex-1 justify-center">
                             <button type="button" className="shadow-md bg-secondary-300 rounded-md py-1 px-4 text-white" onClick={() => setOpenDeleteModal(false)}>
-                                Cancel
+                                {t("wishlist_item_delete_modal_cancel")}
                             </button>
                         </div>
                         <div className="flex flex-1 justify-center">
                             <button type="button" className="flex flex-inline gap-x-2 items-center shadow-md bg-red-500 rounded-md py-1.5 px-4 text-white" onClick={() => deleteItemMutation.mutate()}>
-                                <TrashIcon className="h-4 w-4 text-white"/>Delete item
+                                <TrashIcon className="h-4 w-4 text-white"/>{t("wishlist_item_delete_modal_submit")}
                             </button>
                         </div>
                     </div>
@@ -167,22 +167,22 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
             
             <Modal openModal={openLoginModal} onClose={setOpenLoginModal}>
                 <div className="flex flex-col gap-y-4 py-4 px-8 text-center">
-                    <p>You need to be logged in to pick an item.</p>
+                    <p>{t("wishlist_item_pick_modal_login_title")}</p>
                     <div className="m-auto">
                         <ButtonCallToAction size="md" className="gap-x-3" onClick={handleLoginRedirect}>
-                            <CheckIcon className="h-4 w-4" aria-hidden="true"/> Log in
+                            <CheckIcon className="h-4 w-4" aria-hidden="true"/> {t("wishlist_item_pick_modal_login_submit")}
                         </ButtonCallToAction>
                     </div>
                 </div>
             </Modal>
             
-            <Modal title="Edit item" openModal={openEditModal} onClose={setOpenEditModal}>
+            <Modal title={t("wishlist_item_edit_modal_title")} openModal={openEditModal} onClose={setOpenEditModal}>
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-y-4 py-4 px-8">
-                    <FormInput required id="name" label="Name" register={register}
+                    <FormInput required id="name" label={t("wishlist_item_edit_label_name")} register={register}
                                errorMessage={errors.name?.message}/>
-                    <FormInput autoFocus id="price" type="number" label="Price (€)"
+                    <FormInput autoFocus id="price" type="number" label={t("wishlist_item_edit_label_price")}
                                register={register} errorMessage={errors.price?.message}/>
-                    <FormInput autoFocus id="url" label="Url" register={register}
+                    <FormInput autoFocus id="url" label={t("wishlist_item_edit_label_url")} register={register}
                                errorMessage={errors.url?.message}/>
                     <div className="flex flex-row gap-4 m-auto">
                         <div className="flex-1">
@@ -190,12 +190,12 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                                 type="button"
                                 onClick={() => setOpenEditModal(false)}
                                 className="rounded-md bg-red-500 shadow-btn inline-flex gap-x-3 items-center px-4 py-2 text-white">
-                                <XMarkIcon className="h-4 w-4" aria-hidden="true"/> Cancel
+                                <XMarkIcon className="h-4 w-4" aria-hidden="true"/> {t("wishlist_item_edit_cancel")}
                             </button>
                         </div>
                         <div className="flex-1">
                             <ButtonCallToAction size="md" className="gap-x-3" type="submit" disabled={!isDirty}>
-                                <CheckIcon className="h-4 w-4" aria-hidden="true"/> Save
+                                <CheckIcon className="h-4 w-4" aria-hidden="true"/> {t("wishlist_item_edit_submit")}
                             </ButtonCallToAction>
                         </div>
                     </div>
@@ -207,8 +207,8 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                     <h2>{item.name}</h2>
                     {
                         item.price
-                            ? <p className="text-sm text-gray-500">{item.price} €</p>
-                            : <p className="text-xs text-gray-500 italic">No price</p>
+                            ? <p className="text-sm text-gray-500">{t("wishlist_item_price", { price: item.price })}</p>
+                            : <p className="text-xs text-gray-500 italic">{t("wishlist_item_no_price")}</p>
                     }
                 </div>
                 {
@@ -217,7 +217,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                             ? (
                                 <div className="flex flex-row gap-2 pt-2">
                                     <div className="content-center">
-                                        <p className="text-sm">Buyers:</p>
+                                        <p className="text-sm">{t("wishlist_item_buyers_title")}</p>
                                     </div>
                                     <div className="flex flex-row gap-3 flex-wrap">
                                         {
@@ -242,7 +242,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                             )
                             : (
                                 <div className="text-left flex-1 content-center pt-2 text-xs">
-                                    No buyers yet.
+                                    {t("wishlist_item_no_buyers")}
                                 </div>
                             )
                         : null
@@ -257,7 +257,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                                     className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-bl-lg border border-transparent py-3 text-sm font-semibold focus-visible:outline-0"
                                     onClick={onEdit}
                                 >
-                                    <PencilSquareIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/> Edit
+                                    <PencilSquareIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/> {t("wishlist_item_edit_button")}
                                 </button>
                             )
                             :
@@ -271,7 +271,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                                         >
                                             <LinkIcon className="h-5 w-5 text-gray-400"
                                                       aria-hidden="true"/>
-                                            Visit website
+                                            {t("wishlist_item_link_button")}
                                         </a>
                                     </div>
                                 )
@@ -286,7 +286,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                                         className="relative inline-flex w-0 flex-1 items-center justify-center gap-x-3 rounded-br-lg border border-transparent py-3 text-sm font-semibold focus-visible:outline-0"
                                         onClick={() => setOpenDeleteModal(true)}
                                     >
-                                        <TrashIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/> Delete
+                                        <TrashIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/> {t("wishlist_item_delete_button")}
                                     </button>
                                 )
                                 : isUserAuthenticated && item.buyerIds.includes(user.id)
@@ -297,7 +297,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                                             onClick={() => unpickMutation.mutate()}
                                         >
                                             <ArrowRightStartOnRectangleIcon className="h-5 w-5 text-gray-400"
-                                                                         aria-hidden="true"/> Unpick
+                                                                         aria-hidden="true"/> {t("wishlist_item_unpick_button")}
                                         </button>
                                     )
                                     : (
@@ -307,7 +307,7 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                                             onClick={() => onPick()}
                                         >
                                             <ArrowLeftEndOnRectangleIcon className="h-5 w-5 text-gray-400"
-                                                                            aria-hidden="true"/> Pick
+                                                                            aria-hidden="true"/> {t("wishlist_item_pick_button")}
                                         </button>
                                     )
 

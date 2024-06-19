@@ -9,8 +9,10 @@ import {Bars3Icon, XMarkIcon} from "@heroicons/react/24/outline";
 import {NavigationButton} from "../NavigationButton/NavigationButton.tsx";
 import {Fragment, useState} from "react";
 import {Dialog, Transition} from '@headlessui/react'
+import {useTranslation} from "react-i18next";
 
 const NavigationBar = () => {
+    const { t } = useTranslation();
     const queryClient = useQueryClient();
     const {isSuccess: isUserLoggedIn} = useQuery<User>({
         queryKey: ['user'],
@@ -22,7 +24,7 @@ const NavigationBar = () => {
         mutationFn: logout,
         onSuccess: async () => {
             await queryClient.invalidateQueries({queryKey: ['user']});
-            toast.success('Logged out successfully');
+            toast.success(t("logout_toast_success"));
             setMobileMenuOpen(false);
         }
     });
@@ -43,12 +45,11 @@ const NavigationBar = () => {
                         type="button"
                         className={"-m-1.5 p-1.5 text-3xl"}
                         onClick={() => navigate("/")}>
-                        ✨ <span className="hidden md:inline">Wish me</span>
-                        <span className="sr-only">Wish me</span>
+                        ✨ <span className="hidden md:inline">{t("title")}</span>
                     </button>
                 </div>
                 <button className="flex-1 md:hidden text-center text-3xl" onClick={() => navigate("/")}>
-                    Wish me
+                    {t("title")}
                 </button>
                 <div className="flex mx-2 lg:hidden">
                     <button
@@ -56,16 +57,15 @@ const NavigationBar = () => {
                         className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5"
                         onClick={() => setMobileMenuOpen(true)}
                     >
-                        <span className="sr-only">Open main menu</span>
                         <Bars3Icon className="h-6 w-6" aria-hidden="true"/>
                     </button>
                 </div>
                 {
                     isUserLoggedIn
                         ? <div className="hidden lg:flex lg:gap-x-12">
-                            <NavigationButton label="My Wishlists" route="/"/>
-                            <NavigationButton label="Recent" route="/recent" />
-                            <NavigationButton label="Profile" route="/profile"/>
+                            <NavigationButton label={t("navigation_label_my_wishlists")} route="/"/>
+                            <NavigationButton label={t("navigation_label_recent")} route="/recent" />
+                            <NavigationButton label={t("navigation_label_profile")} route="/profile"/>
                         </div>
                         : null
                 }
@@ -76,13 +76,13 @@ const NavigationBar = () => {
                                 type="button"
                                 className="text-sm font-semibold leading-6"
                                 onClick={() => logoutMutation.mutate()}>
-                                Log out
+                                {t("navigation_logout")}
                             </button>
                             : <button
                                 type="button"
                                 className="text-sm font-semibold leading-6"
                                 onClick={handleLoginRedirect}>
-                                Log In
+                                {t("navigation_login")}
                             </button>
                     }
                     <DarkModeSwitch/>
@@ -125,7 +125,6 @@ const NavigationBar = () => {
                                     <DarkModeSwitch/>
                                     <button type="button" className="-m-2.5 rounded-md p-2.5"
                                             onClick={() => setMobileMenuOpen(false)}>
-                                        <span className="sr-only">Close menu</span>
                                         <XMarkIcon className="h-6 w-6" aria-hidden="true"/>
                                     </button>
                                 </div>
@@ -139,19 +138,19 @@ const NavigationBar = () => {
                                                         className={"-mx-3 block rounded-lg px-3 py-2 leading-7 hover:bg-background" + (location.pathname === '/' ? ' font-bold text-lg' : '')}
                                                         onClick={() => navigate("/")}
                                                 >
-                                                    My Wishlists
+                                                    {t("navigation_label_my_wishlists")}
                                                 </button>
                                                 <button type="button"
                                                         className={"-mx-3 block rounded-lg px-3 py-2 leading-7 hover:bg-background" + (location.pathname === '/recent' ? ' font-bold text-lg' : '')}
                                                         onClick={() => navigate("/recent")}
                                                 >
-                                                    Recent
+                                                    {t("navigation_label_recent")}
                                                 </button>
                                                 <button type="button"
                                                         className={"-mx-3 block rounded-lg px-3 py-2 leading-7" + (location.pathname === '/profile' ? ' font-bold text-lg' : '')}
                                                         onClick={() => navigate("/profile")}
                                                 >
-                                                    Profile
+                                                    {t("navigation_label_profile")}
                                                 </button>
                                             </div>
                                             : null
@@ -163,13 +162,13 @@ const NavigationBar = () => {
                                                     type="button"
                                                     className="-mx-3 block rounded-lg px-3 py-2.5 leading-7"
                                                     onClick={() => logoutMutation.mutate()}>
-                                                    Log out
+                                                    {t("navigation_logout")}
                                                 </button>
                                                 : <button
                                                     type="button"
                                                     className="-mx-3 block rounded-lg px-3 py-2.5 leading-7"
                                                     onClick={handleLoginRedirect}>
-                                                    Log In
+                                                    {t("navigation_login")}
                                                 </button>
                                         }
                                     </div>

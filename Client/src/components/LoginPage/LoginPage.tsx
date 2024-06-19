@@ -13,6 +13,7 @@ import FormInput from "../FormInput/FormInput.tsx";
 import FormCheckbox from "../FormCheckbox/FormCheckbox.tsx";
 import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
 import {GoogleLogin} from "@react-oauth/google";
+import {useTranslation} from "react-i18next";
 
 class LoginFormData {
     email: string = '';
@@ -20,19 +21,20 @@ class LoginFormData {
     rememberMe: boolean = false;
 }
 
-const validationScheme: ObjectSchema<LoginFormData> = Yup.object({
-    email: Yup.string()
-        .required('Email is required')
-        .email('Invalid email address'),
-    password: Yup.string()
-        .required('Password is required'),
-    rememberMe: Yup.boolean().defined()
-});
-
 const LoginPage = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const location = useLocation()
     const from = (location.state as { from: string })?.from || '/';
+
+    const validationScheme: ObjectSchema<LoginFormData> = Yup.object({
+        email: Yup.string()
+            .email(t("validation_email"))
+            .required(t("validation_email_required")),
+        password: Yup.string()
+            .required(t("validation_password_required")),
+        rememberMe: Yup.boolean().defined()
+    });
 
     const {
         register,
@@ -43,11 +45,11 @@ const LoginPage = () => {
     const mutation = useMutation({
         mutationFn: (data: UserLoginRequest) => login(data),
         onSuccess: async () => {
-            toast.success('Logged in successfully');
+            toast.success(t("login_toast_success"));
             navigate(from);
         },
         onError: (_: any) => {
-            toast.error('Incorrect email or password');
+            toast.error(t("login_toast_error"));
         }
     });
 
@@ -64,19 +66,19 @@ const LoginPage = () => {
         if (response.credential) {
             const { credential } = response;
             await signInWithGoogle(credential);
-            toast.success('Logged in successfully');
+            toast.success(t("login_toast_success"));
             navigate(from);
         }
     };
     
     return (
         <AuthenticationPage>
-            <h2 className="text-2xl mb-6">Login</h2>
-            <div className="flex flex-1 flex-col gap-y-6 w-full items-center">
+            <h2 className="text-2xl mb-6">{t("login_title")}</h2>
+            <div className="flex flex-1 flex-col gap-y-2.5 w-full items-center">
                 <GoogleLogin onSuccess={handleGoogleLoginSuccess} />
                 <div className="inline-flex items-center justify-center w-full">
                     <hr className="absolute w-64 h-px bg-gray-200 border-0 dark:bg-gray-700"/>
-                    <span className="px-3 font-medium text-gray-900 bg-background left-1/2 z-0">or</span>
+                    <span className="px-3 font-medium text-gray-900 bg-background left-1/2 z-0">{t("login_separator")}</span>
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-lg">
                     <div className="space-y-4">
@@ -84,7 +86,7 @@ const LoginPage = () => {
                             required
                             autoFocus
                             id="email"
-                            label="Email Address"
+                            label={t("login_label_email")}
                             type="email"
                             register={register}
                             errorMessage={errors.email?.message}
@@ -92,29 +94,30 @@ const LoginPage = () => {
                         <FormInput
                             required
                             id="password"
-                            label="Password"
+                            label={t("login_label_password")}
                             type="password"
                             register={register}
                             errorMessage={errors.password?.message}
                         />
-                        <FormCheckbox id="rememberMe" label="Remember me" register={register}/>
+                        <FormCheckbox id="rememberMe" label={t("login_label_remember")} register={register}/>
                     </div>
                     <div className="flex flex-col sm:flex-row text-sm mt-6">
                         <div className="flex flex-grow justify-end sm:justify-start">
                             <button type="button" className="underline" onClick={() => navigate("/forgotPassword")}>
-                                Forgot password ?
+                                {t("login_forgot_password")}
                             </button>
                         </div>
-                        <div className="flex justify-end mt-1 sm:mt-0">
+                        <div className="flex justify-end mt-1 sm:mt-0 gap-x-1">
+                            {t("login_register")}
                             <button type="button" className="underline"
                                     onClick={() => navigate("/register", {state: {from}})}>
-                                Don't have an account? Sign Up
+                                {t("login_register_link")}
                             </button>
                         </div>
                     </div>
                     <div className="w-full flex gap-y-4 justify-center mt-10">
                         <ButtonCallToAction size="lg" type="submit">
-                            Login
+                            {t("login_submit")}
                         </ButtonCallToAction>
                     </div>
                 </form>

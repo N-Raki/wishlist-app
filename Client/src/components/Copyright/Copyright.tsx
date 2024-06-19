@@ -1,4 +1,3 @@
-import './Copyright.css';
 import {FC} from "react";
 
 interface CopyrightProps {
