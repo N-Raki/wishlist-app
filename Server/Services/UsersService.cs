@@ -23,4 +23,9 @@ internal sealed class UsersService(IUsersRepository usersRepository) : IUsersSer
 		user.RecentWishlistIds.Add(wishlistId);
 		await usersRepository.UpdateUserAsync(user, cancellationToken);
 	}
+
+	public Task UpdateUserAsync(User user, CancellationToken cancellationToken = default)
+	{
+		return usersRepository.UpdateUserAsync(user, cancellationToken);
+	}
 }

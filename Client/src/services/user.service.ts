@@ -23,3 +23,13 @@ export async function getUserDisplayName(userId: string): Promise<string> {
         throw error;
     }
 }
+
+export async function changeDisplayName(displayName: string): Promise<void> {
+    try {
+        await axios.put<void>('/api/users/me/displayname', { displayName }, {
+            withCredentials: true
+        });
+    } catch (error) {
+        throw error;
+    }
+}
