@@ -210,6 +210,16 @@ const WishlistItem: FC<WishlistItemProps> = ({item, mode}) => {
                             ? <p className="text-sm text-gray-500">{t("wishlist_item_price", { price: item.price })}</p>
                             : <p className="text-xs text-gray-500 italic">{t("wishlist_item_no_price")}</p>
                     }
+                    {
+                        mode == "owner" && item.url
+                            ? (
+                                <button className="flex gap-x-1 text-left text-xs text-blue-500 items-end mt-2" onClick={() => window.open(item.url!, "_blank")}>
+                                    <LinkIcon className="h-5 w-5 text-gray-400" aria-hidden="true"/>
+                                    {t("wishlist_item_link_button")}
+                                </button>
+                            )
+                            : null
+                    }
                 </div>
                 {
                     mode == "user"
