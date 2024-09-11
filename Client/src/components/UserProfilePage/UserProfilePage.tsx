@@ -7,7 +7,7 @@ import {useMutation, useQuery} from "@tanstack/react-query";
 import {changePassword} from "../../services/auth.service.ts";
 import toast from "react-hot-toast";
 import {User} from "../../models/user.model.ts";
-import {getCurrentUser} from "../../services/user.service.ts";
+import {changeDisplayName, getCurrentUser} from "../../services/user.service.ts";
 import {useNavigate} from "react-router-dom";
 import {AxiosError} from "axios";
 import {AspNetValidationProblem} from "../../models/errors/AspNetValidationProblem.ts";
@@ -22,14 +22,17 @@ class ChangePasswordFormData {
     confirmNewPassword: string = '';
 }
 
-interface UserProfilePageProps {
+class ChangeDisplayNameFormData {
+    displayName: string = '';
 }
+
+interface UserProfilePageProps { }
 
 const UserProfilePage: FC<UserProfilePageProps> = () => {
     const { t } = useTranslation();
     const userQuery = useQuery<User>({queryKey: ['user'], queryFn: getCurrentUser, retry: false});
 
-    const validationScheme: ObjectSchema<ChangePasswordFormData> = Yup.object({
+    const changePasswordValidationScheme: ObjectSchema<ChangePasswordFormData> = Yup.object({
         currentPassword: Yup.string()
             .required(t("validation_password_current_required")),
         newPassword: Yup.string()
@@ -41,12 +44,24 @@ const UserProfilePage: FC<UserProfilePageProps> = () => {
             .oneOf([Yup.ref('newPassword')], t("validation_password_confirm"))
     });
     
+    const displayNameValidationScheme: ObjectSchema<ChangeDisplayNameFormData> = Yup.object({
+        displayName: Yup.string()
+            .required(t("validation_display_name_required"))
+    });
+    
     const {
         register: changePasswordRegister,
         handleSubmit: changePasswordHandleSubmit,
         formState: {errors: changePasswordErrors},
         reset: changePasswordReset
-    } = useForm<ChangePasswordFormData>({resolver: yupResolver(validationScheme), mode: 'onSubmit'});
+    } = useForm<ChangePasswordFormData>({resolver: yupResolver(changePasswordValidationScheme), mode: 'onSubmit'});
+    
+    const {
+        register: changeDisplayNameRegister,
+        handleSubmit: changeDisplayNameHandleSubmit,
+        formState: {errors: changeDisplayNameErrors, isDirty: isDisplayNameDirty},
+        reset: changeDisplayNameReset
+    } = useForm<ChangeDisplayNameFormData>({resolver: yupResolver(displayNameValidationScheme), mode: 'onSubmit'});
     
     const changePasswordMutation = useMutation({
         mutationFn: (data: ChangePasswordFormData) => changePassword(data.currentPassword, data.newPassword),
@@ -55,20 +70,42 @@ const UserProfilePage: FC<UserProfilePageProps> = () => {
             changePasswordReset(new ChangePasswordFormData());
         },
         onError: async (error: AxiosError<AspNetValidationProblem>) => {
-        let errors = error.response?.data.errors;
-        if (errors) {
-            for (let key in errors) {
-                let message = errors[key].join(' ');
-                toast.error(t("profile_change_password_toast_error", { message: message }), { duration: 10000 });
+            let errors = error.response?.data.errors;
+            if (errors) {
+                for (let key in errors) {
+                    let message = errors[key].join(' ');
+                    toast.error(t("profile_change_password_toast_error", { message: message }), { duration: 10000 });
+                }
+            } else {
+                toast.error(t("profile_change_password_toast_error", { message: error.message }), { duration: 10000 });
             }
-        } else {
-            toast.error(t("profile_change_password_toast_error", { message: error.message }), { duration: 10000 });
         }
-    }
+    });
+    
+    const changeDisplayNameMutation = useMutation({
+        mutationFn: (data: ChangeDisplayNameFormData) => changeDisplayName(data.displayName),
+        onSuccess: async () => {
+            toast.success(t("profile_change_display_name_toast_success"));
+        },
+        onError: async (error: AxiosError<AspNetValidationProblem>) => {
+            let errors = error.response?.data.errors;
+            if (errors) {
+                for (let key in errors) {
+                    let message = errors[key].join(' ');
+                    toast.error(t("profile_change_display_name_toast_error", { message: message }), { duration: 10000 });
+                }
+            } else {
+                toast.error(t("profile_change_display_name_toast_error", { message: error.message }), { duration: 10000 });
+            }
+        }
     });
 
-    const onSubmit = (data: ChangePasswordFormData) => {
+    const onChangePasswordSubmit = (data: ChangePasswordFormData) => {
         changePasswordMutation.mutate(data);
+    }
+    
+    const onChangeDisplayNameSubmit = (data: ChangeDisplayNameFormData) => {
+        if (isDisplayNameDirty) changeDisplayNameMutation.mutate(data);
     }
     
     const navigate = useNavigate();
@@ -78,49 +115,85 @@ const UserProfilePage: FC<UserProfilePageProps> = () => {
             navigate("/");
         }
     }, [userQuery, navigate]);
-    
+
+    useEffect(() => {
+        if (userQuery.isSuccess) {
+            changeDisplayNameReset({
+                displayName: userQuery.data.displayName ?? ''
+            });
+        }
+    }, [userQuery.isSuccess, changeDisplayNameReset]);
+
+
     if (userQuery.isSuccess) {
         return (
             <Container>
-                <h2 className="my-10 text-xl font-bold">{t("profile_change_password_title")}</h2>
-                <form onSubmit={changePasswordHandleSubmit(onSubmit)} className="w-full max-w-xl px-5 flex-col flex-grow space-y-5">
-                    <div className="space-y-4">
-                        <FormInput
-                            required
-                            autoFocus
-                            id="currentPassword"
-                            label={t("profile_change_password_label_current_password")}
-                            type="password"
-                            register={changePasswordRegister}
-                            errorMessage={changePasswordErrors.currentPassword?.message}
-                        />
+                <div className="flex flex-col md:flex-row items-center md:items-start w-full md:w-auto gap-y-2 md:gap-x-8">
+                    <div className="flex flex-col items-center w-full">
+                        <h2 className="my-10 text-xl font-bold text-center">{t("profile_change_display_name_title")}</h2>
+                        <form onSubmit={changeDisplayNameHandleSubmit(onChangeDisplayNameSubmit)}
+                            className="w-full max-w-xl px-5 flex-col flex-grow space-y-5">
+                            <div className="space-y-4">
+                                <FormInput
+                                    required
+                                    autoFocus
+                                    id="displayName"
+                                    label={t("profile_change_display_name_label")}
+                                    type="text"
+                                    register={changeDisplayNameRegister}
+                                    errorMessage={changeDisplayNameErrors.displayName?.message}
+                                />
+                            </div>
+                            <div className="w-full flex justify-center mt-10">
+                                <ButtonCallToAction size="lg" type="submit" className="py-1.5">
+                                    {t("profile_change_display_name_submit")}
+                                </ButtonCallToAction>
+                            </div>
+                        </form>
                     </div>
-                    <div className="space-y-4">
-                        <FormInput
-                            required
-                            id="newPassword"
-                            label={t("profile_change_password_label_new_password")}
-                            type="password"
-                            register={changePasswordRegister}
-                            errorMessage={changePasswordErrors.newPassword?.message}
-                        />
+                    <div className="flex flex-col items-center w-full">
+                        <h2 className="my-10 text-xl font-bold text-center">{t("profile_change_password_title")}</h2>
+                        <form onSubmit={changePasswordHandleSubmit(onChangePasswordSubmit)}
+                              className="w-full max-w-xl px-5 flex-col flex-grow space-y-5">
+                            <div className="space-y-4">
+                                <FormInput
+                                    required
+                                    autoFocus
+                                    id="currentPassword"
+                                    label={t("profile_change_password_label_current_password")}
+                                    type="password"
+                                    register={changePasswordRegister}
+                                    errorMessage={changePasswordErrors.currentPassword?.message}
+                                />
+                            </div>
+                            <div className="space-y-4">
+                                <FormInput
+                                    required
+                                    id="newPassword"
+                                    label={t("profile_change_password_label_new_password")}
+                                    type="password"
+                                    register={changePasswordRegister}
+                                    errorMessage={changePasswordErrors.newPassword?.message}
+                                />
+                            </div>
+                            <div className="space-y-4">
+                                <FormInput
+                                    required
+                                    id="confirmNewPassword"
+                                    label={t("profile_change_password_label_new_password_confirm")}
+                                    type="password"
+                                    register={changePasswordRegister}
+                                    errorMessage={changePasswordErrors.confirmNewPassword?.message}
+                                />
+                            </div>
+                            <div className="w-full flex justify-center mt-10">
+                                <ButtonCallToAction size="lg" type="submit" className="py-1.5">
+                                    {t("profile_change_password_submit")}
+                                </ButtonCallToAction>
+                            </div>
+                        </form>
                     </div>
-                    <div className="space-y-4">
-                        <FormInput
-                            required
-                            id="confirmNewPassword"
-                            label={t("profile_change_password_label_new_password_confirm")}
-                            type="password"
-                            register={changePasswordRegister}
-                            errorMessage={changePasswordErrors.confirmNewPassword?.message}
-                        />
-                    </div>
-                    <div className="w-full flex justify-center mt-10">
-                        <ButtonCallToAction size="lg" type="submit" className="py-1.5">
-                            {t("profile_change_password_submit")}
-                        </ButtonCallToAction>
-                    </div>
-                </form>
+                </div>
             </Container>
         );
     }
