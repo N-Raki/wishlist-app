@@ -158,7 +158,6 @@ const UserProfilePage: FC<UserProfilePageProps> = () => {
                             <div className="space-y-4">
                                 <FormInput
                                     required
-                                    autoFocus
                                     id="currentPassword"
                                     label={t("profile_change_password_label_current_password")}
                                     type="password"
