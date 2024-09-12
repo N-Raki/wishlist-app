@@ -5,7 +5,7 @@ import './index.css'
 import 'react-tooltip/dist/react-tooltip.css'
 import {CustomThemeProvider} from "./ThemeContext.tsx";
 import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
-import HomePage from "./components/HomePage.tsx";
+import HomePage from "./components/Home/HomePage.tsx";
 import LoginPage from "./components/LoginPage/LoginPage.tsx";
 import RegisterPage from "./components/RegisterPage/RegisterPage.tsx";
 import WishlistsCreateForm from "./components/WishlistCreateForm/WishlistsCreateForm.tsx";
@@ -16,7 +16,7 @@ import {ReactQueryDevtools} from '@tanstack/react-query-devtools'
 import UserProfilePage from "./components/UserProfilePage/UserProfilePage.tsx";
 import ForgotPasswordPage from "./components/ForgotPasswordPage/ForgotPasswordPage.tsx";
 import ResetPasswordPage from "./components/ResetPasswordPage/ResetPasswordPage.tsx";
-import RecentPage from "./components/RecentPage/RecentPage.tsx";
+import RecentPage from "./components/Recent/RecentPage.tsx";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 
 const router = createBrowserRouter([

@@ -1,8 +1,8 @@
 import { useTranslation } from "react-i18next";
 import {useNavigate} from "react-router-dom";
-import ButtonCallToAction from "./ButtonCallToAction/ButtonCallToAction.tsx";
-import Container from "./Container/Container.tsx";
-import {useCurrentUser} from "./../hooks/useCurrentUser.ts";
+import ButtonCallToAction from "../ButtonCallToAction/ButtonCallToAction.tsx";
+import Container from "../Container/Container.tsx";
+import {useCurrentUser} from "../../hooks/useCurrentUser.ts";
 import WishlistGrid from "./WishlistGrid.tsx";
 
 function HomePage() {

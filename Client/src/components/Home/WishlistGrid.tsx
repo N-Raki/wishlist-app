@@ -1,4 +1,4 @@
-﻿import {Wishlist} from "../models/wishlist.model.ts";
+﻿import {Wishlist} from "../../models/wishlist.model.ts";
 import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
 import {FC} from "react";
