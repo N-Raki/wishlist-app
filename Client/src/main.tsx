@@ -5,7 +5,7 @@ import './index.css'
 import 'react-tooltip/dist/react-tooltip.css'
 import {CustomThemeProvider} from "./ThemeContext.tsx";
 import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
-import HomePage from "./components/HomePage/HomePage.tsx";
+import HomePage from "./components/HomePage.tsx";
 import LoginPage from "./components/LoginPage/LoginPage.tsx";
 import RegisterPage from "./components/RegisterPage/RegisterPage.tsx";
 import WishlistsCreateForm from "./components/WishlistCreateForm/WishlistsCreateForm.tsx";
