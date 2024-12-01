@@ -2,7 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "main"
+      - "beta"
 
 jobs:
 
@@ -21,7 +23,9 @@ jobs:
         context: ./Server
         file: ./Server/Dockerfile
         push: true
-        tags: rakl/wishlist-server:latest
+        tags: |
+          ${{ github.ref_name == 'main' && 'rakl/wishlist-server:latest' || '' }}
+          ${{ github.ref_name == 'beta' && 'rakl/wishlist-server:beta' || '' }}
 
   build-client:
     runs-on: ubuntu-latest
@@ -38,4 +42,6 @@ jobs:
         context: ./Client
         file: ./Client/Dockerfile
         push: true
-        tags: rakl/wishlist-client:latest
+        tags: |
+          ${{ github.ref_name == 'main' && 'rakl/wishlist-client:latest' || '' }}
+          ${{ github.ref_name == 'beta' && 'rakl/wishlist-client:beta' || '' }}
