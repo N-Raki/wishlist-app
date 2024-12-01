@@ -2,7 +2,7 @@
 
   postgres:
     container_name: wishlist-database
-    image: postgres:latest
+    image: postgres:16-alpine
     environment:
       POSTGRES_DB: wishlist
       POSTGRES_USER: wishlist
@@ -28,6 +28,7 @@
       - Email__SmtpPassword=
     volumes:
       - /etc/letsencrypt:/app/https
+      - ./keys/storage:/keys/storage
     depends_on:
       - postgres
 

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -48,12 +49,13 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 	options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 });
 
+builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo("/keys/storage"));
 builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
 builder.Services.ConfigureApplicationCookie(options =>
 {
 	options.Cookie.HttpOnly = true;
 	options.Cookie.SameSite = SameSiteMode.None;
-	options.ExpireTimeSpan = TimeSpan.FromDays(14);
+	options.ExpireTimeSpan = TimeSpan.FromDays(30);
 	
 	options.Events = new CookieAuthenticationEvents
 	{
