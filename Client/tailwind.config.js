@@ -1,5 +1,3 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
-
 /** @type {import('tailwindcss').Config} */
 export default {
     content: [
@@ -9,7 +7,7 @@ export default {
     darkMode: 'selector',
     theme: {
         fontFamily: {
-            sans: ['Epilogue', ...defaultTheme.fontFamily.sans],
+            sans: ['Epilogue', 'Arial'],
         },
         extend: {
             backgroundImage: {
