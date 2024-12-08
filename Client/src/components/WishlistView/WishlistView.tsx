@@ -1,5 +1,5 @@
 import {FC, useState} from "react";
-import {Navigate, useParams} from "react-router-dom";
+import {Navigate, useLocation, useParams} from "react-router-dom";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {Wishlist} from "../../models/wishlist.model.ts";
 import toast from "react-hot-toast";
@@ -29,12 +29,15 @@ const WishlistView: FC<WishlistViewProps> = () => {
     const [openAddItemModal, setOpenAddItemModal] = useState(false);
     const [openDeleteWishlistModal, setOpenDeleteWishlistModal] = useState(false);
 
+    const location = useLocation();
+    
     const queryClient = useQueryClient();
     const {guid} = useParams();
     if (!guid) return <Navigate to="/" />;
 
     const {
-        isSuccess: isUserConnected
+        isSuccess: isUserConnected,
+        isLoading: userLoading
     } = useQuery<User>({queryKey: ['user'], queryFn: getCurrentUser, retry: false});
 
     const {
@@ -112,7 +115,7 @@ const WishlistView: FC<WishlistViewProps> = () => {
     
     const mode = wishlist?.isOwner ? "owner" : isUserConnected ? "user" : "anonymous";
     
-    if (isLoading) {
+    if (isLoading || userLoading) {
         return <Container>{null}</Container>;
     }
 
@@ -121,6 +124,10 @@ const WishlistView: FC<WishlistViewProps> = () => {
     }
     
     if (isSuccess) {
+        if (mode === "anonymous") {
+            return <Navigate to="/login" state={{from: location.pathname}} />;
+        }
+        
         return (
             <Container>
 
