@@ -23,7 +23,7 @@ const NavigationBar = () => {
     const logoutMutation = useMutation({
         mutationFn: logout,
         onSuccess: async () => {
-            await queryClient.invalidateQueries({queryKey: ['user']});
+            await queryClient.resetQueries({queryKey: ['user']});
             toast.success(t("logout_toast_success"));
             setMobileMenuOpen(false);
         }
