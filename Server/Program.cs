@@ -42,14 +42,19 @@ builder.Services.AddScoped<IItemsRepository, ItemsRepository>();
 builder.Services.AddScoped<IAuthenticationDataProvider, AuthenticationDataProvider>();
 
 // Add emails sender
-builder.Services.AddScoped<IEmailSender<User>, EmailSender>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
 	options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
 });
 
-builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo("/keys/storage"));
+// if dev
+if (builder.Environment.IsProduction())
+{
+	builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo("/keys/storage"));
+}
+
 builder.Services.AddAuthentication(IdentityConstants.ApplicationScheme).AddIdentityCookies();
 builder.Services.ConfigureApplicationCookie(options =>
 {

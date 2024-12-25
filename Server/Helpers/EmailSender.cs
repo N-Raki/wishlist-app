@@ -1,12 +1,11 @@
 using System.Net;
 using System.Net.Mail;
-using Microsoft.AspNetCore.Identity;
 using Server.Models;
 using Server.Models.Options;
 
 namespace Server.Helpers;
 
-public sealed class EmailSender(IConfiguration configuration) : IEmailSender<User>
+public sealed class EmailSender(IConfiguration configuration) : IEmailSender
 {
     public Task SendConfirmationLinkAsync(User user, string email, string confirmationLink)
     {
@@ -23,7 +22,7 @@ public sealed class EmailSender(IConfiguration configuration) : IEmailSender<Use
         throw new NotImplementedException();
     }
 
-    private async Task SendEmailAsync(string email, string subject, string message)
+    public async Task SendEmailAsync(string email, string subject, string message)
     {
         var emailOptions = configuration.GetSection(EmailOptions.Email).Get<EmailOptions>();
         if (emailOptions is null)
