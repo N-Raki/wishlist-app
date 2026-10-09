@@ -1,0 +1,20 @@
+# Roadmap de la refonte
+
+Validée par Raki le 2026-10-09. Chaque chantier se fait dans son propre fil de projet ; ce fichier fait le lien.
+
+## 1. Cadrage — en cours
+- [x] Inventaire de la v1 → [v1.md](v1.md)
+- [x] Spec unifiée (v1 + idées Notion) → [spec.md](spec.md)
+- [ ] Choix de la stack → `decisions/0001-stack.md`
+- [ ] Direction visuelle et maquettes des écrans clés
+
+Rien n'est codé tant que ces quatre points ne sont pas validés.
+
+## 2. Socle et automatisation
+Repo restructuré, tests, CI rapide, preview par PR, preprod, déploiement auto en prod, builds iOS/Android, doc de démarrage courte, base RGPD (politique de confidentialité, export et suppression des données).
+
+## 3. Parité et migration
+Reconstruire les features v1 avec le nouveau design (périmètre « v2.0 » de la spec). Migration des données testée sur une copie de la prod en preprod, bascule de wishme.fr, publication sur les stores.
+
+## 4. Nouvelles features, une par une
+Coups de cœur, connexions supplémentaires, Secret Santa, puis cagnotte (après validation du cadre légal).
