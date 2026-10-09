@@ -1,6 +1,6 @@
 # 0001 — Stack de la v2
 
-Statut : **proposé** (2026-10-09), en attente de validation par Raki.
+Statut : **accepté** (2026-10-09) : Expo + Supabase (option A).
 
 ## Contexte
 - Une seule personne développe et maintient l'application.
@@ -17,7 +17,7 @@ Une seule base de code pour les trois plateformes, avec Expo Router (routes par 
 - **Deux clients séparés** (web + natif) : double travail d'interface pour une personne seule.
 - **Flutter** : rendu web médiocre (canvas, accessibilité et SEO faibles), et aucun code partagé avec l'écosystème JS.
 
-## Backend : à trancher
+## Backend : Supabase (choisi)
 
 | | A. Supabase | B. API .NET retravaillée | C. API TypeScript |
 |---|---|---|---|
@@ -32,7 +32,7 @@ Une seule base de code pour les trois plateformes, avec Expo Router (routes par 
 
 **Recommandation : A (Supabase).** C'est l'option qui retire le plus de code et d'exploitation à une personne seule, tout en gardant Postgres. La règle la plus sensible du produit (le propriétaire ne voit jamais les réservations) se pose au niveau de la base, donc aucune route d'API oubliée ne peut la contourner, ce qui est exactement la faille de la v1.
 
-## Conséquences (si A)
+## Conséquences
 - Monorepo TypeScript : `apps/app` (Expo), `supabase/` (migrations SQL, règles d'accès, fonctions), `packages/` si du code partagé apparaît.
 - Les règles d'accès sont couvertes par des tests SQL (pgTAP) en CI.
 - La v1 (.NET) reste en ligne jusqu'à la bascule, puis est archivée.

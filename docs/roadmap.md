@@ -2,15 +2,15 @@
 
 Validée par Raki le 2026-10-09. Chaque chantier se fait dans son propre fil de projet ; ce fichier fait le lien.
 
-## 1. Cadrage — en cours
+## 1. Cadrage — terminé
 - [x] Inventaire de la v1 → [v1.md](v1.md)
 - [x] Spec unifiée (v1 + idées Notion) → [spec.md](spec.md)
-- [ ] Choix de la stack → `decisions/0001-stack.md`
+- [x] Choix de la stack : Expo + Supabase → [decisions/0001-stack.md](decisions/0001-stack.md)
 - [x] Direction visuelle et maquettes des écrans clés → [design.md](design.md)
 
-Reste : valider le choix du backend (ADR 0001). Rien n'est codé avant.
+Questions ouvertes de la spec (Q1 à Q3) : les propositions s'appliquent tant que Raki ne les corrige pas.
 
-## 2. Socle et automatisation
+## 2. Socle et automatisation — prochaine étape
 Repo restructuré, tests, CI rapide, preview par PR, preprod, déploiement auto en prod, builds iOS/Android, doc de démarrage courte, base RGPD (politique de confidentialité, export et suppression des données).
 
 ## 3. Parité et migration
