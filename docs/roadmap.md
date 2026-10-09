@@ -6,9 +6,9 @@ Validée par Raki le 2026-10-09. Chaque chantier se fait dans son propre fil de 
 - [x] Inventaire de la v1 → [v1.md](v1.md)
 - [x] Spec unifiée (v1 + idées Notion) → [spec.md](spec.md)
 - [ ] Choix de la stack → `decisions/0001-stack.md`
-- [ ] Direction visuelle et maquettes des écrans clés
+- [x] Direction visuelle et maquettes des écrans clés → [design.md](design.md)
 
-Rien n'est codé tant que ces quatre points ne sont pas validés.
+Reste : valider le choix du backend (ADR 0001). Rien n'est codé avant.
 
 ## 2. Socle et automatisation
 Repo restructuré, tests, CI rapide, preview par PR, preprod, déploiement auto en prod, builds iOS/Android, doc de démarrage courte, base RGPD (politique de confidentialité, export et suppression des données).
