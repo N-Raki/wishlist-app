@@ -23,6 +23,8 @@ export const privacyEn: LegalDocument = {
         'Your e-mail address, to sign you in with a one-time code and to write to you about your account.',
         'Your display name, if you choose one, so your loved ones recognise you.',
         'When your account was created and when you last signed in, and the sign-in methods you use.',
+        'Your lists and wishes, with what you write in them (name, price, link, details).',
+        'The wishes you reserve on your loved ones’ lists, and the lists you opened while signed in, so you can find them again later.',
         'Technical logs (IP address, date, request), kept by our hosts to secure the service.',
       ],
     },
@@ -43,6 +45,8 @@ export const privacyEn: LegalDocument = {
     {
       heading: 'Who can access it',
       paragraphs: [
+        'People you give a list’s link to see its name, your wishes and your display name.',
+        'When you reserve a wish, other signed-in loved ones who open the list see your display name, so nobody gives the same gift twice and you can club together. The list’s owner never sees who reserved what, nor whether a wish is reserved.',
         `${hosts.data.name} hosts the database and handles sign-in, in its ${hosts.data.region} region.`,
         `${hosts.web.name} hosts the website and delivers app updates.`,
         `${hosts.email.name}, a company based in ${hosts.email.region}, sends the sign-in e-mails.`,

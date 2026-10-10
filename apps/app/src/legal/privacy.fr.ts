@@ -23,6 +23,8 @@ export const privacyFr: LegalDocument = {
         'Votre adresse e-mail, pour vous connecter avec un code à usage unique et vous écrire au sujet de votre compte.',
         'Votre nom d’affichage, si vous en choisissez un, pour que vos proches vous reconnaissent.',
         'Les dates de création du compte et de vos dernières connexions, ainsi que les méthodes de connexion que vous utilisez.',
+        'Vos listes et vos souhaits, avec ce que vous y écrivez (nom, prix, lien, précisions).',
+        'Les souhaits que vous réservez sur les listes de vos proches, et les listes que vous avez ouvertes en étant connecté, pour les retrouver dans l’onglet «\u00A0Proches\u00A0».',
         'Des journaux techniques (adresse IP, date, requête), tenus par nos hébergeurs pour la sécurité du service.',
       ],
     },
@@ -43,6 +45,8 @@ export const privacyFr: LegalDocument = {
     {
       heading: 'Qui y a accès',
       paragraphs: [
+        'Les personnes à qui vous donnez le lien d’une liste voient son nom, vos souhaits et votre nom d’affichage.',
+        'Quand vous réservez un souhait, les autres proches connectés qui ouvrent la liste voient votre nom d’affichage, pour éviter les doublons et s’organiser à plusieurs. Le propriétaire de la liste ne voit jamais qui a réservé, ni si un souhait est réservé.',
         `${hosts.data.name} héberge la base de données et gère la connexion, dans sa région ${hosts.data.region}.`,
         `${hosts.web.name} héberge le site web et distribue les mises à jour de l’application.`,
         `${hosts.email.name}, société établie en ${hosts.email.region}, envoie les e-mails de connexion.`,
