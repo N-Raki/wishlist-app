@@ -7,11 +7,15 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "runtimeVersion": { "policy": "fingerprint" },
+    "runtimeVersion": {
+      "policy": "fingerprint"
+    },
     "ios": {
       "bundleIdentifier": "fr.wishme.app",
       "supportsTablet": true,
-      "config": { "usesNonExemptEncryption": false }
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "fr.wishme.app",
@@ -30,6 +34,14 @@
     "plugins": ["expo-router", "expo-font", "expo-localization", "expo-sqlite", "expo-sharing"],
     "experiments": {
       "typedRoutes": true
+    },
+    "updates": {
+      "url": "https://u.expo.dev/58a38fec-eb93-424b-a6da-90e6cc355514"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "58a38fec-eb93-424b-a6da-90e6cc355514"
+      }
     }
   }
 }

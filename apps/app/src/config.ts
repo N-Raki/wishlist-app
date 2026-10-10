@@ -10,9 +10,14 @@ const environments: Record<Environment, EnvironmentConfig> = {
     supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL ?? 'http://127.0.0.1:54321',
     supabaseKey: 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH',
   },
-  // Filled once the Supabase projects exist (docs/setup.md).
-  preprod: { supabaseUrl: '', supabaseKey: '' },
-  production: { supabaseUrl: '', supabaseKey: '' },
+  preprod: {
+    supabaseUrl: 'https://ixyoubmvdcyejegycbvx.supabase.co',
+    supabaseKey: 'sb_publishable_S5G2bP33kNaTp4xXzD_O8Q_lzgeBCiG',
+  },
+  production: {
+    supabaseUrl: 'https://skleerddpcznjdhxljpc.supabase.co',
+    supabaseKey: 'sb_publishable_wcn5Yv4QW1JWBUANWgmE2w_DqqU5x_N',
+  },
 };
 
 export function resolveConfig(name: string | undefined): EnvironmentConfig & { environment: Environment } {
