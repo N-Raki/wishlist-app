@@ -45,6 +45,7 @@ export const privacyFr: LegalDocument = {
       paragraphs: [
         `${hosts.data.name} héberge la base de données et gère la connexion, dans sa région ${hosts.data.region}.`,
         `${hosts.web.name} héberge le site web et distribue les mises à jour de l’application.`,
+        `${hosts.email.name}, société établie en ${hosts.email.region}, envoie les e-mails de connexion.`,
         'Ces prestataires agissent sur nos instructions et ne peuvent pas utiliser vos données pour leur propre compte. Certains sont établis aux États-Unis\u00A0; les transferts éventuels sont encadrés par les clauses contractuelles types de la Commission européenne.',
       ],
     },
