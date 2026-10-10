@@ -10,7 +10,7 @@ Une seule personne livre sur trois plateformes. Chaque changement doit être vé
 | Environnement | Base de données | Site web | App mobile | Quand |
 |---|---|---|---|---|
 | Local | Supabase CLI (Docker) | `npm run dev` | Expo Go | En développant |
-| Preview | Base preprod | EAS Hosting, alias `pr-<n>` | — | À chaque push sur une PR |
+| Preview | Base preprod | EAS Hosting, adresse propre à chaque déploiement (l'offre gratuite limite les alias à 5) | — | À chaque push sur une PR |
 | Preprod | Projet Supabase `wishme-preprod` | EAS Hosting, alias `preprod` | Canal EAS Update `preprod` | À chaque merge sur `main` |
 | Production | Projet Supabase `wishme-prod` (offre Pro) | EAS Hosting, déploiement `--prod` | Canal EAS Update `production` | Juste après la preprod, si elle a réussi |
 
