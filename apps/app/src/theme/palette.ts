@@ -4,6 +4,12 @@ export const palette = {
   light: {
     background: '#F3F2F5',
     surface: '#FFFFFF',
+    // Quiet chips on the background, like "Reservations stay a surprise" (secondary text 5.3:1).
+    surfaceMuted: '#E9E7EE',
+    // Translucent bars that content scrolls under, with the hairline on their edge.
+    chrome: 'rgba(243, 242, 245, 0.82)',
+    hairline: 'rgba(29, 28, 34, 0.08)',
+    scrim: 'rgba(19, 18, 23, 0.45)',
     text: '#1D1C22',
     textSecondary: '#5F5C68',
     border: '#8A8792',
@@ -20,6 +26,10 @@ export const palette = {
   dark: {
     background: '#131217',
     surface: '#24232A',
+    surfaceMuted: '#2E2D35',
+    chrome: 'rgba(19, 18, 23, 0.82)',
+    hairline: 'rgba(244, 243, 246, 0.1)',
+    scrim: 'rgba(0, 0, 0, 0.6)',
     text: '#F4F3F6',
     textSecondary: '#A9A6B2',
     border: '#8A8792',
