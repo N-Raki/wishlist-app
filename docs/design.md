@@ -19,6 +19,7 @@ Une liste de souhaits est d'abord une vitrine de cadeaux : les photos portent l'
 |---|---|---|
 | Fond | `#F3F2F5` | `#131217` |
 | Surface | `#FFFFFF` | `#24232A` |
+| Surface atténuée (pastilles d'information) | `#E9E7EE` | `#2E2D35` |
 | Texte | `#1D1C22` | `#F4F3F6` |
 | Texte secondaire | `#5F5C68` | `#A9A6B2` |
 | Bord des champs et éléments d'interface | `#8A8792` | `#8A8792` (4,42:1 sur la surface) |
@@ -26,6 +27,8 @@ Une liste de souhaits est d'abord une vitrine de cadeaux : les photos portent l'
 | Coup de cœur | `#E8432E` | `#E8432E` |
 | Succès | `#1D6B44` | `#4CC38A` |
 | Action destructrice (fond, texte dessus) | `#B42318`, texte blanc (6,57:1) | `#FDA29B`, texte `#1D1C22` (8,71:1) |
+| Barre d'onglets (sous le flou) et son filet | fond à 82 %, filet encre à 8 % | fond à 82 %, filet texte à 10 % |
+| Voile derrière les feuilles | `#131217` à 45 % | noir à 60 % |
 | Vignettes sans photo | `#FFE3D9` `#E7E2F5` `#DDEDE3` `#F5EBD8` | `#3A2A27` `#2E2A3A` `#23302A` `#35302A` |
 
 Source unique dans le code : `apps/app/src/theme/palette.ts`. Sur le web, les couleurs passent par des variables CSS pour que le navigateur choisisse le thème clair ou sombre sans flash.

@@ -4,6 +4,7 @@ import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { contentMaxWidth, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
+import { useTabBarInset } from './tabBarInset';
 
 type Props = {
   children: ReactNode;
@@ -17,6 +18,7 @@ type Props = {
 export function Screen({ children, title, description, edges = 'bottom' }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const tabBar = useTabBarInset();
   return (
     <>
       <Head>
@@ -29,7 +31,7 @@ export function Screen({ children, title, description, edges = 'bottom' }: Props
           styles.container,
           {
             paddingTop: (edges === 'all' ? insets.top : 0) + space.xl,
-            paddingBottom: insets.bottom + space.xxl,
+            paddingBottom: Math.max(insets.bottom, tabBar.height) + space.xxl,
           },
         ]}
         keyboardShouldPersistTaps="handled"

@@ -23,6 +23,7 @@ export function TextField({ label, error, ...props }: Props) {
         placeholderTextColor={colors.textSecondary}
         style={[
           styles.input,
+          props.multiline && styles.multiline,
           {
             color: colors.text,
             backgroundColor: colors.surface,
@@ -50,4 +51,5 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: 17,
   },
+  multiline: { minHeight: 104, paddingVertical: space.md, textAlignVertical: 'top' },
 });

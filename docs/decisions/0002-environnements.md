@@ -10,7 +10,7 @@ Une seule personne livre sur trois plateformes. Chaque changement doit être vé
 | Environnement | Base de données | Site web | App mobile | Quand |
 |---|---|---|---|---|
 | Local | Supabase CLI (Docker) | `npm run dev` | Expo Go | En développant |
-| Preview | Base preprod | EAS Hosting, alias `pr-<n>` | — | À chaque push sur une PR |
+| Preview | Base preprod | EAS Hosting, adresse propre à chaque déploiement (l'offre gratuite limite les alias à 5) | — | À chaque push sur une PR |
 | Preprod | Projet Supabase `wishme-preprod` | EAS Hosting, alias `preprod` | Canal EAS Update `preprod` | À chaque merge sur `main` |
 | Production | Projet Supabase `wishme-prod` (offre Pro) | EAS Hosting, déploiement `--prod` | Canal EAS Update `production` | Juste après la preprod, si elle a réussi |
 
@@ -21,7 +21,7 @@ Une seule personne livre sur trois plateformes. Chaque changement doit être vé
 - **Interrupteur** : tant que la variable `DEPLOY_ENABLED` n'est pas à `true`, les workflows de déploiement ne font rien ; la CI tourne déjà.
 
 ### Hébergement web : EAS Hosting
-Même compte que les builds et les mises à jour (un fournisseur de moins), une adresse par PR, et il exécute aussi le rendu serveur d'Expo Router, dont on aura besoin pour les aperçus riches des listes partagées (titre, propriétaire, image).
+Même compte que les builds et les mises à jour (un fournisseur de moins), une adresse par PR, et il exécute aussi le rendu serveur d'Expo Router, dont on aura besoin pour les aperçus riches des listes partagées (titre, propriétaire, image). Le site est donc exporté en mode `server` (`app.json`) : en mode `static`, les adresses dynamiques comme `/wishlists/<id>` renvoyaient une 404.
 
 Écartés : Vercel, Netlify (un compte de plus, rien de plus utile ici) ; Cloudflare Pages reste le plan B si le domaine personnalisé chez Expo demande une offre trop chère.
 
