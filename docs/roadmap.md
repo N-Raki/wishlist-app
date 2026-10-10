@@ -18,10 +18,17 @@ Questions ouvertes de la spec : Q1 et Q2 validées ; Q3, la proposition s'appliq
 - [x] Comptes Supabase, Expo et GitHub créés et branchés → [setup.md](setup.md) (Raki)
 - [x] Premier déploiement preprod et production vérifiés (déployés automatiquement le 2026-10-10, connexion et export vérifiés en prod)
 
-## 3. Parité et migration
-Reconstruire les features v1 avec le nouveau design (périmètre « v2.0 » de la spec). Migration des données testée sur une copie de la prod en preprod, bascule de wishme.fr, publication sur les stores.
+## 3. Parité et migration — en cours
+Reconstruire les features v1 avec le nouveau design (périmètre « 2.0 » de la spec), migrer les données, basculer wishme.fr et publier sur les stores. Une PR par ligne, dans cet ordre :
 
-Déjà identifié : icône et écran de lancement de l'app, CGU, durée de conservation des comptes inactifs, adresse de l'éditeur dans le compte Expo.
+- [x] Données : listes, souhaits, réservations, listes ouvertes ; règles d'accès dans la base, export, registre
+- [ ] Mes listes et ma liste : créer, renommer, supprimer, souhaits sans photo ; barre d'onglets
+- [ ] Photos des souhaits (stockage Supabase)
+- [ ] Liste d'un proche : réserver, cadeau commun, invité et feuille de connexion ; onglet Proches ; partage et aperçu riche du lien
+- [ ] Compte complet : nom d'affichage à la première connexion, Google, Apple, mot de passe
+- [ ] Légal et finitions : CGU, durée des comptes inactifs, icône et écran de lancement, adresse de l'éditeur dans le compte Expo
+- [ ] Migration v1 → v2, répétée en preprod sur une copie de la prod
+- [ ] Bascule : domaine wishme.fr (offre Expo payante), publication sur les stores, information des utilisateurs
 
 ## 4. Nouvelles features, une par une
 Coups de cœur, connexions supplémentaires, liens affiliés, Secret Santa, puis cagnotte (après validation du cadre légal) et premium quand il aura de quoi se vendre.

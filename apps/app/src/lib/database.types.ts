@@ -22,12 +22,164 @@ export type Database = {
         };
         Relationships: [];
       };
+      reservations: {
+        Row: {
+          created_at: string;
+          user_id: string;
+          wish_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          user_id?: string;
+          wish_id: string;
+        };
+        Update: {
+          created_at?: string;
+          user_id?: string;
+          wish_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'reservations_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'reservations_wish_id_fkey';
+            columns: ['wish_id'];
+            isOneToOne: false;
+            referencedRelation: 'wishes';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      wishes: {
+        Row: {
+          created_at: string;
+          currency: string;
+          description: string | null;
+          id: string;
+          name: string;
+          price_cents: number | null;
+          url: string | null;
+          wishlist_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          currency?: string;
+          description?: string | null;
+          id?: string;
+          name: string;
+          price_cents?: number | null;
+          url?: string | null;
+          wishlist_id: string;
+        };
+        Update: {
+          created_at?: string;
+          currency?: string;
+          description?: string | null;
+          id?: string;
+          name?: string;
+          price_cents?: number | null;
+          url?: string | null;
+          wishlist_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'wishes_wishlist_id_fkey';
+            columns: ['wishlist_id'];
+            isOneToOne: false;
+            referencedRelation: 'wishlists';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      wishlist_visits: {
+        Row: {
+          user_id: string;
+          visited_at: string;
+          wishlist_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          user_id: string;
+          visited_at?: string;
+          wishlist_id: string;
+        };
+        Update: {
+          user_id?: string;
+          visited_at?: string;
+          wishlist_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'wishlist_visits_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'wishlist_visits_wishlist_id_fkey';
+            columns: ['wishlist_id'];
+            isOneToOne: false;
+            referencedRelation: 'wishlists';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      wishlists: {
+        Row: {
+          created_at: string;
+          id: string;
+          name: string;
+          owner_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          id?: string;
+          name: string;
+          owner_id?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          name?: string;
+          owner_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'wishlists_owner_id_fkey';
+            columns: ['owner_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
       export_my_data: { Args: Record<PropertyKey, never>; Returns: Json };
+      visited_wishlists: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          name: string;
+          owner_id: string;
+          owner_name: string;
+          visited_at: string;
+          wish_count: number;
+          wishlist_id: string;
+        }[];
+      };
+      wishlist_view: { Args: { wishlist_id: string }; Returns: Json };
     };
     Enums: {
       [_ in never]: never;

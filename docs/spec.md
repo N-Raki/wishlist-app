@@ -64,7 +64,7 @@ Légende : **2.0** = livré à la bascule de wishme.fr (étape 3 de la roadmap) 
 | Réserver / annuler sa réservation ; plusieurs proches peuvent se positionner sur un même souhait (cadeau commun) et se voient | 2.0 |
 | Un proche ne peut réserver qu'une fois le même souhait | 2.0 |
 | Visiteur non connecté : un encart explique qu'il faut se connecter pour réserver, et pourquoi (voir ce qui est déjà pris, éviter les doublons, la surprise reste gardée). « Réserver » ouvre une feuille de connexion ; la réservation se fait dès la connexion réussie, ou on lui dit que le souhait est déjà pris et qu'il peut participer | 2.0 |
-| « Proches » : les personnes dont j'ai déjà consulté une liste, puis leurs listes, de la plus récente à la plus ancienne (remplace la page « récentes ») | 2.0 |
+| « Proches » : les listes des autres que j'ai déjà ouvertes en étant connecté, regroupées par personne, de la plus récente à la plus ancienne (remplace la page « récentes »). Jamais les autres listes de ces personnes : c'est le lien qui donne l'accès | 2.0 |
 | Demander au propriétaire d'ajouter des idées à sa liste | 2.x |
 
 ### Partage
