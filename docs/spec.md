@@ -17,7 +17,7 @@ Disponible sur le web, Android et iOS, en français et en anglais.
 ## Rôles
 | Rôle | Qui | Peut |
 |---|---|---|
-| Visiteur anonyme | A le lien, pas connecté | Lire la liste (sans l'état des réservations, voir Q1) |
+| Visiteur anonyme | A le lien, pas connecté | Lire la liste, sans l'état des réservations ; « Réserver » l'invite à se connecter (voir Q1) |
 | Proche | Connecté, n'est pas le propriétaire | Lire, voir les réservations des autres, réserver, partager |
 | Propriétaire | A créé la liste | Tout modifier, partager ; ne voit jamais les réservations |
 
@@ -63,6 +63,7 @@ Légende : **2.0** = livré à la bascule de wishme.fr (étape 3 de la roadmap) 
 | Voir la liste : nom, propriétaire, souhaits avec prix, image, description, lien | 2.0 |
 | Réserver / annuler sa réservation ; plusieurs proches peuvent se positionner sur un même souhait (cadeau commun) et se voient | 2.0 |
 | Un proche ne peut réserver qu'une fois le même souhait | 2.0 |
+| Visiteur non connecté : un encart explique qu'il faut se connecter pour réserver, et pourquoi (voir ce qui est déjà pris, éviter les doublons, la surprise reste gardée). « Réserver » ouvre une feuille de connexion ; la réservation se fait dès la connexion réussie, ou on lui dit que le souhait est déjà pris et qu'il peut participer | 2.0 |
 | « Proches » : les personnes dont j'ai déjà consulté une liste, puis leurs listes, de la plus récente à la plus ancienne (remplace la page « récentes ») | 2.0 |
 | Demander au propriétaire d'ajouter des idées à sa liste | 2.x |
 
@@ -82,12 +83,13 @@ E-mail d'abord (transactionnel uniquement : codes de connexion, alertes de rése
 
 ## Légal
 - **Avant la bascule (2.0)** : politique de confidentialité, mentions légales, CGU, registre des traitements, suppression et export de compte, hébergement des données dans l'UE, information des utilisateurs actuels de la migration.
-- **Mineurs** : en France, un mineur de moins de 15 ans a besoin de l'accord d'un parent pour qu'on traite ses données. Les listes d'enfants sont un vrai usage : à trancher (Q2).
+- **Mineurs** : voir Q2. Âge minimum de 15 ans pour créer un compte, écrit dans les CGU.
+- **Monétisation** (liens affiliés, premium) : voir [monetisation.md](monetisation.md).
 - **Cagnotte** : encaisser de l'argent pour le reverser à un tiers relève de la réglementation des services de paiement. On ne le fera qu'à travers un prestataire agréé qui porte cette responsabilité (Stripe Connect ou équivalent), avec vérification d'identité du bénéficiaire. Fiscalité et frais à étudier avant de s'engager.
 
 ## Questions ouvertes
 | # | Question | Proposition |
 |---|---|---|
-| Q1 | Un visiteur anonyme voit-il quels souhaits sont réservés ? | Non. Sinon le propriétaire n'a qu'à se déconnecter pour le voir. Il voit la liste et un bouton « Réserver » qui demande de se connecter. |
-| Q2 | Comment gérer une liste pour un enfant ? | Le parent crée la liste sous son compte (le nom de la liste dit pour qui). Pas de compte enfant. |
+| Q1 | Un visiteur anonyme voit-il quels souhaits sont réservés ? | **Validé** (2026-10-10). Non, sinon le propriétaire n'a qu'à se déconnecter pour le voir. Il voit la liste, un encart « Connectez-vous pour réserver » qui explique que ça évite les doublons, et des boutons « Réserver » qui ouvrent la connexion. Maquettes « Invité » dans le canevas. |
+| Q2 | Comment gérer une liste pour un enfant ? | Le parent crée la liste sous son compte (le nom de la liste dit pour qui). Pas de compte enfant en 2.0. Ce que dit la loi : elle n'interdit pas un compte à un moins de 15 ans, mais quand le traitement repose sur le consentement, il faut aussi l'accord d'un parent (loi Informatique et Libertés, art. 45 ; la CNIL admet l'accord d'un seul parent si l'autre peut s'opposer). C'est donc faisable mais lourd (vérifier qui est le parent), d'où la proposition. Un compte enfant rattaché au parent reste possible en 2.x. |
 | Q3 | Une liste a-t-elle une date d'événement ? | À discuter : permettrait d'archiver la liste après la fête et de fixer la date d'ouverture d'une cagnotte. Hors 2.0. |

@@ -11,6 +11,7 @@ Une liste de souhaits est d'abord une vitrine de cadeaux : les photos portent l'
 3. **Le secret est visible.** Côté propriétaire, un rappel « Les réservations restent une surprise » ; aucun état de réservation n'apparaît.
 4. **Un vocabulaire de réservation unique** : « Réserver », « Léa s’en occupe » + « Participer », « Vous et Hugo » (ou « Vous l’offrez avec Hugo » quand la place le permet).
 5. **Actions principales en pilule pleine**, secondaires en pilule à bord.
+6. **L'invité comprend pourquoi se connecter.** Sur la liste, un encart dit ce que la connexion apporte (voir ce qui est pris, pas de doublon, surprise gardée) ; « Réserver » ouvre une feuille de connexion qui rappelle le souhait choisi, et la réservation se fait dès la connexion.
 
 ## Tokens
 
