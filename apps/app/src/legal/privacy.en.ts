@@ -45,6 +45,7 @@ export const privacyEn: LegalDocument = {
       paragraphs: [
         `${hosts.data.name} hosts the database and handles sign-in, in its ${hosts.data.region} region.`,
         `${hosts.web.name} hosts the website and delivers app updates.`,
+        `${hosts.email.name}, a company based in ${hosts.email.region}, sends the sign-in e-mails.`,
         'These providers act on our instructions and cannot use your data for their own purposes. Some are based in the United States; any transfer is covered by the European Commission’s standard contractual clauses.',
       ],
     },

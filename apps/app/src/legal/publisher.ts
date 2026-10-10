@@ -17,4 +17,9 @@ export const hosts = {
     website: 'https://supabase.com',
     region: 'Paris (France)',
   },
+  email: {
+    name: 'Brevo (Sendinblue SAS)',
+    website: 'https://www.brevo.com',
+    region: 'France',
+  },
 };
