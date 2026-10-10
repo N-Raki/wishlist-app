@@ -2,7 +2,7 @@
 // Published as a private individual: under LCEN article 6-III-2 the postal address is held by the hosts, not shown.
 // Once Wish Me earns money it becomes a professional activity and the business details must be added here.
 export const publisher = {
-  name: 'Nathan Coustance (Raki)',
+  name: 'Raki',
   contactEmail: 'wishme@raki.dev',
 };
 

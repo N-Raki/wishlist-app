@@ -57,5 +57,5 @@ Facultatif, dans *Settings → General → Pull Requests* : cocher *Automaticall
 - [ ] `npx eas-cli credentials` dans `apps/app` pour les certificats de signature, puis une clé d'API App Store Connect et un compte de service Google Play pour l'envoi automatique (`eas submit`).
 
 ## 5. Mentions légales
-- [x] Mentions légales : éditeur Nathan Coustance (Raki), à titre non professionnel, contact `wishme@raki.dev`. L'adresse n'est pas publiée (LCEN art. 6-III-2) : elle doit figurer dans le compte Expo (*Account settings → Billing*), c'est-à-dire chez l'hébergeur.
+- [x] Mentions légales : éditeur « Raki », à titre non professionnel (identité complète chez l'hébergeur), contact `wishme@raki.dev`. L'adresse n'est pas publiée (LCEN art. 6-III-2) : elle doit figurer dans le compte Expo (*Account settings → Billing*), c'est-à-dire chez l'hébergeur.
 - [ ] Dès que Wish Me rapporte de l'argent (étape 4), l'activité devient professionnelle : ajouter dans `publisher.ts` la structure (dénomination, SIREN, adresse, éventuellement une domiciliation).
