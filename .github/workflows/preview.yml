@@ -1,0 +1,44 @@
+name: Preview
+
+# Publishes each pull request's website at its own address, backed by the preprod database.
+# Turned on by the DEPLOY_ENABLED repository variable once accounts are set up (docs/setup.md).
+
+on:
+  pull_request:
+
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  web:
+    if: vars.DEPLOY_ENABLED == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: preprod
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Website
+        id: web
+        working-directory: apps/app
+        env:
+          EXPO_PUBLIC_APP_ENV: preprod
+          ALIAS: pr-${{ github.event.pull_request.number }}
+        run: |
+          npx expo export --platform web
+          npx eas-cli deploy --alias "$ALIAS" --environment preview --json > deploy.json
+          echo "url=$(grep -o 'https://[^"]*expo\.app[^"]*' deploy.json | head -1)" >> "$GITHUB_OUTPUT"
+      - name: Link the preview on the pull request
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: preview
+          message: |
+            **Preview:** ${{ steps.web.outputs.url }}
+            Backed by the preprod database; schema changes from this pull request are not applied there until merge.

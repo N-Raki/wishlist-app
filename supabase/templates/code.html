@@ -1,0 +1,25 @@
+{{ if eq .Data.locale "en" }}
+<!doctype html>
+<html lang="en">
+  <body style="margin:0;padding:32px 16px;background:#F3F2F5;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#1D1C22">
+    <div style="max-width:420px;margin:0 auto;background:#FFFFFF;border-radius:24px;padding:32px">
+      <h1 style="margin:0 0 16px;font-size:24px">Your Wish Me code</h1>
+      <p style="margin:0 0 24px;font-size:16px;line-height:1.5;color:#5F5C68">Enter this code in the app to sign in. It expires in 10&nbsp;minutes.</p>
+      <p style="margin:0 0 24px;font-size:36px;font-weight:800;letter-spacing:0.2em">{{ .Token }}</p>
+      <p style="margin:0;font-size:14px;line-height:1.5;color:#5F5C68">If you didn't ask for it, you can ignore this e-mail.</p>
+    </div>
+  </body>
+</html>
+{{ else }}
+<!doctype html>
+<html lang="fr">
+  <body style="margin:0;padding:32px 16px;background:#F3F2F5;font-family:-apple-system,Segoe UI,Roboto,sans-serif;color:#1D1C22">
+    <div style="max-width:420px;margin:0 auto;background:#FFFFFF;border-radius:24px;padding:32px">
+      <h1 style="margin:0 0 16px;font-size:24px">Votre code Wish Me</h1>
+      <p style="margin:0 0 24px;font-size:16px;line-height:1.5;color:#5F5C68">Saisissez ce code dans l’application pour vous connecter. Il expire dans 10&nbsp;minutes.</p>
+      <p style="margin:0 0 24px;font-size:36px;font-weight:800;letter-spacing:0.2em">{{ .Token }}</p>
+      <p style="margin:0;font-size:14px;line-height:1.5;color:#5F5C68">Si vous n’êtes pas à l’origine de cette demande, ignorez simplement cet e-mail.</p>
+    </div>
+  </body>
+</html>
+{{ end }}

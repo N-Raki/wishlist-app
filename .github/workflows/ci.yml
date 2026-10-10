@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  pull_request:
+  workflow_call:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  app:
+    name: Lint, types, unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - run: npx biome ci .
+      - run: npm run typecheck --workspace @wishme/app
+      - run: npm test --workspace @wishme/app
+      - name: Native bundle compiles (the end-to-end tests only cover the web)
+        run: npx expo export --platform android --output-dir "$RUNNER_TEMP/android"
+        working-directory: apps/app
+
+  integration:
+    name: Database, API and end-to-end tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Start Supabase (only the services the app uses)
+        run: npx supabase start -x studio,imgproxy,storage-api,logflare,vector,supavisor,postgres-meta
+      - run: npm run db:test
+      - name: Generated database types are up to date
+        run: npm run db:types && git diff --exit-code apps/app/src/lib/database.types.ts
+      - run: npm run test:api
+      - run: npx playwright install --with-deps chromium
+        working-directory: apps/app
+      - run: npm run e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: apps/app/playwright-report
+          retention-days: 7
