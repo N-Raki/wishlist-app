@@ -10,13 +10,13 @@ Validée par Raki le 2026-10-09. Chaque chantier se fait dans son propre fil de 
 
 Questions ouvertes de la spec : Q1 et Q2 validées ; Q3, la proposition s'appliquent tant que Raki ne les corrige pas. Monétisation proposée → [monetisation.md](monetisation.md).
 
-## 2. Socle et automatisation — en cours
+## 2. Socle et automatisation — terminé
 - [x] App Expo (web, Android, iOS) et Supabase dans le même dépôt, à côté de la v1 → [CLAUDE.md](../CLAUDE.md)
 - [x] Tests : unitaires (Jest), base et règles d'accès (pgTAP), API, bout en bout et accessibilité (Playwright + axe)
 - [x] CI, preview par PR, preprod, déploiement auto en prod, builds iOS/Android → [decisions/0002-environnements.md](decisions/0002-environnements.md)
 - [x] Connexion par code e-mail, page compte, export et suppression des données, politique de confidentialité, mentions légales, registre → [legal/registre.md](legal/registre.md)
-- [ ] Comptes Supabase, Expo et GitHub créés et branchés → [setup.md](setup.md) (Raki)
-- [ ] Premier déploiement preprod et production vérifiés
+- [x] Comptes Supabase, Expo et GitHub créés et branchés → [setup.md](setup.md) (Raki)
+- [x] Premier déploiement preprod et production vérifiés (déployés automatiquement le 2026-10-10, connexion et export vérifiés en prod)
 
 ## 3. Parité et migration
 Reconstruire les features v1 avec le nouveau design (périmètre « v2.0 » de la spec). Migration des données testée sur une copie de la prod en preprod, bascule de wishme.fr, publication sur les stores.

@@ -1,6 +1,6 @@
 # 0002 — Environnements et déploiement
 
-Statut : **proposé** (2026-10-10), mis en place à l'étape 2.
+Statut : **accepté** (2026-10-10). Raki a choisi les deux projets Supabase plutôt que Branching ; en place depuis le premier déploiement automatique du 2026-10-10.
 
 ## Contexte
 Une seule personne livre sur trois plateformes. Chaque changement doit être vérifié automatiquement, visible avant d'être fusionné, et partir en production sans manipulation. La v1 reste en ligne sur wishme.fr jusqu'à la bascule (étape 3).
