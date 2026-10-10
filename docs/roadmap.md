@@ -21,7 +21,7 @@ Questions ouvertes de la spec : Q1 et Q2 validées ; Q3, la proposition s'appliq
 ## 3. Parité et migration
 Reconstruire les features v1 avec le nouveau design (périmètre « v2.0 » de la spec). Migration des données testée sur une copie de la prod en preprod, bascule de wishme.fr, publication sur les stores.
 
-Déjà identifié : icône et écran de lancement de l'app, CGU, durée de conservation des comptes inactifs, mentions légales complétées.
+Déjà identifié : icône et écran de lancement de l'app, CGU, durée de conservation des comptes inactifs, adresse de l'éditeur dans le compte Expo.
 
 ## 4. Nouvelles features, une par une
 Coups de cœur, connexions supplémentaires, liens affiliés, Secret Santa, puis cagnotte (après validation du cadre légal) et premium quand il aura de quoi se vendre.

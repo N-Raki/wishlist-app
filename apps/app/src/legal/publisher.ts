@@ -1,9 +1,9 @@
 // Facts about who runs Wish Me, shared by the legal pages.
-// TODO(Raki): fill in before wishme.fr switches to the new app (docs/setup.md).
+// Published as a private individual: under LCEN article 6-III-2 the postal address is held by the hosts, not shown.
+// Once Wish Me earns money it becomes a professional activity and the business details must be added here.
 export const publisher = {
-  name: '[Nom et prénom de l’éditeur]',
-  contactEmail: '[adresse de contact]',
-  postalAddress: '[adresse postale]',
+  name: 'Nathan Coustance (Raki)',
+  contactEmail: 'wishme@raki.dev',
 };
 
 export const hosts = {
