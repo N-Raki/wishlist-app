@@ -8,7 +8,8 @@ export const legalNoticeEn: LegalDocument = {
     {
       heading: 'Publisher',
       paragraphs: [
-        `Wish Me is published by ${publisher.name}, ${publisher.postalAddress}.`,
+        `Wish Me is published on a non-professional basis by ${publisher.name}.`,
+        'As allowed by article 6-III-2 of the French law on confidence in the digital economy (LCEN), the publisher’s postal details have been given to the host and are not published.',
         `Contact: ${publisher.contactEmail}. Publication director: ${publisher.name}.`,
       ],
     },

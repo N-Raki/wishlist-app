@@ -9,7 +9,8 @@ export const legalNoticeFr: LegalDocument = {
     {
       heading: 'Éditeur',
       paragraphs: [
-        `Wish Me est édité par ${publisher.name}, ${publisher.postalAddress}.`,
+        `Wish Me est édité à titre non professionnel par ${publisher.name}.`,
+        'Conformément à l’article\u00A06-III-2 de la loi pour la confiance dans l’économie numérique, ses coordonnées postales ont été communiquées à l’hébergeur et ne sont pas publiées.',
         `Contact\u00A0: ${publisher.contactEmail}. Directeur de la publication\u00A0: ${publisher.name}.`,
       ],
     },

@@ -1,16 +1,16 @@
 // Facts about who runs Wish Me, shared by the legal pages.
-// TODO(Raki): fill in before wishme.fr switches to the new app (docs/setup.md).
+// Published as a private individual: under LCEN article 6-III-2 the postal address is held by the hosts, not shown.
+// Once Wish Me earns money it becomes a professional activity and the business details must be added here.
 export const publisher = {
-  name: '[Nom et prénom de l’éditeur]',
-  contactEmail: '[adresse de contact]',
-  postalAddress: '[adresse postale]',
+  name: 'Raki',
+  contactEmail: 'wishme@raki.dev',
 };
 
 export const hosts = {
   web: {
     name: 'Expo (650 Industries, Inc.)',
     website: 'https://expo.dev',
-    address: '[adresse de l’hébergeur]',
+    address: '624 University Ave, Palo Alto, CA 94301, USA',
   },
   data: {
     name: 'Supabase, Inc.',

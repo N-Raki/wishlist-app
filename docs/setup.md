@@ -13,7 +13,7 @@ Les valeurs **publiques** (URL, clé publiable, identifiant de projet) peuvent �
   - *Sign In / Providers → Email* : longueur du code 6, expiration 600 s, mot de passe 8 caractères minimum.
   - *Emails → Templates* : pour « Confirm signup » et « Magic Link », sujet `Votre code Wish Me`, contenu = le fichier `supabase/templates/code.html`.
 - [x] Choisir un service d'envoi d'e-mails. Proposition : **Brevo** (société française, données dans l'UE, 300 e-mails/jour gratuits). Y authentifier le domaine `wishme.fr` (enregistrements DNS SPF et DKIM : ils s'ajoutent sans toucher à la v1), puis renseigner ses identifiants SMTP dans *Authentication → Emails → SMTP Settings* des deux projets. Sans ça, Supabase n'envoie que quelques e-mails par heure, et seulement aux membres de l'équipe.
-- [ ] Accepter le DPA (accord de sous-traitance) de Supabase et du service d'e-mails, puis dire à Claude lequel est retenu (il apparaît dans la politique de confidentialité).
+- [x] Accepter le DPA (accord de sous-traitance) de Supabase et du service d'e-mails, puis dire à Claude lequel est retenu (il apparaît dans la politique de confidentialité). Fait : Brevo ; les deux DPA sont inclus dans les conditions d'utilisation acceptées à l'inscription.
 - [x] Créer un jeton d'accès personnel (*Account → Access Tokens*) pour GitHub (voir 3).
 
 ## 2. Expo (EAS)
@@ -21,12 +21,15 @@ Les valeurs **publiques** (URL, clé publiable, identifiant de projet) peuvent �
 - [x] Sur son ordinateur, dans `apps/app` : `npx eas-cli login`, puis `npx eas-cli init` (crée le projet et écrit son identifiant dans `app.json`), puis `npx eas-cli update:configure`. Pousser la modification de `app.json` sur une branche, ou donner l'identifiant de projet à Claude.
 - [x] Premier déploiement web, pour choisir l'adresse : `EXPO_PUBLIC_APP_ENV=preprod npx expo export -p web && npx eas-cli deploy --alias preprod`. Fait : `https://wishme.expo.app` (production) et `https://wishme--preprod.expo.app` (preprod). Service d'e-mails retenu : Brevo.
 - [x] Créer un jeton d'accès (*Account settings → Access tokens*) pour GitHub (voir 3).
-- [ ] Vérifier dans les conditions d'Expo : le DPA, la durée de conservation des journaux d'EAS Hosting, et si un domaine personnalisé (wishme.fr, à la bascule) demande une offre payante.
+- [x] Vérifier dans les conditions d'Expo (vérifié le 2026-10-10) :
+  - DPA : inclus dans les [conditions d'utilisation](https://expo.dev/terms) (section 3.2, Expo sous-traitant, clauses contractuelles types de la Commission). Expo est aussi certifié Data Privacy Framework ([politique de confidentialité](https://expo.dev/privacy)).
+  - Journaux : 7 jours sur l'offre gratuite, 3 mois sur les offres payantes ([tarifs](https://expo.dev/pricing)).
+  - Domaine personnalisé : offre payante obligatoire, **Starter à 19 $/mois** minimum, un domaine par projet ([doc](https://docs.expo.dev/eas/hosting/custom-domain/)). À souscrire à la bascule (étape 3) ; mettre alors à jour la durée des journaux dans la politique de confidentialité et le registre.
 
 ## 3. GitHub
 - [x] *Settings → Secrets and variables → Actions*, onglet Secrets : `EXPO_TOKEN`, `SUPABASE_ACCESS_TOKEN`.
 - [x] *Settings → Environments* : créer `preprod` et `production`. Dans chacun : variable `SUPABASE_PROJECT_REF` (l'identifiant du projet, dans son URL) et secret `SUPABASE_DB_PASSWORD`. Facultatif : un relecteur obligatoire sur `production` pour valider chaque mise en production.
-- [ ] Protéger `main` : voir [Protection de `main`](#protection-de-main) ci-dessous.
+- [x] Protéger `main` : voir [Protection de `main`](#protection-de-main) ci-dessous.
 - [x] En dernier, variable de dépôt `DEPLOY_ENABLED` = `true`. Le prochain merge déploie la preprod puis la production.
 
 ### Protection de `main`
@@ -54,4 +57,5 @@ Facultatif, dans *Settings → General → Pull Requests* : cocher *Automaticall
 - [ ] `npx eas-cli credentials` dans `apps/app` pour les certificats de signature, puis une clé d'API App Store Connect et un compte de service Google Play pour l'envoi automatique (`eas submit`).
 
 ## 5. Mentions légales
-- [ ] Donner à Claude, ou remplir dans `apps/app/src/legal/publisher.ts` : nom de l'éditeur, adresse postale (une domiciliation suffit si vous ne voulez pas publier votre adresse personnelle), e-mail de contact, adresse postale d'Expo (hébergeur, sur expo.dev).
+- [x] Mentions légales : éditeur « Raki », à titre non professionnel (identité complète chez l'hébergeur), contact `wishme@raki.dev`. L'adresse n'est pas publiée (LCEN art. 6-III-2) : elle doit figurer dans le compte Expo (*Account settings → Billing*), c'est-à-dire chez l'hébergeur.
+- [ ] Dès que Wish Me rapporte de l'argent (étape 4), l'activité devient professionnelle : ajouter dans `publisher.ts` la structure (dénomination, SIREN, adresse, éventuellement une domiciliation).
