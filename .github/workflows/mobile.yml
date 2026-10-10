@@ -1,0 +1,42 @@
+name: Mobile builds
+
+# Store builds cost build credits and go through store review, so they are not run on every merge:
+# JavaScript changes reach installed apps through the over-the-air updates of deploy.yml.
+# Run by hand for testers (preview), or push a v* tag to build and submit to the stores.
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Build profile
+        type: choice
+        options: [preview, production]
+        default: preview
+      platform:
+        type: choice
+        options: [all, ios, android]
+        default: all
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      PROFILE: ${{ inputs.profile || 'production' }}
+      PLATFORM: ${{ inputs.platform || 'all' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Build on EAS (does not wait for the build to finish)
+        working-directory: apps/app
+        run: |
+          flags=""
+          if [ "$PROFILE" = production ]; then flags="--auto-submit"; fi
+          npx eas-cli build --profile "$PROFILE" --platform "$PLATFORM" --non-interactive --no-wait $flags

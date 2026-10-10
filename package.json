@@ -1,0 +1,26 @@
+{
+  "name": "wishme",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "npm run start --workspace @wishme/app",
+    "check": "biome check . && npm run typecheck --workspace @wishme/app && npm test --workspace @wishme/app",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:test": "supabase test db",
+    "db:types": "supabase gen types --local --lang typescript --schema public > apps/app/src/lib/database.types.ts && biome format --write apps/app/src/lib/database.types.ts",
+    "test:api": "supabase status -o env > supabase/.temp/local.env && node --env-file=supabase/.temp/local.env --test 'supabase/tests/api/*.test.ts'",
+    "e2e": "npm run build:web --workspace @wishme/app && npm run e2e --workspace @wishme/app"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "eas-cli": "^24.12.1",
+    "supabase": "2.120.0"
+  }
+}

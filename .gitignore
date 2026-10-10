@@ -1,3 +1,5 @@
 .idea/
 logs/
 Database/
+node_modules/
+.DS_Store

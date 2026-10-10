@@ -21,10 +21,14 @@ Une liste de souhaits est d'abord une vitrine de cadeaux : les photos portent l'
 | Surface | `#FFFFFF` | `#24232A` |
 | Texte | `#1D1C22` | `#F4F3F6` |
 | Texte secondaire | `#5F5C68` | `#A9A6B2` |
-| Bord des champs et éléments d'interface | `#8A8792` | à définir à l'étape 3 |
+| Bord des champs et éléments d'interface | `#8A8792` | `#8A8792` (4,42:1 sur la surface) |
 | Accent (texte `#1D1C22` dessus) | `#FF7A59` | `#FF7A59` |
 | Coup de cœur | `#E8432E` | `#E8432E` |
-| Succès | `#1D6B44` | à définir à l'étape 3 |
+| Succès | `#1D6B44` | `#4CC38A` |
+| Action destructrice (fond, texte dessus) | `#B42318`, texte blanc (6,57:1) | `#FDA29B`, texte `#1D1C22` (8,71:1) |
+| Vignettes sans photo | `#FFE3D9` `#E7E2F5` `#DDEDE3` `#F5EBD8` | `#3A2A27` `#2E2A3A` `#23302A` `#35302A` |
+
+Source unique dans le code : `apps/app/src/theme/palette.ts`. Sur le web, les couleurs passent par des variables CSS pour que le navigateur choisisse le thème clair ou sombre sans flash.
 
 - **Typo** : Gabarito (400 à 800). Titres 36 à 40 px, graisse 800, interlettrage −0,025 em ; corps 15 à 17 px.
 - **Rayons** : vignettes et cartes 22 à 26 px, champs 14 à 16 px, boutons en pilule.

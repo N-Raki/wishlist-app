@@ -1,12 +1,14 @@
 # Documentation Wish Me
 
-Point d'entrée pour toute session de travail. Lire ce fichier, puis seulement ce dont la tâche a besoin.
+Point d'entrée pour toute session de travail. Lire ce fichier, puis seulement ce dont la tâche a besoin. Structure du code, commandes et règles de contribution : [CLAUDE.md](../CLAUDE.md).
 
 | Fichier | Contenu | À lire quand |
 |---|---|---|
 | [roadmap.md](roadmap.md) | Les étapes de la refonte et où on en est | Toujours |
 | [spec.md](spec.md) | Ce que l'application doit faire (v2) | Travail sur une feature |
 | [design.md](design.md) | Direction visuelle, tokens, règles d'accessibilité | Tout travail d'interface |
+| [setup.md](setup.md) | Comptes et réglages à faire hors du code (Supabase, Expo, GitHub, stores) | Déploiement, ou quelque chose ne se déploie pas |
+| [legal/registre.md](legal/registre.md) | Registre des traitements de données personnelles | Toute nouvelle donnée ou nouveau prestataire |
 | [monetisation.md](monetisation.md) | Affiliation, premium : règles et points légaux | Tout ce qui touche à l'argent |
 | [v1.md](v1.md) | État de l'app actuelle (wishme.fr) : modèle de données, failles, contraintes de migration | Migration, ou question sur l'existant |
 | [decisions/](decisions/) | Décisions d'architecture (ADR), une par fichier | Avant de remettre un choix en cause |

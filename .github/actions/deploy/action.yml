@@ -1,0 +1,56 @@
+name: Deploy
+description: Ships the database, the server functions, the website and the app update of one environment.
+inputs:
+  app-env:
+    description: Value of EXPO_PUBLIC_APP_ENV and name of the EAS Update channel (preprod or production).
+    required: true
+  eas-environment:
+    description: EAS environment (preview or production).
+    required: true
+  supabase-project-ref:
+    required: true
+  supabase-db-password:
+    required: true
+  web-flags:
+    description: Flags for `eas deploy` (an alias, or --prod).
+    required: true
+outputs:
+  url:
+    description: Address of the deployed website.
+    value: ${{ steps.web.outputs.url }}
+runs:
+  using: composite
+  steps:
+    - name: Database migrations
+      shell: bash
+      env:
+        SUPABASE_DB_PASSWORD: ${{ inputs.supabase-db-password }}
+        PROJECT_REF: ${{ inputs.supabase-project-ref }}
+      run: npx supabase db push --project-ref "$PROJECT_REF"
+    - name: Server functions
+      shell: bash
+      env:
+        PROJECT_REF: ${{ inputs.supabase-project-ref }}
+      run: npx supabase functions deploy --project-ref "$PROJECT_REF" --use-api
+    - name: Website
+      id: web
+      shell: bash
+      working-directory: apps/app
+      env:
+        EXPO_PUBLIC_APP_ENV: ${{ inputs.app-env }}
+        EAS_ENVIRONMENT: ${{ inputs.eas-environment }}
+        WEB_FLAGS: ${{ inputs.web-flags }}
+      run: |
+        npx expo export --platform web
+        npx eas-cli deploy $WEB_FLAGS --environment "$EAS_ENVIRONMENT" --json > deploy.json
+        echo "url=$(grep -o 'https://[^"]*expo\.app[^"]*' deploy.json | head -1)" >> "$GITHUB_OUTPUT"
+    - name: App update (over the air)
+      shell: bash
+      working-directory: apps/app
+      env:
+        EXPO_PUBLIC_APP_ENV: ${{ inputs.app-env }}
+        EAS_ENVIRONMENT: ${{ inputs.eas-environment }}
+        MESSAGE: ${{ github.event.head_commit.message || github.sha }}
+      run: >
+        npx eas-cli update --channel "$EXPO_PUBLIC_APP_ENV" --environment "$EAS_ENVIRONMENT"
+        --message "${MESSAGE%%$'\n'*}" --non-interactive

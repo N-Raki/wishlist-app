@@ -1,0 +1,69 @@
+name: Deploy
+
+# Every merge on main goes to preprod, then to production once preprod is up.
+# Turned on by the DEPLOY_ENABLED repository variable once accounts are set up (docs/setup.md).
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    uses: ./.github/workflows/ci.yml
+
+  preprod:
+    needs: checks
+    if: vars.DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: preprod
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - id: deploy
+        uses: ./.github/actions/deploy
+        with:
+          app-env: preprod
+          eas-environment: preview
+          supabase-project-ref: ${{ vars.SUPABASE_PROJECT_REF }}
+          supabase-db-password: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          web-flags: --alias preprod
+      - name: Smoke test
+        env:
+          URL: ${{ steps.deploy.outputs.url }}
+        run: curl --fail --silent --show-error "$URL" | grep -q 'Wish Me'
+
+  production:
+    needs: preprod
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Add required reviewers to this GitHub environment to approve each release by hand.
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - id: deploy
+        uses: ./.github/actions/deploy
+        with:
+          app-env: production
+          eas-environment: production
+          supabase-project-ref: ${{ vars.SUPABASE_PROJECT_REF }}
+          supabase-db-password: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          web-flags: --prod

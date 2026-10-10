@@ -1,10 +1,15 @@
 name: Docker Image CI
 
+# v1 (wishme.fr), kept running until the switch to v2. Only rebuilds when v1 code changes.
+
 on:
   push:
     branches:
       - "main"
       - "beta"
+    paths:
+      - "Client/**"
+      - "Server/**"
 
 jobs:
 
