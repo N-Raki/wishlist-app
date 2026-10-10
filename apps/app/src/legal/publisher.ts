@@ -10,7 +10,7 @@ export const hosts = {
   web: {
     name: 'Expo (650 Industries, Inc.)',
     website: 'https://expo.dev',
-    address: '[adresse de l’hébergeur]',
+    address: '624 University Ave, Palo Alto, CA 94301, USA',
   },
   data: {
     name: 'Supabase, Inc.',
