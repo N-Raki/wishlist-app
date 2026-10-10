@@ -26,8 +26,28 @@ Les valeurs **publiques** (URL, clé publiable, identifiant de projet) peuvent �
 ## 3. GitHub
 - [x] *Settings → Secrets and variables → Actions*, onglet Secrets : `EXPO_TOKEN`, `SUPABASE_ACCESS_TOKEN`.
 - [x] *Settings → Environments* : créer `preprod` et `production`. Dans chacun : variable `SUPABASE_PROJECT_REF` (l'identifiant du projet, dans son URL) et secret `SUPABASE_DB_PASSWORD`. Facultatif : un relecteur obligatoire sur `production` pour valider chaque mise en production.
-- [ ] *Settings → Branches* : protéger `main` (PR obligatoire, checks « Lint, types, unit tests » et « Database, API and end-to-end tests » requis).
+- [ ] Protéger `main` : voir [Protection de `main`](#protection-de-main) ci-dessous.
 - [x] En dernier, variable de dépôt `DEPLOY_ENABLED` = `true`. Le prochain merge déploie la preprod puis la production.
+
+### Protection de `main`
+But : rien n'arrive sur `main` (donc en production) sans PR dont les tests sont verts. GitHub propose deux mécanismes ; on prend les *rulesets*, plus récents et plus lisibles que la « branch protection » classique.
+
+1. *Settings → Rules → Rulesets → New ruleset → New branch ruleset*.
+2. **Ruleset name** : `main`. **Enforcement status** : *Active*.
+3. **Bypass list** : vide. Personne ne contourne les règles, pas même l'admin. En cas d'urgence, on désactive le ruleset le temps du correctif.
+4. **Target branches** : *Add target → Include default branch*.
+5. **Rules**, cocher :
+   - *Restrict deletions* et *Block force pushes*.
+   - *Require a pull request before merging*, avec *Required approvals* = **0** (GitHub ne laisse pas approuver sa propre PR ; à monter à 1 le jour où quelqu'un d'autre relit) et *Require conversation resolution before merging*.
+   - *Require status checks to pass*, avec *Require branches to be up to date before merging*. Cliquer *Add checks* et ajouter, source *GitHub Actions* :
+     - `Lint, types, unit tests`
+     - `Database, API and end-to-end tests`
+6. Laisser décochés : *Require linear history* (on merge avec des commits de merge), *Require deployments to succeed*, *Require signed commits*. Ne pas rendre obligatoires `web` (aperçu de PR) ni `Supabase Preview` : ils sont sautés selon les cas et bloqueraient les merges.
+7. *Create*.
+
+Pour vérifier : ouvrir une PR, le bouton de merge doit rester grisé tant que les deux checks ne sont pas verts. Un `git push` direct sur `main` doit être refusé.
+
+Facultatif, dans *Settings → General → Pull Requests* : cocher *Automatically delete head branches* (les branches disparaissent après merge) et *Allow auto-merge* (une PR se merge seule quand ses checks passent).
 
 ## 4. Stores (avant la publication, étape 3)
 - [ ] Apple Developer Program (99 $/an) et Google Play Console (25 $ une fois).
