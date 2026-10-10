@@ -8,7 +8,7 @@ Validée par Raki le 2026-10-09. Chaque chantier se fait dans son propre fil de 
 - [x] Choix de la stack : Expo + Supabase → [decisions/0001-stack.md](decisions/0001-stack.md)
 - [x] Direction visuelle et maquettes des écrans clés → [design.md](design.md)
 
-Questions ouvertes de la spec : Q1 validée ; Q2 et Q3, les propositions s'appliquent tant que Raki ne les corrige pas. Monétisation proposée → [monetisation.md](monetisation.md).
+Questions ouvertes de la spec : Q1 et Q2 validées ; Q3, la proposition s'appliquent tant que Raki ne les corrige pas. Monétisation proposée → [monetisation.md](monetisation.md).
 
 ## 2. Socle et automatisation — prochaine étape
 Repo restructuré, tests, CI rapide, preview par PR, preprod, déploiement auto en prod, builds iOS/Android, doc de démarrage courte, base RGPD (politique de confidentialité, export et suppression des données).
