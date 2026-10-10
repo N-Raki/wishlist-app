@@ -14,20 +14,20 @@ Les valeurs **publiques** (URL, clé publiable, identifiant de projet) peuvent �
   - *Emails → Templates* : pour « Confirm signup » et « Magic Link », sujet `Votre code Wish Me`, contenu = le fichier `supabase/templates/code.html`.
 - [x] Choisir un service d'envoi d'e-mails. Proposition : **Brevo** (société française, données dans l'UE, 300 e-mails/jour gratuits). Y authentifier le domaine `wishme.fr` (enregistrements DNS SPF et DKIM : ils s'ajoutent sans toucher à la v1), puis renseigner ses identifiants SMTP dans *Authentication → Emails → SMTP Settings* des deux projets. Sans ça, Supabase n'envoie que quelques e-mails par heure, et seulement aux membres de l'équipe.
 - [ ] Accepter le DPA (accord de sous-traitance) de Supabase et du service d'e-mails, puis dire à Claude lequel est retenu (il apparaît dans la politique de confidentialité).
-- [ ] Créer un jeton d'accès personnel (*Account → Access Tokens*) pour GitHub (voir 3).
+- [x] Créer un jeton d'accès personnel (*Account → Access Tokens*) pour GitHub (voir 3).
 
 ## 2. Expo (EAS)
 - [x] Créer un compte sur expo.dev.
 - [x] Sur son ordinateur, dans `apps/app` : `npx eas-cli login`, puis `npx eas-cli init` (crée le projet et écrit son identifiant dans `app.json`), puis `npx eas-cli update:configure`. Pousser la modification de `app.json` sur une branche, ou donner l'identifiant de projet à Claude.
 - [x] Premier déploiement web, pour choisir l'adresse : `EXPO_PUBLIC_APP_ENV=preprod npx expo export -p web && npx eas-cli deploy --alias preprod`. Fait : `https://wishme.expo.app` (production) et `https://wishme--preprod.expo.app` (preprod). Service d'e-mails retenu : Brevo.
-- [ ] Créer un jeton d'accès (*Account settings → Access tokens*) pour GitHub (voir 3).
+- [x] Créer un jeton d'accès (*Account settings → Access tokens*) pour GitHub (voir 3).
 - [ ] Vérifier dans les conditions d'Expo : le DPA, la durée de conservation des journaux d'EAS Hosting, et si un domaine personnalisé (wishme.fr, à la bascule) demande une offre payante.
 
 ## 3. GitHub
-- [ ] *Settings → Secrets and variables → Actions*, onglet Secrets : `EXPO_TOKEN`, `SUPABASE_ACCESS_TOKEN`.
-- [ ] *Settings → Environments* : créer `preprod` et `production`. Dans chacun : variable `SUPABASE_PROJECT_REF` (l'identifiant du projet, dans son URL) et secret `SUPABASE_DB_PASSWORD`. Facultatif : un relecteur obligatoire sur `production` pour valider chaque mise en production.
+- [x] *Settings → Secrets and variables → Actions*, onglet Secrets : `EXPO_TOKEN`, `SUPABASE_ACCESS_TOKEN`.
+- [x] *Settings → Environments* : créer `preprod` et `production`. Dans chacun : variable `SUPABASE_PROJECT_REF` (l'identifiant du projet, dans son URL) et secret `SUPABASE_DB_PASSWORD`. Facultatif : un relecteur obligatoire sur `production` pour valider chaque mise en production.
 - [ ] *Settings → Branches* : protéger `main` (PR obligatoire, checks « Lint, types, unit tests » et « Database, API and end-to-end tests » requis).
-- [ ] En dernier, variable de dépôt `DEPLOY_ENABLED` = `true`. Le prochain merge déploie la preprod puis la production.
+- [x] En dernier, variable de dépôt `DEPLOY_ENABLED` = `true`. Le prochain merge déploie la preprod puis la production.
 
 ## 4. Stores (avant la publication, étape 3)
 - [ ] Apple Developer Program (99 $/an) et Google Play Console (25 $ une fois).
