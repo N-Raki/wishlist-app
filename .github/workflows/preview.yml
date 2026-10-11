@@ -1,6 +1,7 @@
 name: Preview
 
-# Publishes each pull request's website at its own address, backed by the preprod database.
+# Publishes each pull request's website at its own address, and an update to open in Expo Go
+# (Android and iOS) from a QR code, both backed by the preprod database.
 # Turned on by the DEPLOY_ENABLED repository variable once accounts are set up (docs/setup.md).
 
 on:
@@ -42,3 +43,26 @@ jobs:
           message: |
             **Preview:** ${{ steps.web.outputs.url }}
             Backed by the preprod database; schema changes from this pull request are not applied there until merge.
+
+  expo-go:
+    if: vars.DEPLOY_ENABLED == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: preprod
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Update for Expo Go, linked on the pull request
+        uses: expo/expo-github-action/preview@v8
+        env:
+          EXPO_GO: '1'
+          EXPO_PUBLIC_APP_ENV: preprod
+        with:
+          working-directory: apps/app
+          qr-target: expo-go
+          # --auto takes the message from the last commit; --branch keeps one branch per pull request.
+          command: eas update --auto --branch pr-${{ github.event.pull_request.number }} --environment preview --non-interactive

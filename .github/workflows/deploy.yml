@@ -44,6 +44,16 @@ jobs:
         env:
           URL: ${{ steps.deploy.outputs.url }}
         run: curl --fail --silent --show-error "$URL" | grep -q 'Wish Me'
+      - name: Update for Expo Go
+        working-directory: apps/app
+        env:
+          EXPO_GO: '1'
+          EXPO_PUBLIC_APP_ENV: preprod
+        run: |
+          npx eas-cli update --channel expo-go-preprod --environment preview --message "$GITHUB_SHA" --non-interactive
+          runtime="$(npx expo config --json | node -pe 'JSON.parse(require("fs").readFileSync(0)).runtimeVersion')"
+          project="$(node -pe 'require("./app.json").expo.extra.eas.projectId')"
+          echo "**Expo Go (preprod):** https://qr.expo.dev/eas-update?projectId=$project&runtimeVersion=$runtime&channel=expo-go-preprod" >> "$GITHUB_STEP_SUMMARY"
 
   production:
     needs: preprod
