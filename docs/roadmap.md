@@ -23,7 +23,7 @@ Reconstruire les features v1 avec le nouveau design (périmètre « 2.0 » de la
 
 - [x] Données : listes, souhaits, réservations, listes ouvertes ; règles d'accès dans la base, export, registre
 - [x] Mes listes et ma liste : créer, renommer, supprimer, souhaits sans photo ; barre d'onglets
-- [ ] Photos des souhaits (stockage Supabase)
+- [x] Photos des souhaits : depuis l’appareil ou récupérées depuis le lien du produit (stockage Supabase)
 - [ ] Liste d'un proche : réserver, cadeau commun, invité et feuille de connexion ; onglet Proches ; partage et aperçu riche du lien
 - [ ] Compte complet : nom d'affichage à la première connexion, Google, Apple, mot de passe
 - [ ] Légal et finitions : CGU, durée des comptes inactifs, icône et écran de lancement, adresse de l'éditeur dans le compte Expo

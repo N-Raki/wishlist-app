@@ -1,3 +1,4 @@
+import { Image } from 'expo-image';
 import { type Href, Link } from 'expo-router';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +9,7 @@ import { Text } from '@/ui/Text';
 import { Touchable } from '@/ui/Touchable';
 import type { Wish } from './api';
 import { formatPrice } from './money';
+import { photoUrl } from './photos';
 import { initialOf, tintAt } from './tint';
 
 /** Two columns of 4:5 tiles: the photos carry the page (docs/design.md, "Photo d'abord"). */
@@ -67,26 +69,39 @@ export function WishTile({ wish, position, href }: { wish: Wish; position: numbe
 }
 
 /**
- * What stands for a wish: its photo once photos arrive, until then its initial on a tint, so a
- * list without photos still has colour and rhythm (docs/design.md, "Photo d'abord").
+ * What stands for a wish: its photo, or else its initial on a tint, so a list without photos
+ * still has colour and rhythm (docs/design.md, "Photo d'abord").
  */
 export function WishArt({
   wish,
+  photoUri,
   position,
   size,
 }: {
-  wish: Pick<Wish, 'name'>;
+  wish: Pick<Wish, 'name' | 'photo_path'>;
+  /** Overrides the wish's own photo, for one just picked and not uploaded yet. */
+  photoUri?: string | null;
   /** Rank of the wish in its list, counted from the oldest. */
   position: number;
   size: 'tile' | 'thumb';
 }) {
   const colors = useColors();
   const tint = tintAt(position);
+  const uri = photoUri !== undefined ? photoUri : wish.photo_path ? photoUrl(wish.photo_path) : null;
+  const frame = size === 'tile' ? styles.tile : styles.thumb;
+  if (uri) {
+    return (
+      <Image
+        aria-hidden
+        source={{ uri }}
+        contentFit="cover"
+        transition={150}
+        style={[frame, { backgroundColor: colors[tint.background] }]}
+      />
+    );
+  }
   return (
-    <View
-      aria-hidden
-      style={[size === 'tile' ? styles.tile : styles.thumb, { backgroundColor: colors[tint.background] }]}
-    >
+    <View aria-hidden style={[frame, { backgroundColor: colors[tint.background] }]}>
       <Text style={[size === 'tile' ? styles.initial : styles.thumbInitial, { color: colors[tint.ink] }]}>
         {initialOf(wish.name)}
       </Text>
@@ -99,8 +114,14 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', gap: space.md },
   cell: { flex: 1 },
   wish: { gap: space.sm },
-  tile: { aspectRatio: 4 / 5, borderRadius: radius.tile, alignItems: 'center', justifyContent: 'center' },
-  thumb: { flex: 1, borderRadius: radius.field, alignItems: 'center', justifyContent: 'center' },
+  tile: {
+    aspectRatio: 4 / 5,
+    borderRadius: radius.tile,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  thumb: { flex: 1, borderRadius: radius.field, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
   initial: { fontFamily: fonts.extraBold, fontSize: 88, lineHeight: 96, letterSpacing: -2 },
   thumbInitial: { fontFamily: fonts.extraBold, fontSize: 30, lineHeight: 36 },
   caption: { paddingHorizontal: space.xs },

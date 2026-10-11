@@ -60,6 +60,12 @@ export const en: Translations = {
   wishForm: {
     newTitle: 'New wish',
     editTitle: 'Edit the wish',
+    photoLabel: 'Photo',
+    addPhoto: 'Add a photo',
+    changePhoto: 'Change the photo',
+    removePhoto: 'Remove the photo',
+    photoSearching: 'Looking for the product’s photo…',
+    photoNotFound: 'No photo found on this page. You can add one.',
     nameLabel: 'Wish name',
     namePlaceholder: 'Instant camera',
     priceLabel: 'Price',

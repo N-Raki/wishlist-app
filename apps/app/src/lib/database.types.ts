@@ -63,6 +63,7 @@ export type Database = {
           description: string | null;
           id: string;
           name: string;
+          photo_path: string | null;
           price_cents: number | null;
           url: string | null;
           wishlist_id: string;
@@ -74,6 +75,7 @@ export type Database = {
           description?: string | null;
           id?: string;
           name: string;
+          photo_path?: string | null;
           price_cents?: number | null;
           url?: string | null;
           wishlist_id: string;
@@ -84,6 +86,7 @@ export type Database = {
           description?: string | null;
           id?: string;
           name?: string;
+          photo_path?: string | null;
           price_cents?: number | null;
           url?: string | null;
           wishlist_id?: string;

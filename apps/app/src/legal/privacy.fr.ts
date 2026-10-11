@@ -4,7 +4,7 @@ import type { LegalDocument } from './types';
 // Keep in sync with docs/legal/registre.md: every change of data or provider updates both.
 export const privacyFr: LegalDocument = {
   title: 'Politique de confidentialité',
-  updatedOn: '10 octobre 2026',
+  updatedOn: '11 octobre 2026',
   sections: [
     {
       heading: 'En bref',
@@ -23,7 +23,7 @@ export const privacyFr: LegalDocument = {
         'Votre adresse e-mail, pour vous connecter avec un code à usage unique et vous écrire au sujet de votre compte.',
         'Votre nom d’affichage, si vous en choisissez un, pour que vos proches vous reconnaissent.',
         'Les dates de création du compte et de vos dernières connexions, ainsi que les méthodes de connexion que vous utilisez.',
-        'Vos listes et vos souhaits, avec ce que vous y écrivez (nom, prix, lien, précisions).',
+        'Vos listes et vos souhaits, avec ce que vous y écrivez (nom, prix, lien, précisions) et leurs photos. Une photo prise de votre appareil est réenregistrée avant l’envoi, ce qui retire ses informations cachées (lieu, date, appareil). Quand vous collez un lien, notre serveur lit la page du produit pour en reprendre la photo : le site consulté voit notre serveur, pas vous.',
         'Les souhaits que vous réservez sur les listes de vos proches, et les listes que vous avez ouvertes en étant connecté, pour les retrouver dans l’onglet «\u00A0Proches\u00A0».',
         'Des journaux techniques (adresse IP, date, requête), tenus par nos hébergeurs pour la sécurité du service.',
       ],
@@ -45,7 +45,7 @@ export const privacyFr: LegalDocument = {
     {
       heading: 'Qui y a accès',
       paragraphs: [
-        'Les personnes à qui vous donnez le lien d’une liste voient son nom, vos souhaits et votre nom d’affichage.',
+        'Les personnes à qui vous donnez le lien d’une liste voient son nom, vos souhaits, leurs photos et votre nom d’affichage.',
         'Quand vous réservez un souhait, les autres proches connectés qui ouvrent la liste voient votre nom d’affichage, pour éviter les doublons et s’organiser à plusieurs. Le propriétaire de la liste ne voit jamais qui a réservé, ni si un souhait est réservé.',
         `${hosts.data.name} héberge la base de données et gère la connexion, dans sa région ${hosts.data.region}.`,
         `${hosts.web.name} héberge le site web et distribue les mises à jour de l’application.`,
