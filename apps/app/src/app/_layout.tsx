@@ -73,6 +73,7 @@ function Navigation() {
         <Stack.Screen name="wishlists/[id]/wish" options={{ presentation: 'modal' }} />
         <Stack.Screen name="delete-account" options={{ presentation: 'modal' }} />
         <Stack.Screen name="display-name" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="password" options={{ presentation: 'modal' }} />
       </Stack.Protected>
     </Stack>
   );

@@ -49,6 +49,12 @@ export default function Account() {
       </View>
 
       <View style={styles.section}>
+        <Text variant="heading">{t('account.passwordHeading')}</Text>
+        <Text tone="secondary">{t('account.passwordBody')}</Text>
+        <Button variant="secondary" label={t('account.setPassword')} onPress={() => router.push('/password')} />
+      </View>
+
+      <View style={styles.section}>
         <Text variant="heading">{t('account.dataHeading')}</Text>
         <Text tone="secondary">{t('account.dataBody')}</Text>
         <Button variant="secondary" label={t('account.export')} loading={exportState === 'busy'} onPress={exportData} />

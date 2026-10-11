@@ -16,6 +16,32 @@ Les valeurs **publiques** (URL, clé publiable, identifiant de projet) peuvent �
 - [x] Accepter le DPA (accord de sous-traitance) de Supabase et du service d'e-mails, puis dire à Claude lequel est retenu (il apparaît dans la politique de confidentialité). Fait : Brevo ; les deux DPA sont inclus dans les conditions d'utilisation acceptées à l'inscription.
 - [x] Créer un jeton d'accès personnel (*Account → Access Tokens*) pour GitHub (voir 3).
 
+### Mot de passe facultatif (étape 3, « Compte complet »)
+Pour chacun des deux projets Supabase :
+- [ ] *Authentication → Sign In / Providers → Email* : activer **Secure password change**. Choisir un mot de passe sur un compte connecté depuis plus de 24 h demande alors un code envoyé par e-mail.
+- [ ] *Authentication → Emails → Templates* : pour « Reauthentication », sujet `Votre code Wish Me`, contenu = `supabase/templates/code.html`.
+- [ ] *Authentication → Emails → Notifications* (ou *Security notifications*) : activer « Password changed », sujet `Mot de passe Wish Me modifié`, contenu = `supabase/templates/password-changed.html`.
+
+### Connexion Google
+1. [console.cloud.google.com](https://console.cloud.google.com) : créer un projet `Wish Me`.
+2. *Google Auth Platform → Branding* : nom `Wish Me`, e-mail d'assistance `wishme@raki.dev`, lien vers la politique de confidentialité (`https://wishme.expo.app/privacy`), domaines autorisés `supabase.co` et `expo.app` (plus `wishme.fr` à la bascule).
+3. *Audience* : **External**. *Data access* : uniquement `openid`, `email` et `profile` (pas de vérification Google nécessaire avec ces seuls accès).
+4. *Clients → Create client → Web application*, nommé `Wish Me` :
+   - Authorized JavaScript origins : `https://wishme.expo.app` et `https://wishme--preprod.expo.app`.
+   - Authorized redirect URIs : `https://<ref-preprod>.supabase.co/auth/v1/callback` et `https://<ref-prod>.supabase.co/auth/v1/callback`.
+5. Dans chaque projet Supabase, *Authentication → Sign In / Providers → Google* : activer, coller le Client ID et le Client secret.
+6. Dire à Claude que c'est fait (le Client ID est public, le secret ne sort pas de Supabase).
+
+Un seul client Web suffit : sur Android et iOS, la connexion Google passe par le navigateur du système, puis revient dans l'app par le lien `wishme://`.
+
+### Connexion Apple
+Nécessite l'Apple Developer Program (voir 4). Apple l'impose sur iOS dès qu'une connexion Google est proposée.
+1. [developer.apple.com](https://developer.apple.com/account) → *Certificates, Identifiers & Profiles → Identifiers* : l'App ID `fr.wishme.app` (créé par EAS au premier build iOS, sinon le créer), cocher **Sign in with Apple**.
+2. Nouveau **Services ID** `fr.wishme.web` (pour le web, Android et le navigateur) : cocher Sign in with Apple, *Configure* → Primary App ID `fr.wishme.app`, domaines `<ref-preprod>.supabase.co` et `<ref-prod>.supabase.co`, Return URLs `https://<ref-preprod>.supabase.co/auth/v1/callback` et `https://<ref-prod>.supabase.co/auth/v1/callback`.
+3. *Keys* → nouvelle clé avec Sign in with Apple, liée à `fr.wishme.app`. Télécharger le fichier `.p8` (une seule fois possible) et le garder dans le gestionnaire de mots de passe, avec le Key ID et le Team ID.
+4. Dans chaque projet Supabase, *Authentication → Sign In / Providers → Apple* : activer ; Client IDs = `fr.wishme.web,fr.wishme.app` ; Secret Key = le secret généré à partir du `.p8` avec l'outil de la page (Team ID, Key ID, Services ID).
+5. **Ce secret expire au bout de 6 mois** : le régénérer avant, sinon la connexion Apple s'arrête sur le web et Android (l'app iOS n'est pas touchée). Mettre un rappel.
+
 ## 2. Expo (EAS)
 - [x] Créer un compte sur expo.dev.
 - [x] Sur son ordinateur, dans `apps/app` : `npx eas-cli login`, puis `npx eas-cli init` (crée le projet et écrit son identifiant dans `app.json`), puis `npx eas-cli update:configure`. Pousser la modification de `app.json` sur une branche, ou donner l'identifiant de projet à Claude.

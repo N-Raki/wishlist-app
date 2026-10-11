@@ -27,7 +27,8 @@ Reconstruire les features v1 avec le nouveau design (périmètre « 2.0 » de la
 - [x] Liste d'un proche : réserver, cadeau commun, invité et feuille de connexion
 - [x] Onglet Proches ; partage et aperçu riche du lien
 - [x] Nom d'affichage obligatoire à la première connexion, modifiable depuis le compte
-- [ ] Compte complet : Google, Apple, mot de passe
+- [x] Mot de passe facultatif, choisi depuis le compte
+- [ ] Connexion Google et Apple
 - [ ] Légal et finitions : CGU, durée des comptes inactifs, icône et écran de lancement, adresse de l'éditeur dans le compte Expo
 - [ ] Migration v1 → v2, répétée en preprod sur une copie de la prod
 - [ ] Bascule : domaine wishme.fr (offre Expo payante), publication sur les stores, information des utilisateurs

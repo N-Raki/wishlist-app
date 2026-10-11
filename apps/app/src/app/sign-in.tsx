@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { useNameRequirement } from '@/account/queries';
 import { useDisplayNameForm } from '@/account/useDisplayNameForm';
 import { useSession } from '@/auth/SessionProvider';
-import { isValidEmail, type SignInError, sendCode, verifyCode } from '@/auth/signIn';
+import { isValidEmail, type SignInError, sendCode, signInWithPassword, verifyCode } from '@/auth/signIn';
 import { goBack } from '@/lib/navigation';
 import { pendingReservation } from '@/lists/pendingReservation';
 import { useWishlist } from '@/lists/queries';
@@ -17,7 +17,8 @@ import { Text } from '@/ui/Text';
 import { TextField } from '@/ui/TextField';
 import { TextLink } from '@/ui/TextLink';
 
-// Steps on one screen: e-mail, then the code, then a display name on the first sign-in.
+// Steps on one screen: e-mail, then the code (or a password, for accounts that chose one),
+// then a display name on the first sign-in.
 // Once signed in and named, the root layout's guards close this sheet, back to the page that
 // opened it.
 // Opened from a wish to reserve (`list` and `wish`), it names that wish, and the wish page
@@ -54,7 +55,8 @@ function CodeSteps() {
   const params = useLocalSearchParams<{ list?: string; wish?: string }>();
   const list = useWishlist(params.list ?? '', { enabled: Boolean(params.list) });
   const wishName = list.data?.wishes.find((wish) => wish.id === params.wish)?.name;
-  const [step, setStep] = useState<'email' | 'code'>('email');
+  const [step, setStep] = useState<'email' | 'code' | 'password'>('email');
+  const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
   const [error, setError] = useState<SignInError | null>(null);
@@ -72,14 +74,27 @@ function CodeSteps() {
     if (!result) onSuccess?.();
   }
 
-  function submitCode() {
-    // Set before verifying: the sheet may close as soon as the session exists.
+  function signInWith(attempt: () => Promise<SignInError | null>) {
+    // Set before signing in: the sheet may close as soon as the session exists.
     pendingReservation.set(wishName ? (params.wish ?? null) : null);
     run(async () => {
-      const result = await verifyCode(email.trim(), code);
+      const result = await attempt();
       if (result) pendingReservation.set(null);
       return result;
     });
+  }
+
+  const submitCode = () => signInWith(() => verifyCode(email.trim(), code));
+
+  function submitPassword() {
+    if (!isValidEmail(email.trim())) return setError('invalidEmail');
+    signInWith(() => signInWithPassword(email.trim(), password));
+  }
+
+  function goTo(next: typeof step) {
+    setStep(next);
+    setError(null);
+    setNotice(null);
   }
 
   const header = (
@@ -122,9 +137,49 @@ function CodeSteps() {
           onSubmitEditing={submitEmail}
         />
         <Button label={t('signIn.sendCode')} loading={busy} onPress={submitEmail} />
+        <Button variant="secondary" label={t('signIn.usePassword')} disabled={busy} onPress={() => goTo('password')} />
         <Text variant="caption" tone="secondary">
           {t('signIn.privacyNotice')} <TextLink href="/privacy">{t('signIn.privacyLink')}</TextLink>.
         </Text>
+      </Screen>
+    );
+  }
+
+  if (step === 'password') {
+    return (
+      <Screen title={t('signIn.title')}>
+        {header}
+        <Text variant="title">
+          {wishName ? t('reservation.signInHeading', { name: wishName }) : t('signIn.passwordHeading')}
+        </Text>
+        <TextField
+          label={t('signIn.emailLabel')}
+          value={email}
+          onChangeText={setEmail}
+          error={error === 'invalidEmail' ? errorMessage : null}
+          autoComplete="email"
+          textContentType="username"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoCorrect={false}
+          enterKeyHint="next"
+        />
+        <TextField
+          label={t('signIn.passwordLabel')}
+          value={password}
+          onChangeText={setPassword}
+          error={error && error !== 'invalidEmail' ? errorMessage : null}
+          secureTextEntry
+          autoComplete="current-password"
+          textContentType="password"
+          autoCapitalize="none"
+          autoCorrect={false}
+          autoFocus={Boolean(email)}
+          enterKeyHint="go"
+          onSubmitEditing={submitPassword}
+        />
+        <Button label={t('signIn.verify')} loading={busy} onPress={submitPassword} />
+        <Button variant="secondary" label={t('signIn.useCode')} disabled={busy} onPress={() => goTo('email')} />
       </Screen>
     );
   }
@@ -167,9 +222,8 @@ function CodeSteps() {
           label={t('signIn.changeEmail')}
           disabled={busy}
           onPress={() => {
-            setStep('email');
+            goTo('email');
             setCode('');
-            setError(null);
           }}
         />
       </View>

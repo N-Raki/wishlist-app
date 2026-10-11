@@ -161,8 +161,7 @@ export const fr = {
   signIn: {
     title: 'Connexion',
     emailHeading: 'Recevez un code de connexion',
-    emailBody:
-      'Pas de mot de passe à retenir\u00A0: nous vous envoyons un code à 6\u00A0chiffres. Sans compte, il est créé au passage.',
+    emailBody: 'Nous vous envoyons un code à 6\u00A0chiffres par e-mail. Sans compte, il est créé au passage.',
     emailLabel: 'Adresse e-mail',
     sendCode: 'Recevoir un code',
     codeHeading: 'Saisissez le code',
@@ -172,11 +171,16 @@ export const fr = {
     changeEmail: 'Changer d’adresse',
     resend: 'Renvoyer le code',
     resent: 'Nouveau code envoyé.',
+    usePassword: 'Se connecter avec un mot de passe',
+    passwordHeading: 'Connexion avec un mot de passe',
+    passwordLabel: 'Mot de passe',
+    useCode: 'Recevoir un code à la place',
     privacyNotice: 'Vos données sont traitées comme l’explique notre',
     privacyLink: 'politique de confidentialité',
     errors: {
       invalidEmail: 'Saisissez une adresse e-mail valide, par exemple nom@exemple.fr.',
       invalidCode: 'Ce code est incorrect ou a expiré.',
+      wrongPassword: 'Adresse ou mot de passe incorrect. En cas d’oubli, recevez un code à la place.',
       tooManyRequests: 'Trop de tentatives. Patientez une minute avant de réessayer.',
     },
   },
@@ -191,11 +195,31 @@ export const fr = {
     editBody: 'Vos proches le voient sur vos listes et sur les cadeaux que vous réservez.',
     save: 'Enregistrer',
   },
+  password: {
+    title: 'Mot de passe',
+    body_one:
+      'Facultatif. Avec un mot de passe, vous vous connectez sans attendre de code. Au moins {{count}}\u00A0caractère. Le code par e-mail reste toujours possible, y compris en cas d’oubli.',
+    body_other:
+      'Facultatif. Avec un mot de passe, vous vous connectez sans attendre de code. Au moins {{count}}\u00A0caractères. Le code par e-mail reste toujours possible, y compris en cas d’oubli.',
+    account: 'Pour {{email}}',
+    label: 'Nouveau mot de passe',
+    save: 'Enregistrer',
+    codeBody: 'Pour votre sécurité, confirmez avec le code que nous venons d’envoyer à {{email}}.',
+    errors: {
+      tooShort: 'Choisissez au moins 8\u00A0caractères.',
+      weak: 'Ce mot de passe est trop facile à deviner. Allongez-le ou mélangez lettres, chiffres et signes.',
+      same: 'C’est déjà votre mot de passe.',
+      invalidCode: 'Ce code est incorrect ou a expiré.',
+    },
+  },
   account: {
     title: 'Mon compte',
     signedInAs: 'Connecté avec',
     nameLabel: 'Nom d’affichage',
     editName: 'Changer de nom',
+    passwordHeading: 'Mot de passe',
+    passwordBody: 'Facultatif\u00A0: pour vous connecter sans attendre de code.',
+    setPassword: 'Choisir un mot de passe',
     dataHeading: 'Vos données',
     dataBody:
       'Téléchargez une copie de tout ce que Wish Me conserve sur vous, dans un fichier réutilisable ailleurs (JSON).',

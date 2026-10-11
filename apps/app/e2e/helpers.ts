@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page } from '@playwright/test';
 
 // Mailpit catches the e-mails of the local Supabase stack.
-const mailpit = 'http://127.0.0.1:54324/api/v1';
+export const mailpit = 'http://127.0.0.1:54324/api/v1';
 
 export async function codeSentTo(email: string) {
   await expect
