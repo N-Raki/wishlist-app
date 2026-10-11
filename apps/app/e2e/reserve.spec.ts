@@ -53,7 +53,7 @@ test('a visitor signs in to reserve, a relative joins in, and the owner sees non
   await relative.goto(listUrl);
   await relative.getByRole('link', { name: 'Voir Plaid, Un proche s’en occupe' }).click();
   await relative.getByRole('button', { name: 'Participer' }).click();
-  await expect(relative.getByText('Vous l’offrez avec Un proche').filter({ visible: true })).toBeVisible();
+  await expect(relative.getByText('Vous l’offrez avec un autre proche').filter({ visible: true })).toBeVisible();
 
   // The owner's list says nothing about it, even after a refresh.
   await owner.reload();

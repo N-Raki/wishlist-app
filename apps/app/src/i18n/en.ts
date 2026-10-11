@@ -89,7 +89,10 @@ export const en: Translations = {
     },
   },
   reservation: {
-    someone: 'Someone',
+    relatives_one: 'A loved one',
+    relatives_other: '{{count}} loved ones',
+    otherRelatives_one: 'another loved one',
+    otherRelatives_other: '{{count}} other loved ones',
     namesAnd: '{{names}} and {{last}}',
     namesAndMore: '{{names}} and {{count}} others',
     others_one: '{{names}} is on it',

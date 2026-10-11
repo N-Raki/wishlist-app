@@ -18,11 +18,21 @@ export function reservationState(reservations: Reservation[] = []): ReservationS
   return others.length > 0 ? { kind: 'others', others } : { kind: 'free' };
 }
 
-/** "Léa", "Léa et Hugo", "Léa, Hugo et Zoé", "Léa, Hugo et 2 autres". */
-export function joinNames(names: (string | null)[], t: TFunction): string {
-  const shown = names.map((name) => name ?? t('reservation.someone'));
-  if (shown.length > 3) {
-    return t('reservation.namesAndMore', { names: shown.slice(0, 2).join(', '), count: shown.length - 2 });
+/**
+ * "Léa", "Léa et Hugo", "Léa, Hugo et 2 autres". People without a display name are counted,
+ * not named: "Un proche", "2 proches", "Léa et un autre proche". `afterYou` when the names
+ * follow "Vous", so the unnamed are "un autre proche".
+ */
+export function joinNames(names: (string | null)[], t: TFunction, afterYou = false): string {
+  const named = names.filter((name): name is string => name !== null);
+  const unnamed = names.length - named.length;
+  if (named.length + Math.min(unnamed, 1) > 3) {
+    return t('reservation.namesAndMore', { names: named.slice(0, 2).join(', '), count: names.length - 2 });
+  }
+  const shown = [...named];
+  if (unnamed > 0) {
+    const others = named.length > 0 || afterYou;
+    shown.push(t(others ? 'reservation.otherRelatives' : 'reservation.relatives', { count: unnamed }));
   }
   if (shown.length === 1) return shown[0] ?? '';
   return t('reservation.namesAnd', { names: shown.slice(0, -1).join(', '), last: shown.at(-1) });
@@ -41,7 +51,7 @@ export function describeReservation(state: ReservationState, t: TFunction, form:
     case 'mine':
       if (state.others.length === 0) return t('reservation.mine');
       return t(form === 'short' ? 'reservation.mineWithShort' : 'reservation.mineWith', {
-        names: joinNames(state.others, t),
+        names: joinNames(state.others, t, true),
       });
   }
 }

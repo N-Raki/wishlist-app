@@ -89,7 +89,10 @@ export const fr = {
     },
   },
   reservation: {
-    someone: 'Un proche',
+    relatives_one: 'Un proche',
+    relatives_other: '{{count}}\u00A0proches',
+    otherRelatives_one: 'un autre proche',
+    otherRelatives_other: '{{count}}\u00A0autres proches',
     namesAnd: '{{names}} et {{last}}',
     namesAndMore: '{{names}} et {{count}}\u00A0autres',
     others_one: '{{names}} s’en occupe',

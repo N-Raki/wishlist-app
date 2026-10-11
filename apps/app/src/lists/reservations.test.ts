@@ -24,5 +24,16 @@ it('says who offers a wish with the words of the design', () => {
   expect(say([lea, hugo, { name: 'Zoé', is_me: false }, { name: null, is_me: false }])).toBe(
     'Léa, Hugo et 2 autres s’en occupent',
   );
-  expect(say([{ name: null, is_me: false }])).toBe('Un proche s’en occupe');
+});
+
+it('counts the relatives who have no display name instead of naming them', () => {
+  const someone = { name: null, is_me: false };
+  const say = (reservations: (typeof lea)[], form: 'short' | 'long' = 'long') =>
+    describeReservation(reservationState(reservations), t, form);
+  expect(say([someone])).toBe('Un proche s’en occupe');
+  expect(say([someone, someone])).toBe('2\u00A0proches s’en occupent');
+  expect(say([lea, someone])).toBe('Léa et un autre proche s’en occupent');
+  expect(say([me, someone])).toBe('Vous l’offrez avec un autre proche');
+  expect(say([me, someone], 'short')).toBe('Vous et un autre proche');
+  expect(say([me, lea, someone, someone])).toBe('Vous l’offrez avec Léa et 2\u00A0autres proches');
 });
