@@ -15,6 +15,7 @@ export default function TabsLayout() {
 
   const items: Record<string, TabItem> = {
     '(lists)': { label: t('tabs.lists'), icon: 'lists', href: '/' },
+    '(relatives)': { label: t('tabs.relatives'), icon: 'relatives', href: '/relatives' },
     account: { label: t('tabs.account'), icon: 'account', href: '/account' },
   };
 
@@ -26,6 +27,7 @@ export default function TabsLayout() {
       >
         <Tabs.Screen name="(lists)" />
         <Tabs.Protected guard={signedIn}>
+          <Tabs.Screen name="(relatives)" />
           <Tabs.Screen name="account" />
         </Tabs.Protected>
       </Tabs>

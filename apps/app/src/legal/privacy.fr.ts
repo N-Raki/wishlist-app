@@ -45,7 +45,7 @@ export const privacyFr: LegalDocument = {
     {
       heading: 'Qui y a accès',
       paragraphs: [
-        'Les personnes à qui vous donnez le lien d’une liste voient son nom, vos souhaits, leurs photos et votre nom d’affichage.',
+        'Les personnes à qui vous donnez le lien d’une liste voient son nom, vos souhaits, leurs photos et votre nom d’affichage. Si ce lien est envoyé dans une messagerie (WhatsApp, iMessage…), elle lit l’aperçu public de la liste pour l’afficher dans la conversation\u00A0: son nom, votre nom d’affichage, le nombre de souhaits et une photo.',
         'Quand vous réservez un souhait, les autres proches connectés qui ouvrent la liste voient votre nom d’affichage, pour éviter les doublons et s’organiser à plusieurs. Le propriétaire de la liste ne voit jamais qui a réservé, ni si un souhait est réservé.',
         `${hosts.data.name} héberge la base de données et gère la connexion, dans sa région ${hosts.data.region}.`,
         `${hosts.web.name} héberge le site web et distribue les mises à jour de l’application.`,

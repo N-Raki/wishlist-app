@@ -6,6 +6,7 @@ import { useSession } from '@/auth/SessionProvider';
 import { deleteList, type WishlistView } from '@/lists/api';
 import { useListMutation, useWishlist } from '@/lists/queries';
 import { describeReservation, reservationState } from '@/lists/reservations';
+import { ShareDialog } from '@/lists/ShareDialog';
 import { WishGrid, WishTile } from '@/lists/WishGrid';
 import { space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
@@ -59,6 +60,7 @@ function OwnerList({ list }: { list: WishlistView }) {
   const { t } = useTranslation();
   const colors = useColors();
   const [dialog, setDialog] = useState<'menu' | 'delete' | null>(null);
+  const [sharing, setSharing] = useState(false);
   const remove = useListMutation(list.id, deleteList);
 
   return (
@@ -74,7 +76,10 @@ function OwnerList({ list }: { list: WishlistView }) {
         options={{
           headerRight: () => (
             <HeaderItem>
-              <IconButton icon="more" label={t('wishlist.options')} onPress={() => setDialog('menu')} />
+              <View style={styles.headerActions}>
+                <IconButton icon="share" label={t('share.open')} onPress={() => setSharing(true)} />
+                <IconButton icon="more" label={t('wishlist.options')} onPress={() => setDialog('menu')} />
+              </View>
             </HeaderItem>
           ),
         }}
@@ -101,6 +106,7 @@ function OwnerList({ list }: { list: WishlistView }) {
         </WishGrid>
       )}
 
+      <ShareDialog list={list} visible={sharing} onClose={() => setSharing(false)} />
       {/* One dialog whose content changes, so the menu never fades out under the confirmation. */}
       <Dialog
         visible={dialog !== null}
@@ -152,6 +158,7 @@ function SharedList({ list }: { list: WishlistView }) {
   const { t } = useTranslation();
   const { session } = useSession();
   const isGuest = !session && list.wishes.length > 0;
+  const [sharing, setSharing] = useState(false);
   return (
     <Screen
       title={list.name}
@@ -163,6 +170,16 @@ function SharedList({ list }: { list: WishlistView }) {
         ) : undefined
       }
     >
+      <Stack.Screen
+        options={{
+          headerRight: () => (
+            <HeaderItem>
+              <IconButton icon="share" label={t('share.open')} onPress={() => setSharing(true)} />
+            </HeaderItem>
+          ),
+        }}
+      />
+      <ShareDialog list={list} visible={sharing} onClose={() => setSharing(false)} />
       <View style={styles.heading}>
         <Text variant="bodyStrong" tone="secondary">
           {list.owner_name ? t('wishlist.ownerList', { name: list.owner_name }) : t('wishlist.someone')}
@@ -208,4 +225,5 @@ const styles = StyleSheet.create({
   heading: { gap: space.md },
   empty: { gap: space.sm },
   spacer: { flexGrow: 1 },
+  headerActions: { flexDirection: 'row', gap: space.sm },
 });

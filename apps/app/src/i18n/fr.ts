@@ -15,6 +15,7 @@ export const fr = {
   tabs: {
     label: 'Navigation principale',
     lists: 'Mes listes',
+    relatives: 'Proches',
     account: 'Compte',
   },
   lists: {
@@ -26,6 +27,12 @@ export const fr = {
     noListsTitle: 'Aucune liste pour l’instant',
     noListsBody:
       'Anniversaire, Noël, crémaillère… Créez une liste, ajoutez vos idées de cadeaux, puis partagez son lien avec vos proches.',
+  },
+  relatives: {
+    title: 'Proches',
+    emptyTitle: 'Les listes de vos proches arriveront ici',
+    emptyBody:
+      'Ouvrez le lien d’une liste qu’on vous a envoyée\u00A0: elle s’ajoute ici, rangée avec les autres listes de la même personne.',
   },
   listForm: {
     createTitle: 'Nouvelle liste',
@@ -125,6 +132,27 @@ export const fr = {
     edit: 'Modifier',
     notFound: 'Ce souhait n’est plus dans la liste.',
     backToList: 'Retour à la liste',
+  },
+  share: {
+    open: 'Partager la liste',
+    title: 'Partager «\u00A0{{name}}\u00A0»',
+    ownerPromise:
+      'Vos proches verront la liste et pourront réserver un cadeau, seuls ou à plusieurs. Vous ne saurez jamais qui offre quoi.',
+    relativeBody: 'Envoyez le lien aux autres proches pour qu’ils voient ce qui est déjà pris.',
+    messageMine: 'Voici ma wishlist {{name}}\u00A0!',
+    messageTheirs: 'Voici la wishlist {{name}} de {{owner}}\u00A0!',
+    share: 'Partager le lien',
+    copy: 'Copier le lien',
+    copied: 'Lien copié. Collez-le dans un message.',
+  },
+  preview: {
+    title: '{{name}} · la liste de {{owner}}',
+    description_one:
+      'Voici la wishlist {{name}} de {{owner}}\u00A0! {{count}}\u00A0idée de cadeau, à réserver sans gâcher la surprise.',
+    description_other:
+      'Voici la wishlist {{name}} de {{owner}}\u00A0! {{count}}\u00A0idées de cadeaux, à réserver sans gâcher la surprise.',
+    descriptionAnonymous: 'Une liste de souhaits sur Wish Me, à réserver sans gâcher la surprise.',
+    open: 'Voir la liste',
   },
   footer: {
     privacy: 'Confidentialité',

@@ -7,12 +7,17 @@ function useKeys() {
   const userId = useSession().session?.user.id ?? 'anonymous';
   return {
     myLists: ['myLists', userId] as const,
+    visited: ['visited', userId] as const,
     wishlist: (id: string) => ['wishlist', userId, id] as const,
   };
 }
 
 export function useMyLists() {
   return useQuery({ queryKey: useKeys().myLists, queryFn: api.fetchMyLists });
+}
+
+export function useVisitedLists() {
+  return useQuery({ queryKey: useKeys().visited, queryFn: api.fetchVisitedLists });
 }
 
 export function useWishlist(id: string, { enabled = true }: { enabled?: boolean } = {}) {

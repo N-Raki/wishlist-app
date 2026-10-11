@@ -45,7 +45,7 @@ export const privacyEn: LegalDocument = {
     {
       heading: 'Who can access it',
       paragraphs: [
-        'People you give a list’s link to see its name, your wishes, their photos and your display name.',
+        'People you give a list’s link to see its name, your wishes, their photos and your display name. If the link is sent in a messaging app (WhatsApp, iMessage…), the app reads the list’s public preview to show it in the conversation: its name, your display name, the number of wishes and one photo.',
         'When you reserve a wish, other signed-in loved ones who open the list see your display name, so nobody gives the same gift twice and you can club together. The list’s owner never sees who reserved what, nor whether a wish is reserved.',
         `${hosts.data.name} hosts the database and handles sign-in, in its ${hosts.data.region} region.`,
         `${hosts.web.name} hosts the website and delivers app updates.`,
