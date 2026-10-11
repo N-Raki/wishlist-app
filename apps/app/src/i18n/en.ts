@@ -178,9 +178,22 @@ export const en: Translations = {
       tooManyRequests: 'Too many attempts. Wait a minute before trying again.',
     },
   },
+  profile: {
+    nameHeading: 'What do your loved ones call you?',
+    nameBody:
+      'This name shows on your lists and when you reserve a gift, so your loved ones recognise you. You can change it from your account.',
+    nameLabel: 'First name or nickname',
+    nameRequired: 'Choose a name to continue.',
+    continue: 'Continue',
+    editTitle: 'Display name',
+    editBody: 'Your loved ones see it on your lists and on the gifts you reserve.',
+    save: 'Save',
+  },
   account: {
     title: 'My account',
     signedInAs: 'Signed in with',
+    nameLabel: 'Display name',
+    editName: 'Change name',
     dataHeading: 'Your data',
     dataBody: 'Download a copy of everything Wish Me keeps about you, in a file you can reuse elsewhere (JSON).',
     export: 'Export my data',

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { exportMyData } from '@/account/account';
+import { useDisplayName } from '@/account/queries';
 import { useSession } from '@/auth/SessionProvider';
 import { supabase } from '@/lib/supabase';
 import { radius, space } from '@/theme/tokens';
@@ -16,6 +17,7 @@ export default function Account() {
   const { t } = useTranslation();
   const colors = useColors();
   const { session } = useSession();
+  const name = useDisplayName();
   const [exportState, setExportState] = useState<'idle' | 'busy' | 'done' | 'failed'>('idle');
 
   async function exportData() {
@@ -31,10 +33,19 @@ export default function Account() {
   return (
     <Screen title={t('account.title')}>
       <View style={[styles.card, { backgroundColor: colors.surface }]}>
-        <Text variant="caption" tone="secondary">
-          {t('account.signedInAs')}
-        </Text>
-        <Text variant="bodyStrong">{session?.user.email}</Text>
+        <View style={styles.field}>
+          <Text variant="caption" tone="secondary">
+            {t('account.nameLabel')}
+          </Text>
+          <Text variant="bodyStrong">{name.data ?? ' '}</Text>
+        </View>
+        <View style={styles.field}>
+          <Text variant="caption" tone="secondary">
+            {t('account.signedInAs')}
+          </Text>
+          <Text variant="bodyStrong">{session?.user.email}</Text>
+        </View>
+        <Button variant="secondary" label={t('account.editName')} onPress={() => router.push('/display-name')} />
       </View>
 
       <View style={styles.section}>
@@ -60,7 +71,8 @@ export default function Account() {
 }
 
 const styles = StyleSheet.create({
-  card: { borderRadius: radius.card, padding: space.xl, gap: space.xs },
+  card: { borderRadius: radius.card, padding: space.xl, gap: space.lg },
+  field: { gap: space.xs },
   section: { gap: space.md },
   spacer: { flexGrow: 1 },
 });

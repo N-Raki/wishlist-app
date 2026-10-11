@@ -10,7 +10,7 @@ Responsable : l'éditeur de Wish Me (coordonnées dans `apps/app/src/legal/publi
 | Finalité | Créer un compte, se connecter, gérer son compte |
 | Base légale | Exécution du contrat (art. 6.1.b) |
 | Personnes | Utilisateurs inscrits, 15 ans et plus |
-| Données | E-mail ; nom d'affichage (facultatif) ; dates de création et de dernière connexion ; méthodes de connexion liées |
+| Données | E-mail ; nom d'affichage (obligatoire, choisi à la première connexion) ; dates de création et de dernière connexion ; méthodes de connexion liées |
 | Destinataires | Supabase (base et authentification, région Paris) ; Brevo (envoi des e-mails de connexion, France) |
 | Transferts hors UE | Supabase Inc. et Expo (650 Industries, Inc.), États-Unis, en tant que sous-traitants : clauses contractuelles types de leurs DPA ; Expo est aussi certifié Data Privacy Framework |
 | Durée | Tant que le compte existe ; effacement immédiat à la suppression, sauvegardes purgées sous 7 jours |

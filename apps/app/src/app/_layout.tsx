@@ -8,10 +8,11 @@ import {
   useFonts,
 } from '@expo-google-fonts/gabarito';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { Stack } from 'expo-router';
+import { router, Stack, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { Platform } from 'react-native';
+import { useNameRequirement } from '@/account/queries';
 import { SessionProvider, useSession } from '@/auth/SessionProvider';
 import { useDeviceLanguage } from '@/i18n/useDeviceLanguage';
 import { queryClient } from '@/lib/queryClient';
@@ -47,22 +48,31 @@ function Navigation() {
   // bouncing a signed-in user off the page they opened.
   const signedIn = isLoading || session !== null;
   const signedOut = isLoading || session === null;
+  // A new account names itself on the sign-in sheet before going anywhere (docs/spec.md).
+  const nameRequirement = useNameRequirement();
+  const pathname = usePathname();
 
   // Nothing of an account stays in memory once it signs out, even on a shared device.
   useEffect(() => {
     if (!session) queryClient.clear();
   }, [session]);
 
+  // Signed in on another visit without having chosen a name: back to the sheet to choose one.
+  useEffect(() => {
+    if (nameRequirement === 'required' && pathname !== '/sign-in') router.push('/sign-in');
+  }, [nameRequirement, pathname]);
+
   return (
     <Stack screenOptions={stackOptions(colors)}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Protected guard={signedOut}>
+      <Stack.Protected guard={signedOut || nameRequirement !== 'none'}>
         <Stack.Screen name="sign-in" options={{ presentation: 'modal' }} />
       </Stack.Protected>
       <Stack.Protected guard={signedIn}>
         <Stack.Screen name="list-form" options={{ presentation: 'modal' }} />
         <Stack.Screen name="wishlists/[id]/wish" options={{ presentation: 'modal' }} />
         <Stack.Screen name="delete-account" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="display-name" options={{ presentation: 'modal' }} />
       </Stack.Protected>
     </Stack>
   );

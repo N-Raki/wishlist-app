@@ -33,3 +33,10 @@ it('stays generic without an owner name or a photo', () => {
   expect(html).toContain('A wishlist on Wish Me');
   expect(html).not.toContain('og:image');
 });
+
+it('counts wishes with the plural rules of the language', () => {
+  const empty = { ...list, wishes: [] };
+  const say = (language: 'fr' | 'en') => previewPage({ list: empty, url: 'https://wishme.test', language, photoUrl });
+  expect(say('fr')).toContain('0 idée de cadeau');
+  expect(say('en')).toContain('0 gift ideas');
+});

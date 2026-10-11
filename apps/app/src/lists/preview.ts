@@ -46,7 +46,11 @@ export function previewPage({
   const values = { name: list.name, owner: list.owner_name ?? '', count };
   const title = list.owner_name ? fill(strings.title, values) : list.name;
   const description = list.owner_name
-    ? fill(count === 1 ? strings.description_one : strings.description_other, values)
+    ? // French says "0 idée", English "0 ideas": the language's own plural rules decide.
+      fill(
+        new Intl.PluralRules(language).select(count) === 'one' ? strings.description_one : strings.description_other,
+        values,
+      )
     : strings.descriptionAnonymous;
   const photo = list.wishes.find((wish) => wish.photo_path)?.photo_path;
   const meta: [string, string][] = [

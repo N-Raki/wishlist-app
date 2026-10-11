@@ -13,14 +13,21 @@ export async function codeSentTo(email: string) {
   return message.Text.match(/\b\d{6}\b/)[0] as string;
 }
 
-export async function signIn(page: Page, email: string) {
+export async function signIn(page: Page, email: string, name = 'Léa') {
   await page.goto('/');
   await page.getByRole('button', { name: 'Se connecter' }).click();
+  await enterCode(page, email, name);
+  await expect(page.getByRole('heading', { name: 'Mes listes' })).toBeVisible();
+}
+
+/** The sign-in sheet, from the e-mail to the display name a new account must choose. */
+export async function enterCode(page: Page, email: string, name: string) {
   await page.getByLabel('Adresse e-mail').fill(email);
   await page.getByRole('button', { name: 'Recevoir un code' }).click();
   await page.getByLabel('Code à 6 chiffres').fill(await codeSentTo(email));
   await page.getByRole('button', { name: 'Se connecter' }).click();
-  await expect(page.getByRole('heading', { name: 'Mes listes' })).toBeVisible();
+  await page.getByLabel('Prénom ou surnom').fill(name);
+  await page.getByRole('button', { name: 'Continuer' }).click();
 }
 
 /**

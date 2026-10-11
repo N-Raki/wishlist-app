@@ -52,7 +52,7 @@ test('messaging apps get a preview of a shared list; people get the app', async 
   await expect(page.getByRole('heading', { name: 'Anniversaire' })).toBeVisible();
 
   const preview = await (await request.get(page.url(), { headers: { 'User-Agent': 'WhatsApp/2.24.1 A' } })).text();
-  expect(preview).toContain('<meta property="og:title" content="Anniversaire">');
+  expect(preview).toContain('<meta property="og:title" content="Anniversaire · la liste de Léa">');
   const app = await (await request.get(page.url())).text();
   expect(app).not.toContain('og:title');
 });

@@ -180,9 +180,22 @@ export const fr = {
       tooManyRequests: 'Trop de tentatives. Patientez une minute avant de réessayer.',
     },
   },
+  profile: {
+    nameHeading: 'Comment vos proches vous appellent-ils\u00A0?',
+    nameBody:
+      'Ce nom apparaît sur vos listes et quand vous réservez un cadeau, pour que vos proches vous reconnaissent. Vous pourrez le changer depuis votre compte.',
+    nameLabel: 'Prénom ou surnom',
+    nameRequired: 'Choisissez un nom pour continuer.',
+    continue: 'Continuer',
+    editTitle: 'Nom d’affichage',
+    editBody: 'Vos proches le voient sur vos listes et sur les cadeaux que vous réservez.',
+    save: 'Enregistrer',
+  },
   account: {
     title: 'Mon compte',
     signedInAs: 'Connecté avec',
+    nameLabel: 'Nom d’affichage',
+    editName: 'Changer de nom',
     dataHeading: 'Vos données',
     dataBody:
       'Téléchargez une copie de tout ce que Wish Me conserve sur vous, dans un fichier réutilisable ailleurs (JSON).',
