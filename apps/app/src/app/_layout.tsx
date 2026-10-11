@@ -57,7 +57,7 @@ function Navigation() {
     <Stack screenOptions={stackOptions(colors)}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Protected guard={signedOut}>
-        <Stack.Screen name="sign-in" />
+        <Stack.Screen name="sign-in" options={{ presentation: 'modal' }} />
       </Stack.Protected>
       <Stack.Protected guard={signedIn}>
         <Stack.Screen name="list-form" options={{ presentation: 'modal' }} />

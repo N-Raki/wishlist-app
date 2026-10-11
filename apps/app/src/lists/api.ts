@@ -93,3 +93,15 @@ export async function deleteWish(wish: Pick<Wish, 'id' | 'photo_path'>) {
   check(await supabase.from('wishes').delete().eq('id', wish.id));
   await deletePhotos([wish.photo_path]);
 }
+
+/** Puts the caller on a wish of someone else's list; reserving twice changes nothing. */
+export async function reserve(wishId: string) {
+  const { error } = await supabase.from('reservations').insert({ wish_id: wishId });
+  // 23505: already reserved, from another tab or device.
+  if (error && error.code !== '23505') throw error;
+}
+
+/** The database only lets people delete their own reservations, so this removes the caller's. */
+export async function cancelReservation(wishId: string) {
+  check(await supabase.from('reservations').delete().eq('wish_id', wishId));
+}

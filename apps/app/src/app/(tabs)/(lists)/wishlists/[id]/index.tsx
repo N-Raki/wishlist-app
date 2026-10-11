@@ -5,6 +5,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useSession } from '@/auth/SessionProvider';
 import { deleteList, type WishlistView } from '@/lists/api';
 import { useListMutation, useWishlist } from '@/lists/queries';
+import { describeReservation, reservationState } from '@/lists/reservations';
 import { WishGrid, WishTile } from '@/lists/WishGrid';
 import { space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
@@ -145,25 +146,51 @@ function OwnerList({ list }: { list: WishlistView }) {
   );
 }
 
-// Someone else's list. Reserving arrives with the next step of the roadmap; until then it reads only.
-// Visitors who are not signed in have no account tab, so the legal links are at the bottom.
+// Someone else's list. Signed-in relatives see who is on what; visitors learn why signing in
+// helps, and have no account tab, so the legal links are at the bottom.
 function SharedList({ list }: { list: WishlistView }) {
   const { t } = useTranslation();
   const { session } = useSession();
+  const isGuest = !session && list.wishes.length > 0;
   return (
-    <Screen title={list.name}>
+    <Screen
+      title={list.name}
+      action={
+        isGuest ? (
+          <Link href="/sign-in" asChild>
+            <Button role="link" label={t('reservation.signInToReserve')} />
+          </Link>
+        ) : undefined
+      }
+    >
       <View style={styles.heading}>
         <Text variant="bodyStrong" tone="secondary">
           {list.owner_name ? t('wishlist.ownerList', { name: list.owner_name }) : t('wishlist.someone')}
         </Text>
         <Text variant="title">{list.name}</Text>
       </View>
+      {isGuest ? (
+        // Why signing in is worth it, said where the wish to reserve is born (docs/design.md).
+        <View style={styles.empty}>
+          <Text variant="heading">{t('reservation.guestHeading')}</Text>
+          <Text tone="secondary">
+            {t('reservation.guestBody', { owner: list.owner_name ?? t('reservation.guestOwnerFallback') })}
+          </Text>
+        </View>
+      ) : null}
       {list.wishes.length === 0 ? (
         <Text tone="secondary">{t('wishlist.empty')}</Text>
       ) : (
         <WishGrid>
           {list.wishes.map((wish, index) => (
-            <WishTile key={wish.id} wish={wish} position={list.wishes.length - 1 - index} />
+            <WishTile
+              key={wish.id}
+              wish={wish}
+              position={list.wishes.length - 1 - index}
+              href={{ pathname: '/wishlists/[id]/[wishId]', params: { id: list.id, wishId: wish.id } }}
+              opens="details"
+              badge={describeReservation(reservationState(wish.reservations), t, 'short')}
+            />
           ))}
         </WishGrid>
       )}

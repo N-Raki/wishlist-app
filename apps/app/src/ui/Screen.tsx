@@ -57,7 +57,12 @@ export function Screen({ children, title, description, edges = 'bottom', action 
           onLayout={(event) => setActionHeight(event.nativeEvent.layout.height)}
           style={[styles.action, { bottom: bottom + space.lg }]}
         >
-          <View style={[styles.actionColumn, { boxShadow: `0 8px 24px ${colors.shadow}` }]}>{action}</View>
+          <View
+            // Opaque under a secondary (outlined) action, so the page never shows through it.
+            style={[styles.actionColumn, { backgroundColor: colors.surface, boxShadow: `0 8px 24px ${colors.shadow}` }]}
+          >
+            {action}
+          </View>
         </View>
       ) : null}
     </KeyboardAvoidingView>

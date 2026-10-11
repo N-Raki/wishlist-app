@@ -1,14 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import AxeBuilder from '@axe-core/playwright';
-import { expect, type Page, test } from '@playwright/test';
-import { expectReflow, signIn } from './helpers';
-
-const wcag = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
-
-async function expectAccessible(page: Page) {
-  const results = await new AxeBuilder({ page }).withTags(wcag).analyze();
-  expect(results.violations).toEqual([]);
-}
+import { expect, test } from '@playwright/test';
+import { expectAccessible, expectReflow, signIn } from './helpers';
 
 test('an owner creates a list, fills it, changes it, then deletes it', async ({ page }) => {
   await signIn(page, `${randomUUID()}@example.test`);

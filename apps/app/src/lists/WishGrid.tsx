@@ -37,12 +37,38 @@ export function WishGrid({ children }: { children: ReactNode[] }) {
   );
 }
 
-/** A wish as a tile. With `href`, the whole tile opens it (the owner editing it). */
-export function WishTile({ wish, position, href }: { wish: Wish; position: number; href?: Href }) {
+/**
+ * A wish as a tile. With `href`, the whole tile opens it: the owner edits it, a relative sees
+ * its details. `badge` says who offers it, for relatives only.
+ */
+export function WishTile({
+  wish,
+  position,
+  href,
+  opens = 'form',
+  badge,
+}: {
+  wish: Wish;
+  position: number;
+  href?: Href;
+  /** What `href` leads to, for the tile's accessible name. */
+  opens?: 'form' | 'details';
+  badge?: string | null;
+}) {
   const { t, i18n } = useTranslation();
+  const colors = useColors();
   const content = (
     <View style={styles.wish}>
-      <WishArt wish={wish} position={position} size="tile" />
+      <View>
+        <WishArt wish={wish} position={position} size="tile" />
+        {badge ? (
+          <View style={styles.badgeSlot}>
+            <Text variant="caption" style={[styles.badge, { backgroundColor: colors.surface }]}>
+              {badge}
+            </Text>
+          </View>
+        ) : null}
+      </View>
       <View style={styles.caption}>
         <Text variant="bodyStrong" numberOfLines={2}>
           {wish.name}
@@ -61,7 +87,12 @@ export function WishTile({ wish, position, href }: { wish: Wish; position: numbe
   if (!href) return content;
   return (
     <Link href={href} asChild>
-      <Touchable aria-label={t('wishlist.edit', { name: wish.name })} pressedLook={styles.pressed}>
+      <Touchable
+        aria-label={[t(opens === 'details' ? 'wish.open' : 'wishlist.edit', { name: wish.name }), badge]
+          .filter(Boolean)
+          .join(', ')}
+        pressedLook={styles.pressed}
+      >
         {content}
       </Touchable>
     </Link>
@@ -126,5 +157,13 @@ const styles = StyleSheet.create({
   thumbInitial: { fontFamily: fonts.extraBold, fontSize: 30, lineHeight: 36 },
   caption: { paddingHorizontal: space.xs },
   price: { fontFamily: fonts.bold, fontSize: 15, lineHeight: 20, fontVariant: ['tabular-nums'] },
+  badgeSlot: { position: 'absolute', left: space.md, right: space.md, bottom: space.md, alignItems: 'flex-start' },
+  badge: {
+    fontFamily: fonts.semiBold,
+    paddingHorizontal: space.md,
+    paddingVertical: space.xs,
+    borderRadius: radius.pill,
+    overflow: 'hidden',
+  },
   pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },
 });
