@@ -1,15 +1,28 @@
-import { ActivityIndicator, Pressable, type PressableProps, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, type PressableProps, StyleSheet, Text } from 'react-native';
 import { fonts, minTouchTarget, radius, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
+import { Icon, type IconName } from './Icon';
+import { Touchable } from './Touchable';
 
 type Props = Omit<PressableProps, 'children' | 'style'> & {
   label: string;
   variant?: 'primary' | 'secondary' | 'danger';
   loading?: boolean;
+  /** Compact buttons sit in headers and toolbars, next to other controls. */
+  size?: 'regular' | 'compact';
+  icon?: IconName;
 };
 
 /** Main actions are filled pills, secondary ones outlined (docs/design.md). */
-export function Button({ label, variant = 'primary', loading = false, disabled, ...props }: Props) {
+export function Button({
+  label,
+  variant = 'primary',
+  loading = false,
+  size = 'regular',
+  icon,
+  disabled,
+  ...props
+}: Props) {
   const colors = useColors();
   const look = {
     primary: {
@@ -31,22 +44,27 @@ export function Button({ label, variant = 'primary', loading = false, disabled, 
   const inactive = disabled || loading;
 
   return (
-    <Pressable
+    <Touchable
       role="button"
       aria-disabled={inactive}
       aria-busy={loading}
       disabled={inactive}
-      style={({ pressed }) => [
+      look={[
         styles.button,
+        size === 'compact' && styles.compact,
         { backgroundColor: look.background, borderColor: look.border },
-        pressed && styles.pressed,
         disabled && styles.disabled,
       ]}
+      pressedLook={styles.pressed}
       {...props}
     >
-      {loading ? <ActivityIndicator color={look.text} accessibilityElementsHidden /> : null}
-      <Text style={[styles.label, { color: look.text }]}>{label}</Text>
-    </Pressable>
+      {loading ? (
+        <ActivityIndicator color={look.text} accessibilityElementsHidden />
+      ) : icon ? (
+        <Icon name={icon} color={look.text} size={18} strokeWidth={2.4} />
+      ) : null}
+      <Text style={[styles.label, size === 'compact' && styles.compactLabel, { color: look.text }]}>{label}</Text>
+    </Touchable>
   );
 }
 
@@ -61,7 +79,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: space.sm,
   },
-  pressed: { opacity: 0.8 },
+  compact: { minHeight: minTouchTarget, paddingHorizontal: space.lg, gap: space.xs },
+  pressed: { opacity: 0.8, transform: [{ scale: 0.97 }] },
   disabled: { opacity: 0.5 },
   label: { fontFamily: fonts.semiBold, fontSize: 17, lineHeight: 22 },
+  compactLabel: { fontFamily: fonts.bold, fontSize: 15, lineHeight: 20 },
 });

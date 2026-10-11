@@ -1,34 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
-import { expect, type Page, test } from '@playwright/test';
-
-// Mailpit catches the e-mails of the local Supabase stack.
-const mailpit = 'http://127.0.0.1:54324/api/v1';
-
-async function codeSentTo(email: string) {
-  await expect
-    .poll(async () => (await (await fetch(`${mailpit}/search?query=to:${email}`)).json()).messages_count)
-    .toBe(1);
-  const { messages } = await (await fetch(`${mailpit}/search?query=to:${email}`)).json();
-  const message = await (await fetch(`${mailpit}/message/${messages[0].ID}`)).json();
-  return message.Text.match(/\b\d{6}\b/)[0] as string;
-}
-
-async function signIn(page: Page, email: string) {
-  await page.goto('/');
-  await page.getByRole('button', { name: 'Se connecter' }).click();
-  await page.getByLabel('Adresse e-mail').fill(email);
-  await page.getByRole('button', { name: 'Recevoir un code' }).click();
-  await page.getByLabel('Code à 6 chiffres').fill(await codeSentTo(email));
-  await page.getByRole('button', { name: 'Se connecter' }).click();
-  await expect(page.getByRole('button', { name: 'Mon compte' })).toBeVisible();
-}
+import { expect, test } from '@playwright/test';
+import { codeSentTo, signIn } from './helpers';
 
 test('a visitor signs in with a code, exports their data, then deletes their account', async ({ page }) => {
   const email = `${randomUUID()}@example.test`;
   await signIn(page, email);
 
-  await page.getByRole('button', { name: 'Mon compte' }).click();
+  await page.getByRole('link', { name: 'Compte' }).click();
   await expect(page.getByText(email)).toBeVisible();
 
   const download = page.waitForEvent('download');

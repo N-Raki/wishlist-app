@@ -30,10 +30,10 @@ jobs:
         working-directory: apps/app
         env:
           EXPO_PUBLIC_APP_ENV: preprod
-          ALIAS: pr-${{ github.event.pull_request.number }}
         run: |
           npx expo export --platform web
-          npx eas-cli deploy --alias "$ALIAS" --environment preview --json > deploy.json
+          # No alias: the free plan caps them at 5, and each deployment has its own address anyway.
+          npx eas-cli deploy --environment preview --json > deploy.json
           echo "url=$(grep -o 'https://[^"]*expo\.app[^"]*' deploy.json | head -1)" >> "$GITHUB_OUTPUT"
       - name: Link the preview on the pull request
         uses: marocchino/sticky-pull-request-comment@v2

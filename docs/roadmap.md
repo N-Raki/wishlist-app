@@ -22,7 +22,7 @@ Questions ouvertes de la spec : Q1 et Q2 validées ; Q3, la proposition s'appliq
 Reconstruire les features v1 avec le nouveau design (périmètre « 2.0 » de la spec), migrer les données, basculer wishme.fr et publier sur les stores. Une PR par ligne, dans cet ordre :
 
 - [x] Données : listes, souhaits, réservations, listes ouvertes ; règles d'accès dans la base, export, registre
-- [ ] Mes listes et ma liste : créer, renommer, supprimer, souhaits sans photo ; barre d'onglets
+- [x] Mes listes et ma liste : créer, renommer, supprimer, souhaits sans photo ; barre d'onglets
 - [ ] Photos des souhaits (stockage Supabase)
 - [ ] Liste d'un proche : réserver, cadeau commun, invité et feuille de connexion ; onglet Proches ; partage et aperçu riche du lien
 - [ ] Compte complet : nom d'affichage à la première connexion, Google, Apple, mot de passe
