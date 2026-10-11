@@ -23,12 +23,12 @@ Responsable : l'éditeur de Wish Me (coordonnées dans `apps/app/src/legal/publi
 | Finalité | Créer et partager des listes de souhaits ; réserver un cadeau sur la liste d'un proche sans doublon ; retrouver les listes déjà ouvertes (onglet « Proches ») |
 | Base légale | Exécution du contrat (art. 6.1.b) |
 | Personnes | Utilisateurs inscrits ; leurs proches qui ouvrent une liste |
-| Données | Listes (nom, date) ; souhaits (nom, prix et devise, lien, précisions, date) ; réservations (qui, quel souhait, date) ; listes ouvertes par un utilisateur connecté (date de la dernière visite) |
-| Destinataires | Toute personne qui a le lien d'une liste voit son nom, ses souhaits et le nom d'affichage du propriétaire. Les autres proches connectés voient le nom d'affichage de ceux qui ont réservé ; le propriétaire jamais (règle appliquée par la base, testée en CI). Prestataires : comme au 1 |
+| Données | Listes (nom, date) ; souhaits (nom, prix et devise, lien, précisions, photo, date) ; réservations (qui, quel souhait, date) ; listes ouvertes par un utilisateur connecté (date de la dernière visite) |
+| Destinataires | Toute personne qui a le lien d'une liste voit son nom, ses souhaits, leurs photos et le nom d'affichage du propriétaire. Les sites des produits dont un lien est collé voient la requête de notre serveur (fonction `link-photo`), jamais l'utilisateur. Les autres proches connectés voient le nom d'affichage de ceux qui ont réservé ; le propriétaire jamais (règle appliquée par la base, testée en CI). Prestataires : comme au 1 |
 | Transferts hors UE | Comme au 1 |
-| Durée | Tant que la liste et le compte existent ; supprimer une liste efface ses souhaits, leurs réservations et les visites ; supprimer son compte efface ses listes, ses réservations et ses visites |
-| Sécurité | Les tables ne sont lisibles que par le propriétaire ; les autres passent par une fonction qui exige l'identifiant de la liste, impossible à énumérer ; liens limités à http(s) |
-| Droits | Listes, souhaits, réservations et listes ouvertes inclus dans l'export ; le reste par e-mail |
+| Durée | Tant que la liste et le compte existent ; supprimer une liste efface ses souhaits, leurs réservations et les visites ; supprimer son compte efface ses listes, ses réservations et ses visites. Les photos sont supprimées par l'app avec leur souhait ou leur liste, et toutes ensemble avec le compte (fonction `delete-account`) ; un envoi interrompu peut laisser un fichier orphelin, effacé avec le compte |
+| Sécurité | Les tables ne sont lisibles que par le propriétaire ; les autres passent par une fonction qui exige l'identifiant de la liste, impossible à énumérer ; liens limités à http(s). Photos : stockage public sous des noms aléatoires, chaque utilisateur n'écrit que dans son dossier, aucune liste du contenu possible ; photos de l'appareil réencodées (métadonnées EXIF et position retirées) ; la lecture des pages produit ne joint que des serveurs publics (adresses privées refusées, redirections vérifiées, taille et durée bornées) |
+| Droits | Listes, souhaits (avec le chemin de leur photo), réservations et listes ouvertes inclus dans l'export ; le reste par e-mail |
 
 ## 3. Journaux techniques
 | | |

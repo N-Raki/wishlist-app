@@ -1,12 +1,14 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { goBack } from '@/lib/navigation';
 import { addWish, deleteWish, updateWish, type Wish, type WishDraft } from '@/lists/api';
 import { normalizeLink } from '@/lists/link';
 import { currencies, parsePrice, priceInput } from '@/lists/money';
+import { deletePhotos, type LocalPhoto, photoFromLink, photoUrl, pickPhoto, uploadPhoto } from '@/lists/photos';
 import { useListMutation, useWishlist } from '@/lists/queries';
+import { WishArt } from '@/lists/WishGrid';
 import { fonts, minTouchTarget, radius, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
@@ -28,6 +30,9 @@ export default function WishForm() {
 
 type Errors = Partial<Record<'name' | 'price' | 'link', boolean>>;
 
+/** No photo, the one already saved, or one just picked on the device. */
+type PhotoState = null | { saved: string } | LocalPhoto;
+
 function Form({ listId, wish }: { listId: string; wish?: Wish }) {
   const { t, i18n } = useTranslation();
   const colors = useColors();
@@ -38,12 +43,30 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
   const [currency, setCurrency] = useState(wish?.currency ?? 'EUR');
   const [link, setLink] = useState(wish?.url ?? '');
   const [details, setDetails] = useState(wish?.description ?? '');
+  const [photo, setPhoto] = useState<PhotoState>(wish?.photo_path ? { saved: wish.photo_path } : null);
   const [errors, setErrors] = useState<Errors>({});
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [linkPhoto, setLinkPhoto] = useState<'idle' | 'searching' | 'none'>('idle');
+  const triedLink = useRef(wish?.url ?? null);
 
-  const save = useListMutation(listId, (draft: WishDraft) =>
-    wish ? updateWish(wish.id, draft) : addWish(listId, draft),
-  );
+  // Once a link is entered, its page's photo fills an empty photo, once per link: a photo the
+  // user removed does not come back.
+  async function findLinkPhoto() {
+    const parsed = normalizeLink(link);
+    if (photo !== null || 'error' in parsed || !parsed.url || parsed.url === triedLink.current) return;
+    triedLink.current = parsed.url;
+    setLinkPhoto('searching');
+    const found = await photoFromLink(parsed.url);
+    setPhoto((current) => current ?? found);
+    setLinkPhoto(found ? 'idle' : 'none');
+  }
+
+  // A new photo is uploaded on save, then the one it replaces is removed.
+  const save = useListMutation(listId, async (draft: Omit<WishDraft, 'photo_path'>) => {
+    const photo_path = photo === null ? null : 'saved' in photo ? photo.saved : await uploadPhoto(photo);
+    await (wish ? updateWish(wish.id, { ...draft, photo_path }) : addWish(listId, { ...draft, photo_path }));
+    if (wish?.photo_path && wish.photo_path !== photo_path) await deletePhotos([wish.photo_path]);
+  });
   const remove = useListMutation(listId, deleteWish);
 
   // Errors are checked on submit, then each one clears as soon as its field changes.
@@ -83,6 +106,18 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
       <Stack.Screen options={{ headerLeft: closeButton(t('common.close'), back) }} />
       <Text variant="title">{title}</Text>
 
+      <PhotoField
+        photo={photo}
+        name={name}
+        onChange={setPhoto}
+        disabled={save.isPending}
+        status={
+          linkPhoto === 'idle'
+            ? null
+            : t(linkPhoto === 'searching' ? 'wishForm.photoSearching' : 'wishForm.photoNotFound')
+        }
+      />
+
       <TextField
         label={t('wishForm.nameLabel')}
         placeholder={t('wishForm.namePlaceholder')}
@@ -96,6 +131,25 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
         autoFocus={!wish}
         autoCapitalize="sentences"
         enterKeyHint="next"
+      />
+
+      <TextField
+        label={t('wishForm.linkLabel')}
+        placeholder={t('wishForm.linkPlaceholder')}
+        value={link}
+        onChangeText={(value) => {
+          setLink(value);
+          setErrors((current) => ({ ...current, link: false }));
+        }}
+        error={errors.link ? t('wishForm.errors.link') : null}
+        optional
+        keyboardType="url"
+        inputMode="url"
+        autoCapitalize="none"
+        autoCorrect={false}
+        spellCheck={false}
+        maxLength={2048}
+        onBlur={findLinkPhoto}
       />
 
       <View style={styles.field}>
@@ -140,24 +194,6 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
       </View>
 
       <TextField
-        label={t('wishForm.linkLabel')}
-        placeholder={t('wishForm.linkPlaceholder')}
-        value={link}
-        onChangeText={(value) => {
-          setLink(value);
-          setErrors((current) => ({ ...current, link: false }));
-        }}
-        error={errors.link ? t('wishForm.errors.link') : null}
-        optional
-        keyboardType="url"
-        inputMode="url"
-        autoCapitalize="none"
-        autoCorrect={false}
-        spellCheck={false}
-        maxLength={2048}
-      />
-
-      <TextField
         label={t('wishForm.detailsLabel')}
         placeholder={t('wishForm.detailsPlaceholder')}
         value={details}
@@ -199,7 +235,7 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
             variant="danger"
             label={t('wishForm.deleteConfirm')}
             loading={remove.isPending}
-            onPress={() => remove.mutate([wish.id], { onSuccess: back })}
+            onPress={() => remove.mutate([wish], { onSuccess: back })}
           />
           <Button
             variant="secondary"
@@ -213,7 +249,77 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
   );
 }
 
+/** The wish's picture: a preview, and buttons to pick, change or remove it. */
+function PhotoField({
+  photo,
+  name,
+  onChange,
+  disabled,
+  status,
+}: {
+  photo: PhotoState;
+  name: string;
+  onChange: (photo: PhotoState) => void;
+  disabled: boolean;
+  /** What the search from the link is doing, if anything. */
+  status: string | null;
+}) {
+  const { t } = useTranslation();
+  const [picking, setPicking] = useState(false);
+
+  async function pick() {
+    setPicking(true);
+    try {
+      const picked = await pickPhoto();
+      if (picked) onChange(picked);
+    } finally {
+      setPicking(false);
+    }
+  }
+
+  const uri = photo === null ? null : 'saved' in photo ? photoUrl(photo.saved) : photo.uri;
+  return (
+    <View style={styles.photo}>
+      <View style={styles.photoPreview}>
+        <WishArt wish={{ name, photo_path: null }} photoUri={uri} position={0} size="thumb" />
+      </View>
+      <View style={styles.photoActions}>
+        <Text variant="bodyStrong">
+          {t('wishForm.photoLabel')}
+          <Text tone="secondary"> ({t('common.optional')})</Text>
+        </Text>
+        <Button
+          variant="secondary"
+          size="compact"
+          icon={uri ? undefined : 'plus'}
+          label={uri ? t('wishForm.changePhoto') : t('wishForm.addPhoto')}
+          loading={picking}
+          disabled={disabled}
+          onPress={pick}
+        />
+        {uri ? (
+          <Button
+            variant="secondary"
+            size="compact"
+            label={t('wishForm.removePhoto')}
+            disabled={disabled || picking}
+            onPress={() => onChange(null)}
+          />
+        ) : null}
+        {status ? (
+          <Text role="status" variant="caption" tone="secondary">
+            {status}
+          </Text>
+        ) : null}
+      </View>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
+  photo: { flexDirection: 'row', gap: space.lg, alignItems: 'center' },
+  photoPreview: { width: 104, aspectRatio: 4 / 5 },
+  photoActions: { flex: 1, gap: space.sm, alignItems: 'flex-start' },
   field: { gap: space.md },
   currencies: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
   currency: {

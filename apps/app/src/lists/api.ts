@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { deletePhotos } from './photos';
 
 export type Wish = {
   id: string;
@@ -7,6 +8,8 @@ export type Wish = {
   currency: string;
   url: string | null;
   description: string | null;
+  /** In the wish-photos bucket; null for a wish without a photo. */
+  photo_path: string | null;
   created_at: string;
   /** Only for signed-in relatives: never sent to the owner nor to anonymous visitors. */
   reservations?: { name: string | null; is_me: boolean }[];
@@ -22,10 +25,15 @@ export type WishlistView = {
   wishes: Wish[];
 };
 
-export type WishDraft = Pick<Wish, 'name' | 'price_cents' | 'currency' | 'url' | 'description'>;
+export type WishDraft = Pick<Wish, 'name' | 'price_cents' | 'currency' | 'url' | 'description' | 'photo_path'>;
 
 /** A list as "My lists" shows it, with its newest wishes as a preview. */
-export type MyList = { id: string; name: string; wishCount: number; preview: { id: string; name: string }[] };
+export type MyList = {
+  id: string;
+  name: string;
+  wishCount: number;
+  preview: Pick<Wish, 'id' | 'name' | 'photo_path'>[];
+};
 
 /** Wishes shown on a list's card on "My lists". */
 export const previewSize = 4;
@@ -46,7 +54,7 @@ export async function fetchMyLists(): Promise<MyList[]> {
   const lists = rows(
     await supabase
       .from('wishlists')
-      .select('id, name, wishes(count), preview:wishes(id, name)')
+      .select('id, name, wishes(count), preview:wishes(id, name, photo_path)')
       .order('created_at', { ascending: false })
       .order('created_at', { referencedTable: 'preview', ascending: false })
       .limit(previewSize, { referencedTable: 'preview' }),
@@ -67,8 +75,10 @@ export async function renameList(id: string, name: string) {
   check(await supabase.from('wishlists').update({ name }).eq('id', id));
 }
 
-export async function deleteList(id: string) {
-  check(await supabase.from('wishlists').delete().eq('id', id));
+/** Deletes a list, its wishes, then their photos (which the database cannot remove itself). */
+export async function deleteList(list: Pick<WishlistView, 'id' | 'wishes'>) {
+  check(await supabase.from('wishlists').delete().eq('id', list.id));
+  await deletePhotos(list.wishes.map((wish) => wish.photo_path));
 }
 
 export async function addWish(wishlistId: string, wish: WishDraft) {
@@ -79,6 +89,7 @@ export async function updateWish(id: string, wish: WishDraft) {
   check(await supabase.from('wishes').update(wish).eq('id', id));
 }
 
-export async function deleteWish(id: string) {
-  check(await supabase.from('wishes').delete().eq('id', id));
+export async function deleteWish(wish: Pick<Wish, 'id' | 'photo_path'>) {
+  check(await supabase.from('wishes').delete().eq('id', wish.id));
+  await deletePhotos([wish.photo_path]);
 }

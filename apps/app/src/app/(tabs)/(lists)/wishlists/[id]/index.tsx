@@ -118,7 +118,7 @@ function OwnerList({ list }: { list: WishlistView }) {
               variant="danger"
               label={t('wishlist.deleteConfirm')}
               loading={remove.isPending}
-              onPress={() => remove.mutate([list.id], { onSuccess: () => router.dismissTo('/') })}
+              onPress={() => remove.mutate([list], { onSuccess: () => router.dismissTo('/') })}
             />
           </>
         ) : (

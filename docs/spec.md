@@ -54,7 +54,7 @@ Légende : **2.0** = livré à la bascule de wishme.fr (étape 3 de la roadmap) 
 | Nom (obligatoire), prix + devise, lien, description, image | 2.0 |
 | Modifier, supprimer avec confirmation | 2.0 |
 | Coup de cœur | 2.x (première feature après la bascule) |
-| Image récupérée automatiquement depuis le lien | 2.x |
+| Image récupérée automatiquement depuis le lien | 2.0 |
 | Prévenir les proches qui avaient réservé quand un souhait est modifié ou supprimé | 2.x |
 
 ### Consulter et réserver

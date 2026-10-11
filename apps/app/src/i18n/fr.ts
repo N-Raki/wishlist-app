@@ -60,6 +60,12 @@ export const fr = {
   wishForm: {
     newTitle: 'Nouveau souhait',
     editTitle: 'Modifier le souhait',
+    photoLabel: 'Photo',
+    addPhoto: 'Ajouter une photo',
+    changePhoto: 'Changer la photo',
+    removePhoto: 'Retirer la photo',
+    photoSearching: 'Recherche de la photo du produit…',
+    photoNotFound: 'Pas de photo trouvée sur cette page. Vous pouvez en ajouter une.',
     nameLabel: 'Nom du souhait',
     namePlaceholder: 'Appareil photo instantané',
     priceLabel: 'Prix',
