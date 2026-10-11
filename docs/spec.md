@@ -32,7 +32,7 @@ Légende : **2.0** = livré à la bascule de wishme.fr (étape 3 de la roadmap) 
 | Connexion Google | 2.0 |
 | Connexion Apple (obligatoire sur iOS dès qu'une connexion tierce est proposée) | 2.0 |
 | Connexion e-mail + mot de passe (optionnel, défini depuis le compte) | 2.0 |
-| Nom d'affichage demandé juste après la première connexion | 2.0 |
+| Nom d'affichage obligatoire, demandé juste après la première connexion (impossible de passer l'étape ; sans nom, la base refuse de créer une liste ou de réserver) | 2.0 |
 | Page compte : nom d'affichage, méthodes de connexion liées, mot de passe | 2.0 |
 | Supprimer son compte (immédiat, avec confirmation) | 2.0 |
 | Exporter ses données | 2.0 |

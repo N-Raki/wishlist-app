@@ -2,6 +2,9 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
+import { useNameRequirement } from '@/account/queries';
+import { useDisplayNameForm } from '@/account/useDisplayNameForm';
+import { useSession } from '@/auth/SessionProvider';
 import { isValidEmail, type SignInError, sendCode, verifyCode } from '@/auth/signIn';
 import { goBack } from '@/lib/navigation';
 import { pendingReservation } from '@/lists/pendingReservation';
@@ -14,11 +17,39 @@ import { Text } from '@/ui/Text';
 import { TextField } from '@/ui/TextField';
 import { TextLink } from '@/ui/TextLink';
 
-// Two steps on one screen: e-mail, then the code. Once verified, the session changes and the
-// root layout's guards close this sheet, back to the page that opened it.
+// Steps on one screen: e-mail, then the code, then a display name on the first sign-in.
+// Once signed in and named, the root layout's guards close this sheet, back to the page that
+// opened it.
 // Opened from a wish to reserve (`list` and `wish`), it names that wish, and the wish page
 // reserves it as soon as the user is signed in.
 export default function SignIn() {
+  const { session } = useSession();
+  // The sheet stays open on the name step until a name is chosen: it cannot be skipped.
+  if (session) return <NameStep />;
+  return <CodeSteps />;
+}
+
+function NameStep() {
+  const { t } = useTranslation();
+  const requirement = useNameRequirement();
+  const form = useDisplayNameForm('');
+  if (requirement !== 'required') return null;
+  return (
+    <Screen
+      title={t('signIn.title')}
+      action={<Button label={t('profile.continue')} loading={form.busy} onPress={form.submit} />}
+    >
+      <Stack.Screen options={{ headerLeft: () => null, gestureEnabled: false }} />
+      <View style={{ gap: space.sm }}>
+        <Text variant="title">{t('profile.nameHeading')}</Text>
+        <Text tone="secondary">{t('profile.nameBody')}</Text>
+      </View>
+      {form.field}
+    </Screen>
+  );
+}
+
+function CodeSteps() {
   const { t } = useTranslation();
   const params = useLocalSearchParams<{ list?: string; wish?: string }>();
   const list = useWishlist(params.list ?? '', { enabled: Boolean(params.list) });

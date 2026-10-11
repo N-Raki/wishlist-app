@@ -2,6 +2,7 @@ import { Link, router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useNameRequirement } from '@/account/queries';
 import { useSession } from '@/auth/SessionProvider';
 import { cancelReservation, reserve, type Wish, type WishlistView } from '@/lists/api';
 import { formatPrice } from '@/lists/money';
@@ -63,6 +64,8 @@ function Details({ list, wish, position }: { list: WishlistView; wish: Wish; pos
   const { t, i18n } = useTranslation();
   const colors = useColors();
   const { session } = useSession();
+  // A new account first chooses its name on the sign-in sheet, above this page.
+  const named = useNameRequirement() === 'none';
   const [notice, setNotice] = useState<Notice | null>(null);
   const reserveIt = useListMutation(list.id, reserve);
   const cancel = useListMutation(list.id, cancelReservation);
@@ -72,12 +75,12 @@ function Details({ list, wish, position }: { list: WishlistView; wish: Wish; pos
 
   // Back from signing in to reserve this wish: reserve it, unless someone already is on it.
   useEffect(() => {
-    if (!session || !(isRelative || list.is_owner) || !pendingReservation.take(wish.id)) return;
+    if (!session || !named || !(isRelative || list.is_owner) || !pendingReservation.take(wish.id)) return;
     // Signed in as the owner of the list: nothing to reserve, the page shows the owner's view.
     if (list.is_owner) return;
     if (state.kind === 'free') reserveIt.mutate([wish.id], { onSuccess: () => setNotice('reserved') });
     else if (state.kind === 'others') setNotice('takenAfterSignIn');
-  }, [session, isRelative, list.is_owner, wish.id, state.kind, reserveIt.mutate]);
+  }, [session, named, isRelative, list.is_owner, wish.id, state.kind, reserveIt.mutate]);
 
   const status = describeReservation(state, t, 'long');
   const busy = reserveIt.isPending || cancel.isPending;

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { type Browser, expect, type Page, test } from '@playwright/test';
-import { codeSentTo, expectAccessible, expectReflow, signIn } from './helpers';
+import { codeSentTo, enterCode, expectAccessible, expectReflow, signIn } from './helpers';
 
 async function newPage(browser: Browser) {
   const context = await browser.newContext();
@@ -37,11 +37,8 @@ test('a visitor signs in to reserve, a relative joins in, and the owner sees non
   // "Reserve" opens the sign-in sheet about that wish; the reservation is made on sign-in.
   await guest.getByRole('button', { name: 'Réserver' }).click();
   await expect(guest.getByRole('heading', { name: 'Connectez-vous pour réserver « Plaid »' })).toBeVisible();
-  const guestEmail = `${randomUUID()}@example.test`;
-  await guest.getByLabel('Adresse e-mail').fill(guestEmail);
-  await guest.getByRole('button', { name: 'Recevoir un code' }).click();
-  await guest.getByLabel('Code à 6 chiffres').fill(await codeSentTo(guestEmail));
-  await guest.getByRole('button', { name: 'Se connecter' }).click();
+  // A new account chooses its name first: the sheet cannot be closed before.
+  await enterCode(guest, `${randomUUID()}@example.test`, 'Zoé');
   await expect(guest.getByRole('status')).toContainText('C’est réservé');
   // The list stays mounted under the wish page: only what is on screen counts.
   await expect(guest.getByText('Vous l’offrez', { exact: true }).filter({ visible: true })).toBeVisible();
@@ -49,11 +46,11 @@ test('a visitor signs in to reserve, a relative joins in, and the owner sees non
 
   // Another relative sees it is taken and joins in: a shared gift.
   const relative = await newPage(browser);
-  await signIn(relative, `${randomUUID()}@example.test`);
+  await signIn(relative, `${randomUUID()}@example.test`, 'Hugo');
   await relative.goto(listUrl);
-  await relative.getByRole('link', { name: 'Voir Plaid, Un proche s’en occupe' }).click();
+  await relative.getByRole('link', { name: 'Voir Plaid, Zoé s’en occupe' }).click();
   await relative.getByRole('button', { name: 'Participer' }).click();
-  await expect(relative.getByText('Vous l’offrez avec un autre proche').filter({ visible: true })).toBeVisible();
+  await expect(relative.getByText('Vous l’offrez avec Zoé').filter({ visible: true })).toBeVisible();
 
   // The owner's list says nothing about it, even after a refresh.
   await owner.reload();
@@ -63,7 +60,7 @@ test('a visitor signs in to reserve, a relative joins in, and the owner sees non
   // The first relative changes their mind.
   await guest.getByRole('button', { name: 'Annuler ma réservation' }).click();
   await expect(guest.getByRole('status')).toHaveText('Votre réservation est annulée.');
-  await expect(guest.getByText('Un proche s’en occupe').filter({ visible: true })).toBeVisible();
+  await expect(guest.getByText('Hugo s’en occupe').filter({ visible: true })).toBeVisible();
 });
 
 test('a visitor who signs in to reserve a wish already taken is offered to join in', async ({ browser }) => {
@@ -86,8 +83,10 @@ test('a visitor who signs in to reserve a wish already taken is offered to join 
   await relative.getByRole('button', { name: 'Réserver' }).click();
   await expect(relative.getByRole('status')).toContainText('C’est réservé');
 
-  await guest.getByLabel('Code à 6 chiffres').fill(await codeSentTo(guestEmail));
+  await guest.getByLabel('Code à 6 chiffres').fill(await codeSentTo(guestEmail));
   await guest.getByRole('button', { name: 'Se connecter' }).click();
+  await guest.getByLabel('Prénom ou surnom').fill('Zoé');
+  await guest.getByRole('button', { name: 'Continuer' }).click();
   await expect(guest.getByRole('status')).toHaveText(
     'Quelqu’un s’en occupe déjà. Vous pouvez participer pour l’offrir ensemble.',
   );

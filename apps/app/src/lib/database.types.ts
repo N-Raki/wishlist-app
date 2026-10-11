@@ -171,6 +171,7 @@ export type Database = {
     };
     Functions: {
       export_my_data: { Args: Record<PropertyKey, never>; Returns: Json };
+      has_display_name: { Args: Record<PropertyKey, never>; Returns: boolean };
       visited_wishlists: {
         Args: Record<PropertyKey, never>;
         Returns: {
