@@ -2,21 +2,30 @@
 // only publishable values belong in this file, never a secret key.
 export type Environment = 'local' | 'preprod' | 'production';
 
-type EnvironmentConfig = { supabaseUrl: string; supabaseKey: string };
+type EnvironmentConfig = {
+  supabaseUrl: string;
+  supabaseKey: string;
+  /** The website, for links shared from the apps (the web uses its own address). */
+  siteUrl: string;
+};
 
 const environments: Record<Environment, EnvironmentConfig> = {
   local: {
     // Defaults of `supabase start`. On a phone, point EXPO_PUBLIC_SUPABASE_URL at your computer's IP.
     supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL ?? 'http://127.0.0.1:54321',
     supabaseKey: 'sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH',
+    siteUrl: 'http://localhost:8081',
   },
   preprod: {
     supabaseUrl: 'https://ixyoubmvdcyejegycbvx.supabase.co',
     supabaseKey: 'sb_publishable_S5G2bP33kNaTp4xXzD_O8Q_lzgeBCiG',
+    siteUrl: 'https://wishme--preprod.expo.app',
   },
   production: {
     supabaseUrl: 'https://skleerddpcznjdhxljpc.supabase.co',
     supabaseKey: 'sb_publishable_wcn5Yv4QW1JWBUANWgmE2w_DqqU5x_N',
+    // wishme.fr once the v1 is switched off (docs/roadmap.md).
+    siteUrl: 'https://wishme.expo.app',
   },
 };
 

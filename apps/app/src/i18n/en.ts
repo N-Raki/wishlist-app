@@ -15,6 +15,7 @@ export const en: Translations = {
   tabs: {
     label: 'Main navigation',
     lists: 'My lists',
+    relatives: 'Relatives',
     account: 'Account',
   },
   lists: {
@@ -26,6 +27,12 @@ export const en: Translations = {
     noListsTitle: 'No lists yet',
     noListsBody:
       'Birthday, Christmas, housewarming… Create a list, add your gift ideas, then share its link with your loved ones.',
+  },
+  relatives: {
+    title: 'Relatives',
+    emptyTitle: 'Your relatives’ lists will show up here',
+    emptyBody:
+      'Open the link of a list someone sent you: it is added here, next to the other lists of the same person.',
   },
   listForm: {
     createTitle: 'New list',
@@ -124,6 +131,27 @@ export const en: Translations = {
     edit: 'Edit',
     notFound: 'This wish is no longer on the list.',
     backToList: 'Back to the list',
+  },
+  share: {
+    open: 'Share the list',
+    title: 'Share “{{name}}”',
+    ownerPromise:
+      'Your relatives will see the list and can reserve a gift, alone or together. You will never know who gives what.',
+    relativeBody: 'Send the link to the others so they can see what is already taken.',
+    messageMine: 'Here is my {{name}} wishlist!',
+    messageTheirs: 'Here is {{owner}}’s {{name}} wishlist!',
+    share: 'Share the link',
+    copy: 'Copy the link',
+    copied: 'Link copied. Paste it in a message.',
+  },
+  preview: {
+    title: '{{name}} · {{owner}}’s list',
+    description_one:
+      'Here is {{owner}}’s {{name}} wishlist! {{count}} gift idea, to reserve without spoiling the surprise.',
+    description_other:
+      'Here is {{owner}}’s {{name}} wishlist! {{count}} gift ideas, to reserve without spoiling the surprise.',
+    descriptionAnonymous: 'A wishlist on Wish Me, to reserve without spoiling the surprise.',
+    open: 'See the list',
   },
   footer: {
     privacy: 'Privacy',

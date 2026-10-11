@@ -105,3 +105,32 @@ export async function reserve(wishId: string) {
 export async function cancelReservation(wishId: string) {
   check(await supabase.from('reservations').delete().eq('wish_id', wishId));
 }
+
+/** A list of someone else that the user opened while signed in ("Relatives" tab). */
+export type VisitedList = {
+  wishlist_id: string;
+  name: string;
+  owner_id: string;
+  owner_name: string | null;
+  wish_count: number;
+  visited_at: string;
+};
+
+/** Most recently opened first. */
+export async function fetchVisitedLists(): Promise<VisitedList[]> {
+  return rows(await supabase.rpc('visited_wishlists'));
+}
+
+/**
+ * Groups visited lists by person, each person where their most recently opened list puts them.
+ * Only lists opened from a link appear: never the other lists of these people.
+ */
+export function groupByOwner(lists: VisitedList[]) {
+  const groups = new Map<string, { ownerId: string; ownerName: string | null; lists: VisitedList[] }>();
+  for (const list of lists) {
+    const group = groups.get(list.owner_id) ?? { ownerId: list.owner_id, ownerName: list.owner_name, lists: [] };
+    group.lists.push(list);
+    groups.set(list.owner_id, group);
+  }
+  return [...groups.values()];
+}
