@@ -24,7 +24,11 @@ export type WishlistView = {
 
 export type WishDraft = Pick<Wish, 'name' | 'price_cents' | 'currency' | 'url' | 'description'>;
 
-export type MyList = { id: string; name: string; wishCount: number };
+/** A list as "My lists" shows it, with its newest wishes as a preview. */
+export type MyList = { id: string; name: string; wishCount: number; preview: { id: string; name: string }[] };
+
+/** Wishes shown on a list's card on "My lists". */
+export const previewSize = 4;
 
 function check<T>({ data, error }: { data: T; error: unknown }): T {
   if (error) throw error;
@@ -40,9 +44,14 @@ function rows<T>(result: { data: T; error: unknown }): NonNullable<T> {
 
 export async function fetchMyLists(): Promise<MyList[]> {
   const lists = rows(
-    await supabase.from('wishlists').select('id, name, wishes(count)').order('created_at', { ascending: false }),
+    await supabase
+      .from('wishlists')
+      .select('id, name, wishes(count), preview:wishes(id, name)')
+      .order('created_at', { ascending: false })
+      .order('created_at', { referencedTable: 'preview', ascending: false })
+      .limit(previewSize, { referencedTable: 'preview' }),
   );
-  return lists.map(({ id, name, wishes }) => ({ id, name, wishCount: wishes[0]?.count ?? 0 }));
+  return lists.map(({ id, name, wishes, preview }) => ({ id, name, wishCount: wishes[0]?.count ?? 0, preview }));
 }
 
 /** Null when the list does not exist (or no longer does). */

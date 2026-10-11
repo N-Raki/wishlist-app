@@ -14,7 +14,7 @@ export default function TabsLayout() {
   const signedIn = isLoading || session !== null;
 
   const items: Record<string, TabItem> = {
-    index: { label: t('tabs.lists'), icon: 'lists', href: '/' },
+    '(lists)': { label: t('tabs.lists'), icon: 'lists', href: '/' },
     account: { label: t('tabs.account'), icon: 'account', href: '/account' },
   };
 
@@ -24,7 +24,7 @@ export default function TabsLayout() {
         tabBar={(props) => (session ? <TabBar {...props} items={items} label={t('tabs.label')} /> : null)}
         screenOptions={{ headerShown: false, sceneStyle: { backgroundColor: colors.background } }}
       >
-        <Tabs.Screen name="index" />
+        <Tabs.Screen name="(lists)" />
         <Tabs.Protected guard={signedIn}>
           <Tabs.Screen name="account" />
         </Tabs.Protected>

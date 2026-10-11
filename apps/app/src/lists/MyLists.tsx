@@ -7,9 +7,9 @@ import { Button } from '@/ui/Button';
 import { Icon } from '@/ui/Icon';
 import { Text } from '@/ui/Text';
 import { Touchable } from '@/ui/Touchable';
-import type { MyList } from './api';
+import { type MyList, previewSize } from './api';
 import { useMyLists } from './queries';
-import { tintFor } from './tint';
+import { WishArt } from './WishGrid';
 
 /** "My lists": the signed-in home. */
 export function MyLists() {
@@ -19,14 +19,7 @@ export function MyLists() {
 
   return (
     <>
-      <View style={styles.header}>
-        <Text variant="display" style={styles.title}>
-          {t('lists.title')}
-        </Text>
-        <Link href="/list-form" asChild>
-          <Button role="link" size="compact" icon="plus" label={t('lists.newList')} />
-        </Link>
-      </View>
+      <Text variant="display">{t('lists.title')}</Text>
 
       {lists.isPending ? (
         <ActivityIndicator color={colors.textSecondary} />
@@ -38,7 +31,9 @@ export function MyLists() {
           <Button variant="secondary" label={t('wishlist.retry')} onPress={() => lists.refetch()} />
         </View>
       ) : lists.data.length === 0 ? (
-        <View style={[styles.card, styles.message, { backgroundColor: colors.surface }]}>
+        // Plain text, not a card: only what can be tapped looks tappable. The way on is the
+        // "New list" action at the bottom of the screen.
+        <View style={styles.empty}>
           <Text variant="heading">{t('lists.noListsTitle')}</Text>
           <Text tone="secondary">{t('lists.noListsBody')}</Text>
         </View>
@@ -59,37 +54,30 @@ export function MyLists() {
 function ListCard({ list }: { list: MyList }) {
   const { t } = useTranslation();
   const colors = useColors();
-  const shown = Math.min(list.wishCount, 4);
-  const more = list.wishCount - 3;
 
   return (
     <Link href={`/wishlists/${list.id}`} asChild>
       <Touchable look={[styles.card, { backgroundColor: colors.surface }]} pressedLook={styles.pressed}>
         <View aria-hidden style={styles.strip}>
-          {list.wishCount === 0 ? (
-            <View style={[styles.stripEmpty, { borderColor: colors.border }]}>
-              <Icon name="plus" color={colors.textSecondary} size={18} />
-              <Text tone="secondary" variant="bodyStrong">
-                {t('lists.firstWish')}
-              </Text>
-            </View>
-          ) : (
-            Array.from({ length: shown }, (_, index) =>
-              index === 3 && list.wishCount > 4 ? (
-                <View key="more" style={[styles.stripTile, { backgroundColor: colors.text }]}>
+          {Array.from({ length: previewSize }, (_, index) => {
+            const wish = list.preview[index];
+            const isLast = index === previewSize - 1;
+            if (isLast && list.wishCount > previewSize) {
+              return (
+                <View key="more" style={[styles.more, { backgroundColor: colors.text }]}>
                   <Text variant="bodyStrong" style={{ color: colors.background }}>
-                    +{more}
+                    +{list.wishCount - (previewSize - 1)}
                   </Text>
                 </View>
-              ) : (
-                <View
-                  // biome-ignore lint/suspicious/noArrayIndexKey: decorative tiles, identified by position
-                  key={index}
-                  style={[styles.stripTile, { backgroundColor: colors[tintFor(`${list.id}${index}`)] }]}
-                />
-              ),
-            )
-          )}
+              );
+            }
+            return wish ? (
+              <WishArt key={wish.id} wish={wish} position={list.wishCount - 1 - index} size="thumb" />
+            ) : (
+              // biome-ignore lint/suspicious/noArrayIndexKey: empty slots, identified by position
+              <View key={index} style={[styles.more, { backgroundColor: colors.surfaceMuted }]} />
+            );
+          })}
         </View>
         <View style={styles.cardFooter}>
           <View style={styles.cardText}>
@@ -108,24 +96,13 @@ function ListCard({ list }: { list: MyList }) {
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between', gap: space.md },
-  title: { flexShrink: 1 },
   lists: { gap: space.md },
   message: { gap: space.md },
+  empty: { gap: space.sm },
   card: { borderRadius: radius.card, padding: space.md, gap: space.md },
   pressed: { opacity: 0.85, transform: [{ scale: 0.99 }] },
   strip: { flexDirection: 'row', gap: space.sm, height: 78 },
-  stripTile: { flex: 1, borderRadius: radius.field, alignItems: 'center', justifyContent: 'center' },
-  stripEmpty: {
-    flex: 1,
-    flexDirection: 'row',
-    borderRadius: radius.field,
-    borderWidth: 2,
-    borderStyle: 'dashed',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: space.sm,
-  },
+  more: { flex: 1, borderRadius: radius.field, alignItems: 'center', justifyContent: 'center' },
   cardFooter: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.sm },
   cardText: { flex: 1, gap: 2 },
 });

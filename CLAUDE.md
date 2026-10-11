@@ -27,7 +27,7 @@ Ajouter une dépendance à l'app : `npx expo install <paquet>` dans `apps/app` (
 ## Règles
 - Sécurité dans la base : toute table a la RLS et des `grant` explicites ; un test pgTAP par règle d'accès.
 - Données personnelles : toute nouvelle donnée met à jour, dans la même PR, `export_my_data`, son test, la politique de confidentialité (`src/legal/privacy.*.ts`) et le registre (`docs/legal/registre.md`).
-- Interface : direction « Vitrine » ([docs/design.md](docs/design.md)), couleurs via `useColors()`, jamais en dur. WCAG 2.2 AA vérifié par axe dans les tests e2e.
+- Interface : direction « Vitrine » ([docs/design.md](docs/design.md)), couleurs via `useColors()`, jamais en dur. WCAG 2.2 AA vérifié par axe dans les tests e2e. Avant d'ouvrir une PR qui touche un écran : le relire en capture à 375 px, clair et sombre, vide et rempli, contre les « Règles d'interface » de design.md.
 - Textes : aucun texte en dur dans les écrans, tout passe par `src/i18n/fr.ts` (référence) et `en.ts`. Typographie française (`’`, espace insécable avant `: ; ! ?`).
 - Code et commentaires en anglais, documentation en français.
 - Déploiement : merge sur `main` → preprod → production, automatiquement ([ADR 0002](docs/decisions/0002-environnements.md)).

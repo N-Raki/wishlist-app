@@ -4,12 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { fonts, radius, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
-import { Icon } from '@/ui/Icon';
 import { Text } from '@/ui/Text';
 import { Touchable } from '@/ui/Touchable';
 import type { Wish } from './api';
 import { formatPrice } from './money';
-import { tintFor } from './tint';
+import { initialOf, tintAt } from './tint';
 
 /** Two columns of 4:5 tiles: the photos carry the page (docs/design.md, "Photo d'abord"). */
 export function WishGrid({ children }: { children: ReactNode[] }) {
@@ -37,12 +36,11 @@ export function WishGrid({ children }: { children: ReactNode[] }) {
 }
 
 /** A wish as a tile. With `href`, the whole tile opens it (the owner editing it). */
-export function WishTile({ wish, href }: { wish: Wish; href?: Href }) {
+export function WishTile({ wish, position, href }: { wish: Wish; position: number; href?: Href }) {
   const { t, i18n } = useTranslation();
-  const colors = useColors();
   const content = (
     <View style={styles.wish}>
-      <View aria-hidden style={[styles.tile, { backgroundColor: colors[tintFor(wish.id)] }]} />
+      <WishArt wish={wish} position={position} size="tile" />
       <View style={styles.caption}>
         <Text variant="bodyStrong" numberOfLines={2}>
           {wish.name}
@@ -68,21 +66,31 @@ export function WishTile({ wish, href }: { wish: Wish; href?: Href }) {
   );
 }
 
-/** The first tile of the owner's grid: where a new wish starts. */
-export function AddWishTile({ href }: { href: Href }) {
-  const { t } = useTranslation();
+/**
+ * What stands for a wish: its photo once photos arrive, until then its initial on a tint, so a
+ * list without photos still has colour and rhythm (docs/design.md, "Photo d'abord").
+ */
+export function WishArt({
+  wish,
+  position,
+  size,
+}: {
+  wish: Pick<Wish, 'name'>;
+  /** Rank of the wish in its list, counted from the oldest. */
+  position: number;
+  size: 'tile' | 'thumb';
+}) {
   const colors = useColors();
+  const tint = tintAt(position);
   return (
-    <Link href={href} asChild>
-      <Touchable look={[styles.tile, styles.add, { borderColor: colors.border }]} pressedLook={styles.pressed}>
-        <View style={[styles.addIcon, { backgroundColor: colors.accent }]}>
-          <Icon name="plus" color={colors.onAccent} size={24} strokeWidth={2.4} />
-        </View>
-        <Text variant="bodyStrong" style={styles.addLabel}>
-          {t('wishlist.addWish')}
-        </Text>
-      </Touchable>
-    </Link>
+    <View
+      aria-hidden
+      style={[size === 'tile' ? styles.tile : styles.thumb, { backgroundColor: colors[tint.background] }]}
+    >
+      <Text style={[size === 'tile' ? styles.initial : styles.thumbInitial, { color: colors[tint.ink] }]}>
+        {initialOf(wish.name)}
+      </Text>
+    </View>
   );
 }
 
@@ -91,18 +99,11 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', gap: space.md },
   cell: { flex: 1 },
   wish: { gap: space.sm },
-  tile: { aspectRatio: 4 / 5, borderRadius: radius.tile },
+  tile: { aspectRatio: 4 / 5, borderRadius: radius.tile, alignItems: 'center', justifyContent: 'center' },
+  thumb: { flex: 1, borderRadius: radius.field, alignItems: 'center', justifyContent: 'center' },
+  initial: { fontFamily: fonts.extraBold, fontSize: 88, lineHeight: 96, letterSpacing: -2 },
+  thumbInitial: { fontFamily: fonts.extraBold, fontSize: 30, lineHeight: 36 },
   caption: { paddingHorizontal: space.xs },
   price: { fontFamily: fonts.bold, fontSize: 15, lineHeight: 20, fontVariant: ['tabular-nums'] },
   pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },
-  add: {
-    borderWidth: 2,
-    borderStyle: 'dashed',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: space.md,
-    padding: space.md,
-  },
-  addIcon: { width: 52, height: 52, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center' },
-  addLabel: { fontFamily: fonts.bold, textAlign: 'center' },
 });

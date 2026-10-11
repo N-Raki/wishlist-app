@@ -1,10 +1,19 @@
-import { tintFor } from './tint';
+import { initialOf, tintAt } from './tint';
 
-it('gives a wish the same tint every time', () => {
-  expect(tintFor('bbbbbbbb-0000-0000-0000-000000000001')).toBe(tintFor('bbbbbbbb-0000-0000-0000-000000000001'));
+it('never gives two neighbouring tiles the same tint, in a row or a column of two', () => {
+  for (let position = 0; position < 20; position++) {
+    expect(tintAt(position)).not.toEqual(tintAt(position + 1));
+    expect(tintAt(position)).not.toEqual(tintAt(position + 2));
+  }
 });
 
-it('spreads tints across wishes', () => {
-  const ids = Array.from({ length: 40 }, (_, i) => `wish-${i}`);
-  expect(new Set(ids.map(tintFor)).size).toBe(4);
+it('pairs each tint with its ink', () => {
+  const { background, ink } = tintAt(5);
+  expect(ink).toBe(`${background}Ink`);
+});
+
+it('puts the first letter of a name on its tile', () => {
+  expect(initialOf('  écharpe en laine')).toBe('É');
+  expect(initialOf('3 romans')).toBe('3');
+  expect(initialOf('🎧 casque')).toBe('🎧');
 });

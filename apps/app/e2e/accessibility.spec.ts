@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
+import { expectReflow } from './helpers';
 
 const pages = ['/', '/sign-in', '/privacy', '/legal-notice'];
 
@@ -12,6 +13,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
         .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
         .analyze();
       expect(results.violations).toEqual([]);
+      await expectReflow(page);
     });
   }
 }

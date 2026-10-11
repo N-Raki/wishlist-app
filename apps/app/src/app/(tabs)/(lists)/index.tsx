@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { useSession } from '@/auth/SessionProvider';
@@ -15,7 +15,15 @@ export default function Home() {
 
   if (session) {
     return (
-      <Screen edges="all" title={t('lists.title')}>
+      <Screen
+        edges="all"
+        title={t('lists.title')}
+        action={
+          <Link href="/list-form" asChild>
+            <Button role="link" icon="plus" label={t('lists.newList')} />
+          </Link>
+        }
+      >
         <MyLists />
       </Screen>
     );

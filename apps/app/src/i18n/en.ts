@@ -23,9 +23,9 @@ export const en: Translations = {
     wishCount_one: '{{count}} wish',
     wishCount_other: '{{count}} wishes',
     empty: 'Empty for now',
-    firstWish: 'Add a first wish',
-    noListsTitle: 'Your first list',
-    noListsBody: 'Birthday, Christmas, housewarming… Give it a name, add your ideas, then share the link.',
+    noListsTitle: 'No lists yet',
+    noListsBody:
+      'Birthday, Christmas, housewarming… Create a list, add your gift ideas, then share its link with your loved ones.',
   },
   listForm: {
     createTitle: 'New list',
@@ -34,12 +34,13 @@ export const en: Translations = {
     namePlaceholder: 'Christmas 2026',
     create: 'Create the list',
     save: 'Save',
-    cancel: 'Cancel',
     nameRequired: 'Give your list a name.',
   },
   wishlist: {
-    surprise: 'Reservations stay a surprise',
     addWish: 'Add a wish',
+    ownerEmptyTitle: 'Add your gift ideas',
+    ownerEmptyBody:
+      'Then share the list’s link. Your loved ones reserve what they give without you seeing it: the surprise stays whole.',
     noPrice: 'No price given',
     ownerList: '{{name}}’s list',
     someone: 'A shared list',
@@ -134,6 +135,8 @@ export const en: Translations = {
   },
   common: {
     home: 'Home',
+    optional: 'optional',
+    close: 'Close',
     genericError: 'Something went wrong. Check your connection and try again.',
   },
 };

@@ -4,6 +4,7 @@ import Svg, { Circle, Path, Rect } from 'react-native-svg';
 // one has its own label.
 const paths = {
   plus: <Path d="M12 5v14M5 12h14" />,
+  close: <Path d="M6 6l12 12M18 6L6 18" />,
   chevronLeft: <Path d="M15 18l-6-6 6-6" />,
   chevronRight: <Path d="M9 6l6 6-6 6" />,
   more: (

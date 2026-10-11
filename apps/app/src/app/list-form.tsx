@@ -1,13 +1,12 @@
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
 import { goBack } from '@/lib/navigation';
 import { createList, renameList } from '@/lists/api';
 import { useListMutation, useWishlist } from '@/lists/queries';
-import { space } from '@/theme/tokens';
 import { Button } from '@/ui/Button';
 import { Screen } from '@/ui/Screen';
+import { closeButton } from '@/ui/stackOptions';
 import { Text } from '@/ui/Text';
 import { TextField } from '@/ui/TextField';
 
@@ -29,7 +28,10 @@ function NewList() {
       busy={create.isPending}
       failed={create.isError}
       onSubmit={(name) =>
-        create.mutate([name], { onSuccess: (id) => router.replace({ pathname: '/wishlists/[id]', params: { id } }) })
+        create.mutate([name], {
+          // Back down to the tabs and into the new list, so the form leaves no trace in history.
+          onSuccess: (id) => router.dismissTo({ pathname: '/wishlists/[id]', params: { id } }),
+        })
       }
     />
   );
@@ -73,7 +75,8 @@ function NameForm({ title, submitLabel, initialName, busy, failed, onSubmit }: N
   }
 
   return (
-    <Screen title={title}>
+    <Screen title={title} action={<Button label={submitLabel} loading={busy} onPress={submit} />}>
+      <Stack.Screen options={{ headerLeft: closeButton(t('common.close'), () => goBack()) }} />
       <Text variant="title">{title}</Text>
       <TextField
         label={t('listForm.nameLabel')}
@@ -90,10 +93,6 @@ function NameForm({ title, submitLabel, initialName, busy, failed, onSubmit }: N
         enterKeyHint="done"
         onSubmitEditing={submit}
       />
-      <View style={{ gap: space.md }}>
-        <Button label={submitLabel} loading={busy} onPress={submit} />
-        <Button variant="secondary" label={t('listForm.cancel')} disabled={busy} onPress={() => goBack()} />
-      </View>
     </Screen>
   );
 }

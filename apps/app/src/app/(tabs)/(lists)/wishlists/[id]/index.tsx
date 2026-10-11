@@ -1,17 +1,19 @@
-import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { Link, router, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, Platform, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useSession } from '@/auth/SessionProvider';
 import { deleteList, type WishlistView } from '@/lists/api';
 import { useListMutation, useWishlist } from '@/lists/queries';
-import { AddWishTile, WishGrid, WishTile } from '@/lists/WishGrid';
-import { radius, space } from '@/theme/tokens';
+import { WishGrid, WishTile } from '@/lists/WishGrid';
+import { space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
 import { Dialog } from '@/ui/Dialog';
-import { Icon } from '@/ui/Icon';
 import { IconButton } from '@/ui/IconButton';
+import { LegalFooter } from '@/ui/LegalFooter';
 import { Screen } from '@/ui/Screen';
+import { HeaderItem } from '@/ui/stackOptions';
 import { Text } from '@/ui/Text';
 import { TextLink } from '@/ui/TextLink';
 
@@ -59,38 +61,44 @@ function OwnerList({ list }: { list: WishlistView }) {
   const remove = useListMutation(list.id, deleteList);
 
   return (
-    <Screen title={list.name}>
+    <Screen
+      title={list.name}
+      action={
+        <Link href={{ pathname: '/wishlists/[id]/wish', params: { id: list.id } }} asChild>
+          <Button role="link" icon="plus" label={t('wishlist.addWish')} />
+        </Link>
+      }
+    >
       <Stack.Screen
         options={{
           headerRight: () => (
-            <View style={styles.headerRight}>
+            <HeaderItem>
               <IconButton icon="more" label={t('wishlist.options')} onPress={() => setDialog('menu')} />
-            </View>
+            </HeaderItem>
           ),
         }}
       />
-      <View style={styles.heading}>
-        <Text variant="display">{list.name}</Text>
-        <View style={[styles.surprise, { backgroundColor: colors.surfaceMuted }]}>
-          <Icon name="lock" color={colors.textSecondary} size={15} />
-          <Text variant="caption" tone="secondary">
-            {t('wishlist.surprise')}
-          </Text>
-        </View>
-      </View>
+      <Text variant="title">{list.name}</Text>
 
-      <WishGrid>
-        {[
-          <AddWishTile key="add" href={{ pathname: '/wishlists/[id]/wish', params: { id: list.id } }} />,
-          ...list.wishes.map((wish) => (
+      {list.wishes.length === 0 ? (
+        // What a new list is for, and the promise that makes it safe to share: said once, here,
+        // rather than as a permanent badge (docs/design.md).
+        <View style={styles.empty}>
+          <Text variant="heading">{t('wishlist.ownerEmptyTitle')}</Text>
+          <Text tone="secondary">{t('wishlist.ownerEmptyBody')}</Text>
+        </View>
+      ) : (
+        <WishGrid>
+          {list.wishes.map((wish, index) => (
             <WishTile
               key={wish.id}
               wish={wish}
+              position={list.wishes.length - 1 - index}
               href={{ pathname: '/wishlists/[id]/wish', params: { id: list.id, wish: wish.id } }}
             />
-          )),
-        ]}
-      </WishGrid>
+          ))}
+        </WishGrid>
+      )}
 
       {/* One dialog whose content changes, so the menu never fades out under the confirmation. */}
       <Dialog
@@ -138,40 +146,39 @@ function OwnerList({ list }: { list: WishlistView }) {
 }
 
 // Someone else's list. Reserving arrives with the next step of the roadmap; until then it reads only.
+// Visitors who are not signed in have no account tab, so the legal links are at the bottom.
 function SharedList({ list }: { list: WishlistView }) {
   const { t } = useTranslation();
+  const { session } = useSession();
   return (
     <Screen title={list.name}>
       <View style={styles.heading}>
         <Text variant="bodyStrong" tone="secondary">
           {list.owner_name ? t('wishlist.ownerList', { name: list.owner_name }) : t('wishlist.someone')}
         </Text>
-        <Text variant="display">{list.name}</Text>
+        <Text variant="title">{list.name}</Text>
       </View>
       {list.wishes.length === 0 ? (
         <Text tone="secondary">{t('wishlist.empty')}</Text>
       ) : (
         <WishGrid>
-          {list.wishes.map((wish) => (
-            <WishTile key={wish.id} wish={wish} />
+          {list.wishes.map((wish, index) => (
+            <WishTile key={wish.id} wish={wish} position={list.wishes.length - 1 - index} />
           ))}
         </WishGrid>
+      )}
+      {session ? null : (
+        <>
+          <View style={styles.spacer} />
+          <LegalFooter />
+        </>
       )}
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  // Native headers inset their buttons themselves; the web one leaves them against the edge.
-  headerRight: { marginEnd: Platform.OS === 'web' ? space.md : 0 },
   heading: { gap: space.md },
-  surprise: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    gap: space.sm,
-    borderRadius: radius.pill,
-    paddingVertical: space.xs + 2,
-    paddingHorizontal: space.md,
-  },
+  empty: { gap: space.sm },
+  spacer: { flexGrow: 1 },
 });

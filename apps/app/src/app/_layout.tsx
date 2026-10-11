@@ -15,9 +15,8 @@ import { Platform } from 'react-native';
 import { SessionProvider, useSession } from '@/auth/SessionProvider';
 import { useDeviceLanguage } from '@/i18n/useDeviceLanguage';
 import { queryClient } from '@/lib/queryClient';
-import { fonts, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
-import { TextLink } from '@/ui/TextLink';
+import { stackOptions } from '@/ui/stackOptions';
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -55,21 +54,8 @@ function Navigation() {
   }, [session]);
 
   return (
-    <Stack
-      screenOptions={({ navigation }) => ({
-        // Each page starts with its own heading, so the bar only carries navigation.
-        headerTitle: '',
-        // A page opened from a link has nothing to go back to: offer the way home instead.
-        headerLeft: navigation.canGoBack() ? undefined : () => <HomeLink />,
-        headerShadowVisible: false,
-        headerStyle: { backgroundColor: colors.background },
-        headerTintColor: colors.text,
-        headerBackButtonDisplayMode: 'minimal',
-        contentStyle: { backgroundColor: colors.background },
-      })}
-    >
+    <Stack screenOptions={stackOptions(colors)}>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="wishlists/[id]/index" />
       <Stack.Protected guard={signedOut}>
         <Stack.Screen name="sign-in" />
       </Stack.Protected>
@@ -79,21 +65,5 @@ function Navigation() {
         <Stack.Screen name="delete-account" options={{ presentation: 'modal' }} />
       </Stack.Protected>
     </Stack>
-  );
-}
-
-function HomeLink() {
-  return (
-    <TextLink
-      href="/"
-      style={{
-        textDecorationLine: 'none',
-        fontFamily: fonts.extraBold,
-        fontSize: 18,
-        padding: space.md,
-      }}
-    >
-      Wish Me
-    </TextLink>
   );
 }

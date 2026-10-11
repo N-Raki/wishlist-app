@@ -21,3 +21,22 @@ export async function signIn(page: Page, email: string) {
   await page.getByRole('button', { name: 'Se connecter' }).click();
   await expect(page.getByRole('heading', { name: 'Mes listes' })).toBeVisible();
 }
+
+/**
+ * WCAG 1.4.10 (Reflow): at 320 CSS pixels wide, nothing sticks out sideways, so no page asks
+ * for horizontal scrolling on the smallest phones.
+ */
+export async function expectReflow(page: Page) {
+  const size = page.viewportSize();
+  await page.setViewportSize({ width: 320, height: 640 });
+  const overflowing = await page.evaluate(() =>
+    [...document.querySelectorAll('body *')]
+      .filter((element) => {
+        const box = element.getBoundingClientRect();
+        return box.width > 0 && box.height > 0 && (box.right > window.innerWidth + 1 || box.left < -1);
+      })
+      .map((element) => `${element.tagName.toLowerCase()} “${element.textContent?.slice(0, 40) ?? ''}”`),
+  );
+  if (size) await page.setViewportSize(size);
+  expect(overflowing).toEqual([]);
+}

@@ -23,9 +23,9 @@ export const fr = {
     wishCount_one: '{{count}}\u00A0souhait',
     wishCount_other: '{{count}}\u00A0souhaits',
     empty: 'Vide pour l’instant',
-    firstWish: 'Ajouter un premier souhait',
-    noListsTitle: 'Votre première liste',
-    noListsBody: 'Anniversaire, Noël, crémaillère… Donnez-lui un nom, ajoutez vos idées, puis partagez le lien.',
+    noListsTitle: 'Aucune liste pour l’instant',
+    noListsBody:
+      'Anniversaire, Noël, crémaillère… Créez une liste, ajoutez vos idées de cadeaux, puis partagez son lien avec vos proches.',
   },
   listForm: {
     createTitle: 'Nouvelle liste',
@@ -34,12 +34,13 @@ export const fr = {
     namePlaceholder: 'Noël 2026',
     create: 'Créer la liste',
     save: 'Enregistrer',
-    cancel: 'Annuler',
     nameRequired: 'Donnez un nom à votre liste.',
   },
   wishlist: {
-    surprise: 'Les réservations restent une surprise',
     addWish: 'Ajouter un souhait',
+    ownerEmptyTitle: 'Ajoutez vos idées de cadeaux',
+    ownerEmptyBody:
+      'Puis partagez le lien de la liste. Vos proches réservent ce qu’ils offrent sans que vous le voyiez\u00A0: la surprise reste entière.',
     noPrice: 'Prix non indiqué',
     ownerList: 'La liste de {{name}}',
     someone: 'Une liste partagée',
@@ -136,6 +137,8 @@ export const fr = {
   },
   common: {
     home: 'Accueil',
+    optional: 'facultatif',
+    close: 'Fermer',
     genericError: 'Une erreur est survenue. Vérifiez votre connexion et réessayez.',
   },
 };

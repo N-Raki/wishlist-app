@@ -1,10 +1,21 @@
 import type { ColorName } from '@/theme/palette';
 
-const tints = ['tintPeach', 'tintLilac', 'tintSage', 'tintSand'] as const satisfies readonly ColorName[];
+const tints = ['tintPeach', 'tintSage', 'tintLilac', 'tintSand'] as const satisfies readonly ColorName[];
 
-/** A wish without a photo keeps a tinted tile (docs/design.md), always the same for a given wish. */
-export function tintFor(id: string): (typeof tints)[number] {
-  let hash = 0;
-  for (const char of id) hash = (hash * 31 + char.charCodeAt(0)) | 0;
-  return tints[Math.abs(hash) % tints.length] ?? tints[0];
+type Tint = (typeof tints)[number];
+
+/**
+ * A wish without a photo keeps a tinted tile (docs/design.md). Tints follow the order in which
+ * wishes were added, counted from the oldest: neighbours in the grid never share a tint, and a
+ * new wish leaves the others' tints as they were.
+ */
+export function tintAt(position: number): { background: Tint; ink: `${Tint}Ink` } {
+  const background = tints[position % tints.length] ?? tints[0];
+  return { background, ink: `${background}Ink` };
+}
+
+/** The first letter of a wish's name, for its tile: "écharpe" gives "É", "  3 livres" gives "3". */
+export function initialOf(name: string): string {
+  const [first = ''] = name.trim();
+  return first.toLocaleUpperCase('fr');
 }

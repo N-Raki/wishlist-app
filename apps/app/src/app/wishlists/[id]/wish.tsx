@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -12,6 +12,7 @@ import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
 import { Dialog } from '@/ui/Dialog';
 import { Screen } from '@/ui/Screen';
+import { closeButton } from '@/ui/stackOptions';
 import { Text } from '@/ui/Text';
 import { TextField } from '@/ui/TextField';
 
@@ -73,7 +74,13 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
   const title = wish ? t('wishForm.editTitle') : t('wishForm.newTitle');
 
   return (
-    <Screen title={title}>
+    <Screen
+      title={title}
+      action={
+        <Button label={wish ? t('wishForm.save') : t('wishForm.add')} loading={save.isPending} onPress={submit} />
+      }
+    >
+      <Stack.Screen options={{ headerLeft: closeButton(t('common.close'), back) }} />
       <Text variant="title">{title}</Text>
 
       <TextField
@@ -101,6 +108,7 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
             setErrors((current) => ({ ...current, price: false }));
           }}
           error={errors.price ? t('wishForm.errors.price') : null}
+          optional
           keyboardType="decimal-pad"
           inputMode="decimal"
         />
@@ -140,6 +148,7 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
           setErrors((current) => ({ ...current, link: false }));
         }}
         error={errors.link ? t('wishForm.errors.link') : null}
+        optional
         keyboardType="url"
         inputMode="url"
         autoCapitalize="none"
@@ -153,6 +162,7 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
         placeholder={t('wishForm.detailsPlaceholder')}
         value={details}
         onChangeText={setDetails}
+        optional
         multiline
         maxLength={1000}
       />
@@ -163,18 +173,15 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
         </Text>
       ) : null}
 
-      <View style={styles.actions}>
-        <Button label={wish ? t('wishForm.save') : t('wishForm.add')} loading={save.isPending} onPress={submit} />
-        <Button variant="secondary" label={t('wishForm.cancel')} disabled={save.isPending} onPress={back} />
-        {wish ? (
-          <Button
-            variant="secondary"
-            label={t('wishForm.delete')}
-            disabled={save.isPending}
-            onPress={() => setConfirmDelete(true)}
-          />
-        ) : null}
-      </View>
+      {/* Out of the way at the end of the form, and confirmed before anything is lost. */}
+      {wish ? (
+        <Button
+          variant="secondary"
+          label={t('wishForm.delete')}
+          disabled={save.isPending}
+          onPress={() => setConfirmDelete(true)}
+        />
+      ) : null}
 
       {wish ? (
         <Dialog
@@ -220,5 +227,4 @@ const styles = StyleSheet.create({
   },
   currencyLabel: { fontFamily: fonts.semiBold, fontSize: 15 },
   pressed: { opacity: 0.7 },
-  actions: { gap: space.md },
 });
