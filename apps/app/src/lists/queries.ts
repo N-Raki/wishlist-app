@@ -15,8 +15,8 @@ export function useMyLists() {
   return useQuery({ queryKey: useKeys().myLists, queryFn: api.fetchMyLists });
 }
 
-export function useWishlist(id: string) {
-  return useQuery({ queryKey: useKeys().wishlist(id), queryFn: () => api.fetchWishlist(id) });
+export function useWishlist(id: string, { enabled = true }: { enabled?: boolean } = {}) {
+  return useQuery({ queryKey: useKeys().wishlist(id), queryFn: () => api.fetchWishlist(id), enabled });
 }
 
 /**
