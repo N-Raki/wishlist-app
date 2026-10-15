@@ -9,7 +9,9 @@ Les valeurs **publiques** (URL, clé publiable, identifiant de projet) peuvent �
 - [ ] Passer `wishme-prod` en offre **Pro** au plus tard à la bascule (sauvegardes quotidiennes, pas de mise en veille). La preprod peut rester gratuite (elle se met en veille après une semaine sans activité).
 - [x] Pour chaque projet, donner à Claude l'URL du projet et la clé **publiable** (*Project Settings → API Keys*).
 - [x] Pour chaque projet, dans *Authentication* :
-  - *URL Configuration* : Site URL = l'adresse du site de l'environnement (connue après l'étape 2 ci-dessous) ; Redirect URLs : `wishme://`, `wishme://auth/callback` et `<adresse du site>/auth/callback`. En preprod, ajouter aussi `https://wishme--*.expo.app/auth/callback` (aperçus des PR) et `exp://**` (Expo Go).
+  - *URL Configuration* : Site URL = l'adresse du site de l'environnement (connue après l'étape 2 ci-dessous) ; Redirect URLs :
+    - preprod : `wishme://`, `wishme://auth/callback`, `https://wishme--preprod.expo.app/auth/callback`, `https://wishme--*.expo.app/auth/callback` (aperçus des PR) et `exp://**` (Expo Go) ;
+    - production : `wishme://`, `wishme://auth/callback` et `https://wishme.expo.app/auth/callback` (plus `https://wishme.fr/auth/callback` à la bascule).
   - *Sign In / Providers → Email* : longueur du code 6, expiration 600 s, mot de passe 8 caractères minimum.
   - *Emails → Templates* : pour « Confirm signup » et « Magic Link », sujet `Votre code Wish Me`, contenu = le fichier `supabase/templates/code.html`.
 - [x] Choisir un service d'envoi d'e-mails. Proposition : **Brevo** (société française, données dans l'UE, 300 e-mails/jour gratuits). Y authentifier le domaine `wishme.fr` (enregistrements DNS SPF et DKIM : ils s'ajoutent sans toucher à la v1), puis renseigner ses identifiants SMTP dans *Authentication → Emails → SMTP Settings* des deux projets. Sans ça, Supabase n'envoie que quelques e-mails par heure, et seulement aux membres de l'équipe.
