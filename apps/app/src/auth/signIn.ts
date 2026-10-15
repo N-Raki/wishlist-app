@@ -2,7 +2,15 @@ import { isAuthApiError } from '@supabase/supabase-js';
 import i18n from '@/i18n';
 import { supabase } from '@/lib/supabase';
 
-export type SignInError = 'invalidEmail' | 'invalidCode' | 'wrongPassword' | 'tooManyRequests' | 'unknown';
+export type SignInError =
+  | 'invalidEmail'
+  | 'invalidCode'
+  | 'wrongPassword'
+  | 'tooManyRequests'
+  | 'providerFailed'
+  // The user closed Google's page: nothing to report.
+  | 'cancelled'
+  | 'unknown';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

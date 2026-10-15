@@ -174,6 +174,8 @@ export const en: Translations = {
     passwordHeading: 'Sign in with a password',
     passwordLabel: 'Password',
     useCode: 'Get a code instead',
+    continueWithGoogle: 'Continue with Google',
+    completing: 'Signing you in…',
     privacyNotice: 'Your data is handled as explained in our',
     privacyLink: 'privacy policy',
     errors: {
@@ -181,6 +183,7 @@ export const en: Translations = {
       invalidCode: 'This code is wrong or has expired.',
       wrongPassword: 'Wrong address or password. If you forgot it, get a code instead.',
       tooManyRequests: 'Too many attempts. Wait a minute before trying again.',
+      providerFailed: 'Signing in with Google did not work. Try again, or get a code by e-mail.',
     },
   },
   profile: {

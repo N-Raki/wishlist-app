@@ -59,7 +59,10 @@ function Navigation() {
 
   // Signed in on another visit without having chosen a name: back to the sheet to choose one.
   useEffect(() => {
-    if (nameRequirement === 'required' && pathname !== '/sign-in') router.push('/sign-in');
+    // Not while back from Google on the web: the callback first returns to the page the user was on.
+    if (nameRequirement === 'required' && pathname !== '/sign-in' && pathname !== '/auth/callback') {
+      router.push('/sign-in');
+    }
   }, [nameRequirement, pathname]);
 
   return (

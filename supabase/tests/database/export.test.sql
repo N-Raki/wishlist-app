@@ -1,9 +1,11 @@
 begin;
-select plan(7);
+select plan(8);
 
 insert into auth.users (id, email) values
   ('11111111-1111-1111-1111-111111111111', 'lea@example.test'),
   ('22222222-2222-2222-2222-222222222222', 'hugo@example.test');
+insert into auth.identities (provider_id, user_id, identity_data, provider) values
+  ('1234567890', '11111111-1111-1111-1111-111111111111', '{"sub": "1234567890", "full_name": "Léa Martin"}', 'google');
 update public.profiles set display_name = 'Léa' where id = '11111111-1111-1111-1111-111111111111';
 insert into public.wishlists (id, owner_id, name) values
   ('aaaaaaaa-0000-0000-0000-000000000001', '11111111-1111-1111-1111-111111111111', 'Noël 2026'),
@@ -27,6 +29,12 @@ select is(
   public.export_my_data() -> 'account' -> 'has_password',
   'false'::jsonb,
   'The export says whether a password is set, never the password'
+);
+
+select is(
+  public.export_my_data() #>> '{account,sign_in_methods,0,details,full_name}',
+  'Léa Martin',
+  'The export contains what a sign-in provider sent about the caller'
 );
 
 select is(

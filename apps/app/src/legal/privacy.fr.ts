@@ -4,7 +4,7 @@ import type { LegalDocument } from './types';
 // Keep in sync with docs/legal/registre.md: every change of data or provider updates both.
 export const privacyFr: LegalDocument = {
   title: 'Politique de confidentialité',
-  updatedOn: '11 octobre 2026',
+  updatedOn: '15 octobre 2026',
   sections: [
     {
       heading: 'En bref',
@@ -23,6 +23,7 @@ export const privacyFr: LegalDocument = {
         'Votre adresse e-mail, pour vous connecter avec un code à usage unique et vous écrire au sujet de votre compte.',
         'Votre nom d’affichage, choisi à la première connexion et modifiable à tout moment, pour que vos proches vous reconnaissent.',
         'Les dates de création du compte et de vos dernières connexions, ainsi que les méthodes de connexion que vous utilisez. Si vous choisissez un mot de passe, nous n’en gardons qu’une empreinte chiffrée (hachée), qui ne permet pas de le retrouver.',
+        'Si vous vous connectez avec Google, Google nous transmet votre adresse e-mail, votre nom, votre photo de profil et l’identifiant de votre compte Google. Nous nous servons de l’adresse pour vous connecter et de votre prénom pour vous proposer un nom d’affichage, que vous confirmez ou changez. Le reste est gardé avec vos méthodes de connexion et figure dans l’export.',
         'Vos listes et vos souhaits, avec ce que vous y écrivez (nom, prix, lien, précisions) et leurs photos. Une photo prise de votre appareil est réenregistrée avant l’envoi, ce qui retire ses informations cachées (lieu, date, appareil). Quand vous collez un lien, notre serveur lit la page du produit pour en reprendre la photo : le site consulté voit notre serveur, pas vous.',
         'Les souhaits que vous réservez sur les listes de vos proches, et les listes que vous avez ouvertes en étant connecté, pour les retrouver dans l’onglet «\u00A0Proches\u00A0».',
         'Des journaux techniques (adresse IP, date, requête), tenus par nos hébergeurs pour la sécurité du service.',
@@ -50,6 +51,7 @@ export const privacyFr: LegalDocument = {
         `${hosts.data.name} héberge la base de données et gère la connexion, dans sa région ${hosts.data.region}.`,
         `${hosts.web.name} héberge le site web et distribue les mises à jour de l’application.`,
         `${hosts.email.name}, société établie en ${hosts.email.region}, envoie les e-mails de connexion.`,
+        'Si vous choisissez «\u00A0Continuer avec Google\u00A0», Google sait que vous vous connectez à Wish Me\u00A0: cette connexion relève de ses propres règles de confidentialité.',
         'Ces prestataires agissent sur nos instructions et ne peuvent pas utiliser vos données pour leur propre compte. Certains sont établis aux États-Unis\u00A0; les transferts éventuels sont encadrés par les clauses contractuelles types de la Commission européenne.',
       ],
     },

@@ -162,7 +162,16 @@ site_url = "http://localhost:8081"
 # The public URL that Auth serves on. Defaults to the API external URL with `/auth/v1` appended.
 # external_url = ""
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
-additional_redirect_urls = ["http://localhost:8081", "wishme://"]
+# Where Google may send users back (src/app/auth/callback.tsx): the dev server, the e2e server,
+# the apps' link, and Expo Go.
+additional_redirect_urls = [
+  "http://localhost:8081",
+  "http://localhost:8081/auth/callback",
+  "http://localhost:4173/auth/callback",
+  "wishme://",
+  "wishme://auth/callback",
+  "exp://**",
+]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
 # JWT issuer URL. If not set, defaults to auth.external_url.
@@ -344,6 +353,14 @@ url = ""
 skip_nonce_check = false
 # If enabled, it will allow the user to successfully authenticate when the provider does not return an email address.
 email_optional = false
+
+# Off locally: the button only shows when it is on. To try it, create a Google client with
+# http://127.0.0.1:54321/auth/v1/callback as redirect URI (docs/setup.md), then set these.
+[auth.external.google]
+enabled = false
+client_id = ""
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+skip_nonce_check = false
 
 # Allow Solana wallet holders to sign in to your project via the Sign in with Solana (SIWS, EIP-4361) standard.
 # You can configure "web3" rate limit in the [auth.rate_limit] section and set up [auth.captcha] if self-hosting.

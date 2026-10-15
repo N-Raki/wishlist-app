@@ -4,7 +4,7 @@ import type { LegalDocument } from './types';
 // Translation of privacy.fr.ts, which is the reference text.
 export const privacyEn: LegalDocument = {
   title: 'Privacy policy',
-  updatedOn: 'October 11, 2026',
+  updatedOn: 'October 15, 2026',
   sections: [
     {
       heading: 'In short',
@@ -23,6 +23,7 @@ export const privacyEn: LegalDocument = {
         'Your e-mail address, to sign you in with a one-time code and to write to you about your account.',
         'Your display name, chosen when you first sign in and changeable at any time, so your loved ones recognise you.',
         'When your account was created and when you last signed in, and the sign-in methods you use. If you choose a password, we only keep a hashed fingerprint of it, from which it cannot be recovered.',
+        'If you sign in with Google, Google sends us your e-mail address, your name, your profile photo and your Google account ID. We use the address to sign you in and your first name to suggest a display name, which you confirm or change. The rest is kept with your sign-in methods and is part of the export.',
         'Your lists and wishes, with what you write in them (name, price, link, details) and their photos. A photo from your device is saved again before it is sent, which removes its hidden information (place, date, device). When you paste a link, our server reads the product page to reuse its photo: the site sees our server, not you.',
         'The wishes you reserve on your loved ones’ lists, and the lists you opened while signed in, so you can find them again later.',
         'Technical logs (IP address, date, request), kept by our hosts to secure the service.',
@@ -50,6 +51,7 @@ export const privacyEn: LegalDocument = {
         `${hosts.data.name} hosts the database and handles sign-in, in its ${hosts.data.region} region.`,
         `${hosts.web.name} hosts the website and delivers app updates.`,
         `${hosts.email.name}, a company based in ${hosts.email.region}, sends the sign-in e-mails.`,
+        'If you choose “Continue with Google”, Google knows that you sign in to Wish Me: that sign-in is covered by its own privacy policy.',
         'These providers act on our instructions and cannot use your data for their own purposes. Some are based in the United States; any transfer is covered by the European Commission’s standard contractual clauses.',
       ],
     },
