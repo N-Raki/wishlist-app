@@ -24,8 +24,9 @@ Pour chacun des deux projets Supabase :
 
 ### Connexion Google
 1. [console.cloud.google.com](https://console.cloud.google.com) : créer un projet `Wish Me`.
-2. *Google Auth Platform → Branding* : nom `Wish Me`, e-mail d'assistance `wishme@raki.dev`, lien vers la politique de confidentialité (`https://wishme.expo.app/privacy`), domaines autorisés `supabase.co` et `expo.app` (plus `wishme.fr` à la bascule).
-3. *Audience* : **External**. *Data access* : uniquement `openid`, `email` et `profile` (pas de vérification Google nécessaire avec ces seuls accès).
+2. *Google Auth Platform → Branding* : nom `Wish Me`, e-mail d'assistance = le compte Gmail connecté (Google n'accepte que ce compte ou un groupe Google qu'il gère). Laisser vides la page d'accueil, la politique de confidentialité et les domaines autorisés : `supabase.co` et `expo.app` sont des domaines partagés que Google refuse, et il exige un domaine dont on prouve la propriété.
+3. *Audience* : **External**, laisser en **Testing** et ajouter ses propres comptes dans *Test users* (100 au maximum). *Data access* : uniquement `openid`, `email` et `profile`.
+   - À la bascule : vérifier `wishme.fr` dans [Google Search Console](https://search.google.com/search-console), le mettre en domaine autorisé avec les liens `https://wishme.fr` et `https://wishme.fr/privacy`, puis *Publish app*. Sans vérification Google avec ces seuls accès, mais l'écran de connexion affichera `<ref>.supabase.co` tant que Supabase n'a pas de domaine personnalisé.
 4. *Clients → Create client → Web application*, nommé `Wish Me` :
    - Authorized JavaScript origins : `https://wishme.expo.app` et `https://wishme--preprod.expo.app`.
    - Authorized redirect URIs : `https://<ref-preprod>.supabase.co/auth/v1/callback` et `https://<ref-prod>.supabase.co/auth/v1/callback`.
@@ -34,8 +35,8 @@ Pour chacun des deux projets Supabase :
 
 Un seul client Web suffit : sur Android et iOS, la connexion Google passe par le navigateur du système, puis revient dans l'app par le lien `wishme://`.
 
-### Connexion Apple
-Nécessite l'Apple Developer Program (voir 4). Apple l'impose sur iOS dès qu'une connexion Google est proposée.
+### Connexion Apple (à la bascule)
+Nécessite l'Apple Developer Program (voir 4), souscrit à la bascule (décision du 2026-10-15) : Google sort d'abord sur le web et Android. Apple l'impose sur iOS dès qu'une connexion Google est proposée.
 1. [developer.apple.com](https://developer.apple.com/account) → *Certificates, Identifiers & Profiles → Identifiers* : l'App ID `fr.wishme.app` (créé par EAS au premier build iOS, sinon le créer), cocher **Sign in with Apple**.
 2. Nouveau **Services ID** `fr.wishme.web` (pour le web, Android et le navigateur) : cocher Sign in with Apple, *Configure* → Primary App ID `fr.wishme.app`, domaines `<ref-preprod>.supabase.co` et `<ref-prod>.supabase.co`, Return URLs `https://<ref-preprod>.supabase.co/auth/v1/callback` et `https://<ref-prod>.supabase.co/auth/v1/callback`.
 3. *Keys* → nouvelle clé avec Sign in with Apple, liée à `fr.wishme.app`. Télécharger le fichier `.p8` (une seule fois possible) et le garder dans le gestionnaire de mots de passe, avec le Key ID et le Team ID.
