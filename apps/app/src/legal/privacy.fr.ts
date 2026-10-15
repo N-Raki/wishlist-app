@@ -22,7 +22,7 @@ export const privacyFr: LegalDocument = {
       paragraphs: [
         'Votre adresse e-mail, pour vous connecter avec un code à usage unique et vous écrire au sujet de votre compte.',
         'Votre nom d’affichage, choisi à la première connexion et modifiable à tout moment, pour que vos proches vous reconnaissent.',
-        'Les dates de création du compte et de vos dernières connexions, ainsi que les méthodes de connexion que vous utilisez.',
+        'Les dates de création du compte et de vos dernières connexions, ainsi que les méthodes de connexion que vous utilisez. Si vous choisissez un mot de passe, nous n’en gardons qu’une empreinte chiffrée (hachée), qui ne permet pas de le retrouver.',
         'Vos listes et vos souhaits, avec ce que vous y écrivez (nom, prix, lien, précisions) et leurs photos. Une photo prise de votre appareil est réenregistrée avant l’envoi, ce qui retire ses informations cachées (lieu, date, appareil). Quand vous collez un lien, notre serveur lit la page du produit pour en reprendre la photo : le site consulté voit notre serveur, pas vous.',
         'Les souhaits que vous réservez sur les listes de vos proches, et les listes que vous avez ouvertes en étant connecté, pour les retrouver dans l’onglet «\u00A0Proches\u00A0».',
         'Des journaux techniques (adresse IP, date, requête), tenus par nos hébergeurs pour la sécurité du service.',

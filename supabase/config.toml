@@ -227,7 +227,7 @@ double_confirm_changes = true
 # If enabled, users need to confirm their email address before signing in.
 enable_confirmations = false
 # If enabled, users will need to reauthenticate or have logged in recently to change their password.
-secure_password_change = false
+secure_password_change = true
 # Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
 max_frequency = "1s"
 # Number of characters used in the email OTP.
@@ -254,11 +254,16 @@ content_path = "./supabase/templates/code.html"
 subject = "Votre code Wish Me"
 content_path = "./supabase/templates/code.html"
 
-# Uncomment to customize notification email template
-# [auth.email.notification.password_changed]
-# enabled = true
-# subject = "Your password has been changed"
-# content_path = "./supabase/templates/password_changed_notification.html"
+# Setting a password on an account not signed in for a while asks for a code first.
+[auth.email.template.reauthentication]
+subject = "Votre code Wish Me"
+content_path = "./supabase/templates/code.html"
+
+# A password set or changed is always told to the account's address.
+[auth.email.notification.password_changed]
+enabled = true
+subject = "Mot de passe Wish Me modifié"
+content_path = "./supabase/templates/password-changed.html"
 
 [auth.sms]
 # Allow/disallow new user signups via SMS to your project.

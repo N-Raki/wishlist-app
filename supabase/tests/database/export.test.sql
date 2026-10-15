@@ -1,5 +1,5 @@
 begin;
-select plan(6);
+select plan(7);
 
 insert into auth.users (id, email) values
   ('11111111-1111-1111-1111-111111111111', 'lea@example.test'),
@@ -21,6 +21,12 @@ select is(
   public.export_my_data() -> 'account' ->> 'email',
   'lea@example.test',
   'The export contains the account of the caller'
+);
+
+select is(
+  public.export_my_data() -> 'account' -> 'has_password',
+  'false'::jsonb,
+  'The export says whether a password is set, never the password'
 );
 
 select is(

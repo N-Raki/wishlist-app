@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
-import { codeSentTo, expectAccessible, signIn } from './helpers';
+import { codeSentTo, expectAccessible, mailpit, signIn } from './helpers';
 
 test('a visitor signs in with a code, exports their data, then deletes their account', async ({ page }) => {
   const email = `${randomUUID()}@example.test`;
@@ -70,4 +70,38 @@ test('a new account chooses a display name before anything else, and can change 
   await page.getByLabel('Prénom ou surnom').fill('Léa M.');
   await page.getByRole('button', { name: 'Enregistrer' }).click();
   await expect(page.getByText('Léa M.', { exact: true })).toBeVisible();
+});
+
+test('a user sets a password, then signs in with it', async ({ page }) => {
+  const email = `${randomUUID()}@example.test`;
+  await signIn(page, email);
+  await page.getByRole('link', { name: 'Compte' }).click();
+  await page.getByRole('button', { name: 'Choisir un mot de passe' }).click();
+  await page.getByLabel('Nouveau mot de passe').fill('court');
+  await page.getByRole('button', { name: 'Enregistrer' }).click();
+  await expect(page.getByRole('alert')).toHaveText('Choisissez au moins 8 caractères.');
+  await expectAccessible(page);
+  await page.getByLabel('Nouveau mot de passe').fill('une phrase de passe');
+  await page.getByRole('button', { name: 'Enregistrer' }).click();
+  await expect(page.getByRole('button', { name: 'Choisir un mot de passe' })).toBeVisible();
+  // The account's address is told about it.
+  await expect
+    .poll(async () =>
+      (await (await fetch(`${mailpit}/search?query=to:${email}`)).json()).messages.map(
+        (m: { Subject: string }) => m.Subject,
+      ),
+    )
+    .toContain('Mot de passe Wish Me modifié');
+
+  await page.getByRole('button', { name: 'Se déconnecter' }).click();
+  await page.getByRole('button', { name: 'Se connecter' }).click();
+  await page.getByRole('button', { name: 'Se connecter avec un mot de passe' }).click();
+  await page.getByLabel('Adresse e-mail').fill(email);
+  await page.getByLabel('Mot de passe', { exact: true }).fill('pas le bon');
+  await page.getByRole('button', { name: 'Se connecter', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('Adresse ou mot de passe incorrect.');
+  await expectAccessible(page);
+  await page.getByLabel('Mot de passe', { exact: true }).fill('une phrase de passe');
+  await page.getByRole('button', { name: 'Se connecter', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Mes listes' })).toBeVisible();
 });

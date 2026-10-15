@@ -2,7 +2,7 @@ import { isAuthApiError } from '@supabase/supabase-js';
 import i18n from '@/i18n';
 import { supabase } from '@/lib/supabase';
 
-export type SignInError = 'invalidEmail' | 'invalidCode' | 'tooManyRequests' | 'unknown';
+export type SignInError = 'invalidEmail' | 'invalidCode' | 'wrongPassword' | 'tooManyRequests' | 'unknown';
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -27,6 +27,14 @@ export async function verifyCode(email: string, code: string): Promise<SignInErr
     type: 'email',
   });
   return error ? toSignInError(error) : null;
+}
+
+/** For accounts that chose a password (optional, set from the account page). */
+export async function signInWithPassword(email: string, password: string): Promise<SignInError | null> {
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (!error) return null;
+  // Same answer for an unknown address and a wrong password: it does not tell who has an account.
+  return isAuthApiError(error) && error.code === 'invalid_credentials' ? 'wrongPassword' : toSignInError(error);
 }
 
 function toSignInError(error: unknown): SignInError {

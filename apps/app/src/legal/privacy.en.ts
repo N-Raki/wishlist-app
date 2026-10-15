@@ -22,7 +22,7 @@ export const privacyEn: LegalDocument = {
       paragraphs: [
         'Your e-mail address, to sign you in with a one-time code and to write to you about your account.',
         'Your display name, chosen when you first sign in and changeable at any time, so your loved ones recognise you.',
-        'When your account was created and when you last signed in, and the sign-in methods you use.',
+        'When your account was created and when you last signed in, and the sign-in methods you use. If you choose a password, we only keep a hashed fingerprint of it, from which it cannot be recovered.',
         'Your lists and wishes, with what you write in them (name, price, link, details) and their photos. A photo from your device is saved again before it is sent, which removes its hidden information (place, date, device). When you paste a link, our server reads the product page to reuse its photo: the site sees our server, not you.',
         'The wishes you reserve on your loved ones’ lists, and the lists you opened while signed in, so you can find them again later.',
         'Technical logs (IP address, date, request), kept by our hosts to secure the service.',
