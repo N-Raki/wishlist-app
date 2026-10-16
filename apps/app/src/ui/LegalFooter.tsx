@@ -10,6 +10,9 @@ export function LegalFooter() {
   const linkStyle = [styles.link, { color: colors.textSecondary }];
   return (
     <View role="contentinfo" style={styles.footer}>
+      <TextLink href="/terms" style={linkStyle}>
+        {t('footer.terms')}
+      </TextLink>
       <TextLink href="/privacy" style={linkStyle}>
         {t('footer.privacy')}
       </TextLink>

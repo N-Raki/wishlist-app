@@ -154,6 +154,7 @@ export const en: Translations = {
     open: 'See the list',
   },
   footer: {
+    terms: 'Terms',
     privacy: 'Privacy',
     legalNotice: 'Legal notice',
   },
@@ -176,6 +177,8 @@ export const en: Translations = {
     useCode: 'Get a code instead',
     continueWithGoogle: 'Continue with Google',
     completing: 'Signing you in…',
+    termsNotice: 'By continuing, you accept the',
+    termsLink: 'terms of use',
     privacyNotice: 'Your data is handled as explained in our',
     privacyLink: 'privacy policy',
     errors: {

@@ -20,7 +20,7 @@
     "android": {
       "package": "fr.wishme.app",
       "adaptiveIcon": {
-        "backgroundColor": "#F3F2F5",
+        "backgroundColor": "#FF7A59",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -38,6 +38,16 @@
       "expo-sqlite",
       "expo-sharing",
       "expo-web-browser",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 120,
+          "resizeMode": "contain",
+          "backgroundColor": "#F3F2F5",
+          "dark": { "image": "./assets/splash-icon.png", "backgroundColor": "#131217" }
+        }
+      ],
       [
         "expo-image-picker",
         {

@@ -38,6 +38,9 @@ Source unique dans le code : `apps/app/src/theme/palette.ts`. Sur le web, les co
 - **Typo** : Gabarito (400 à 800). Titres d'écran courts et fixes (« Mes listes ») en 40 px, noms choisis par l'utilisateur (une liste) en 30 px ; graisse 800, interlettrage −0,025 em ; corps 15 à 17 px.
 - **Rayons** : vignettes et cartes 22 à 26 px, champs 14 à 16 px, boutons en pilule.
 - **Cibles tactiles** : 44 px minimum.
+
+## Icône et écran de lancement
+Une étiquette de cadeau encre, marquée d'un W corail, penchée sur fond corail : le cadeau et la liste à la fois, lisible même en petit. Source : `apps/app/assets/icon.svg` (W en Gabarito ExtraBold). Les fichiers PNG en sont tirés : icône 1024 px, Android adaptative (étiquette seule sur fond corail, et version monochrome), favicon, et écran de lancement (l'icône arrondie, au centre, sur le fond du thème clair ou sombre).
 - **Barre d'onglets** translucide (flou + saturation), le contenu défile dessous.
 
 ## Règles d'interface
