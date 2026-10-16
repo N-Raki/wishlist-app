@@ -30,7 +30,7 @@ Reconstruire les features v1 avec le nouveau design (périmètre « 2.0 » de la
 - [x] Mot de passe facultatif, choisi depuis le compte
 - [x] Connexion Google (web et Android ; iOS avec la connexion Apple, à la bascule)
 - [x] Légal et finitions : CGU, suppression des comptes inactifs après 3 ans, icône et écran de lancement (reste pour Raki : adresse de l'éditeur dans le compte Expo, secrets des comptes inactifs)
-- [ ] Migration v1 → v2, répétée en preprod sur une copie de la prod
+- [ ] Migration v1 → v2, répétée en preprod sur une copie de la prod (script prêt et testé ; reste la répétition, voir setup.md)
 - [ ] Bascule : domaine wishme.fr (offre Expo payante), Apple Developer Program et connexion Apple, publication sur les stores, information des utilisateurs
 
 ## 4. Nouvelles features, une par une

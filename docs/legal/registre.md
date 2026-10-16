@@ -39,5 +39,11 @@ Responsable : l'éditeur de Wish Me (coordonnées dans `apps/app/src/legal/publi
 | Destinataires | Supabase ; Expo (hébergement du site et des mises à jour) ; Brevo (journaux d'envoi des e-mails) |
 | Durée | 7 jours au plus chez Supabase ; 7 jours chez Expo sur l'offre gratuite (3 mois sur l'offre payante prévue à la bascule) ; durée chez Brevo à confirmer |
 
-## À faire avant la bascule (étape 3)
-- Fixer une durée pour les comptes inactifs (proposition : suppression après 3 ans sans connexion, avec un e-mail de prévenance un mois avant).
+## 4. Reprise des comptes de la v1
+| | |
+|---|---|
+| Finalité | Continuer le service pour les utilisateurs de wishme.fr dans la nouvelle version, liens déjà partagés compris |
+| Base légale | Exécution du contrat (art. 6.1.b) |
+| Données | Celles du 1 et du 2 déjà détenues par la v1 : e-mail, nom d'affichage, identifiant Google, listes, souhaits, réservations, listes ouvertes. Pas les mots de passe, qui ne sont pas repris |
+| Déroulé | Export depuis le serveur de la v1, import direct dans la base (connexion chiffrée, certificat vérifié). Une répétition en préproduction, effacée juste après (`--undo`), puis la migration à la bascule. Le fichier d'export reste sur le poste de l'éditeur et est supprimé après usage |
+| Information | Les utilisateurs sont prévenus par e-mail avant la bascule (à préparer avec la bascule) |

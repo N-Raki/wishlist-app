@@ -133,3 +133,53 @@ Facultatif, dans *Settings → General → Pull Requests* : cocher *Automaticall
 ## 5. Mentions légales
 - [x] Mentions légales : éditeur « Raki », à titre non professionnel (identité complète chez l'hébergeur), contact `wishme@raki.dev`. L'adresse n'est pas publiée (LCEN art. 6-III-2) : elle doit figurer dans le compte Expo (*Account settings → Billing*), c'est-à-dire chez l'hébergeur.
 - [ ] Dès que Wish Me rapporte de l'argent (étape 4), l'activité devient professionnelle : ajouter dans `publisher.ts` la structure (dénomination, SIREN, adresse, éventuellement une domiciliation).
+
+## 6. Migration de la v1
+Le script recopie les comptes, listes, souhaits, réservations et listes ouvertes de wishme.fr dans la v2, en gardant les identifiants : les liens déjà partagés (`/wishlists/<id>`) restent valables. Les mots de passe ne passent pas (la v2 ne sait pas lire ceux de la v1) : chacun se reconnecte avec un code reçu par e-mail, puis choisit un nouveau mot de passe s'il le veut. Le détail des ajustements est en tête de `supabase/import-v1/import.sql`.
+
+On le répète d'abord en preprod sur une copie de la prod, puis on l'efface. Le jour de la bascule, on refera les mêmes étapes vers la production, sans l'étape 6. Compter 30 minutes. Toutes les commandes se tapent dans PowerShell, à la racine du dépôt, **dans la même fenêtre** du début à la fin.
+
+- [ ] Répétition en preprod
+- [ ] Migration en production (à la bascule)
+
+**Étape 1 : exporter la v1**
+Dans les commandes ci-dessous, remplacer `utilisateur@serveur` par ce que tu tapes d'habitude après `ssh` pour te connecter au serveur de wishme.fr.
+```powershell
+scp supabase/import-v1/export.sql utilisateur@serveur:
+ssh utilisateur@serveur "docker exec -i wishlist-database psql -U wishlist -d wishlist -At < export.sql > wishme-v1.json && rm export.sql"
+scp utilisateur@serveur:wishme-v1.json "$HOME\Downloads\wishme-v1.json"
+ssh utilisateur@serveur "rm wishme-v1.json"
+```
+Le fichier contient les e-mails de tous les utilisateurs (pas les mots de passe) : ne l'envoyer à personne, ne pas le mettre dans le dépôt.
+
+**Étape 2 : le certificat de la base**
+Il garantit que le script parle bien à Supabase, et à personne d'autre au milieu.
+1. Sur [supabase.com/dashboard](https://supabase.com/dashboard), ouvrir le projet **preprod**.
+2. **Project Settings** → **Database** → **SSL Configuration** → **Download certificate**. Le fichier `prod-ca-2021.crt` arrive dans Téléchargements.
+
+**Étape 3 : l'adresse de la base**
+1. Toujours dans le projet preprod, bouton **Connect** en haut de la page.
+2. Onglet **Connection String**, type **URI**, méthode **Session pooler**. Copier l'adresse : elle commence par `postgresql://postgres.` et contient `[YOUR-PASSWORD]`.
+3. Remplacer `[YOUR-PASSWORD]` (crochets compris) par le mot de passe de la base, celui rangé dans le secret GitHub `SUPABASE_DB_PASSWORD` de l'environnement preprod. Oublié ? *Project Settings → Database → Reset database password*, puis mettre le nouveau dans ce secret GitHub. S'il contient `@`, `:`, `/`, `#` ou `%`, le plus simple est d'en choisir un sans.
+
+**Étape 4 : lancer l'import**
+Coller l'adresse de l'étape 3 entre les guillemets de la première ligne. Elle ne reste que dans cette fenêtre, ne pas la coller ailleurs.
+```powershell
+$env:DATABASE_URL = "postgresql://postgres.…"
+$env:SUPABASE_CA = "$HOME\Downloads\prod-ca-2021.crt"
+node supabase/import-v1/import.ts "$HOME\Downloads\wishme-v1.json"
+```
+Le script fait tout ou rien : en cas d'erreur, la base n'a pas bougé. Il affiche un bilan (des nombres seulement) : le coller dans le fil, Claude le relit. Le relancer ne crée pas de doublon.
+
+**Étape 5 : vérifier**
+1. Ouvrir un ancien lien de liste en remplaçant `https://wishme.fr` par `https://wishme--preprod.expo.app` : la liste doit s'afficher avec ses souhaits.
+2. Sur `https://wishme--preprod.expo.app`, se connecter avec son adresse de la v1 par code : on doit retrouver ses listes et, dans Proches, les listes déjà ouvertes.
+
+**Étape 6 : effacer la répétition (preprod seulement)**
+La preprod ne doit pas garder les données des utilisateurs. Juste après la vérification :
+```powershell
+node supabase/import-v1/import.ts --undo "$HOME\Downloads\wishme-v1.json"
+Remove-Item "$HOME\Downloads\wishme-v1.json"
+Remove-Item Env:DATABASE_URL
+```
+`--undo` supprime les comptes venus de la v1 et tout ce qu'ils possèdent. Ne jamais le lancer sur la production.
