@@ -40,7 +40,7 @@ Source unique dans le code : `apps/app/src/theme/palette.ts`. Sur le web, les co
 - **Cibles tactiles** : 44 px minimum.
 
 ## Icône et écran de lancement
-Une étiquette de cadeau encre, marquée d'un W corail, penchée sur fond corail : le cadeau et la liste à la fois, lisible même en petit. Source : `apps/app/assets/icon.svg` (W en Gabarito ExtraBold). Les fichiers PNG en sont tirés : icône 1024 px, Android adaptative (étiquette seule sur fond corail, et version monochrome), favicon, et écran de lancement (l'icône arrondie, au centre, sur le fond du thème clair ou sombre).
+Un « w » encre en Gabarito ExtraBold, avec une étincelle, sur fond corail (choisi par Raki le 2026-10-16). Source : `apps/app/assets/icon.svg`. Les fichiers PNG en sont tirés : icône 1024 px, Android adaptative (le w seul sur fond corail, et version monochrome), favicon, et écran de lancement (l'icône arrondie, au centre, sur le fond du thème clair ou sombre).
 - **Barre d'onglets** translucide (flou + saturation), le contenu défile dessous.
 
 ## Règles d'interface
