@@ -4,7 +4,7 @@ import type { LegalDocument } from './types';
 // Translation of privacy.fr.ts, which is the reference text.
 export const privacyEn: LegalDocument = {
   title: 'Privacy policy',
-  updatedOn: 'October 15, 2026',
+  updatedOn: 'October 16, 2026',
   sections: [
     {
       heading: 'In short',
@@ -39,7 +39,7 @@ export const privacyEn: LegalDocument = {
     {
       heading: 'How long',
       paragraphs: [
-        'Your data is kept as long as your account exists. When you delete it, the data is erased immediately and leaves our backups within 7 days.',
+        'Your data is kept as long as your account exists. An account unused for 3 years is deleted, after a warning e-mail 30 days before: signing in is enough to keep it. When you delete it, the data is erased immediately and leaves our backups within 7 days.',
         'Technical logs are erased automatically by our hosts after a few days (7 days at most at Supabase).',
       ],
     },

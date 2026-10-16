@@ -3,6 +3,22 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export type Database = {
   public: {
     Tables: {
+      inactivity_notices: {
+        Row: {
+          sent_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          sent_at?: string;
+          user_id: string;
+        };
+        Update: {
+          sent_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           created_at: string;
@@ -172,6 +188,15 @@ export type Database = {
     Functions: {
       export_my_data: { Args: Record<PropertyKey, never>; Returns: Json };
       has_display_name: { Args: Record<PropertyKey, never>; Returns: boolean };
+      inactive_accounts: {
+        Args: { batch?: number };
+        Returns: {
+          action: string;
+          email: string;
+          locale: string;
+          user_id: string;
+        }[];
+      };
       visited_wishlists: {
         Args: Record<PropertyKey, never>;
         Returns: {

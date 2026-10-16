@@ -172,6 +172,7 @@ function CodeSteps() {
         ) : null}
         <Button variant="secondary" label={t('signIn.usePassword')} disabled={busy} onPress={() => goTo('password')} />
         <Text variant="caption" tone="secondary">
+          {t('signIn.termsNotice')} <TextLink href="/terms">{t('signIn.termsLink')}</TextLink>.{' '}
           {t('signIn.privacyNotice')} <TextLink href="/privacy">{t('signIn.privacyLink')}</TextLink>.
         </Text>
       </Screen>

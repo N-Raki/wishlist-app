@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { expectReflow } from './helpers';
 
-const pages = ['/', '/sign-in', '/privacy', '/legal-notice'];
+const pages = ['/', '/sign-in', '/terms', '/privacy', '/legal-notice'];
 
 for (const colorScheme of ['light', 'dark'] as const) {
   for (const path of pages) {

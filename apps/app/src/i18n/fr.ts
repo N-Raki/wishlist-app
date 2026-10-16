@@ -155,6 +155,7 @@ export const fr = {
     open: 'Voir la liste',
   },
   footer: {
+    terms: 'Conditions',
     privacy: 'Confidentialité',
     legalNotice: 'Mentions légales',
   },
@@ -177,6 +178,8 @@ export const fr = {
     useCode: 'Recevoir un code à la place',
     continueWithGoogle: 'Continuer avec Google',
     completing: 'Connexion en cours…',
+    termsNotice: 'En continuant, vous acceptez les',
+    termsLink: 'conditions d’utilisation',
     privacyNotice: 'Vos données sont traitées comme l’explique notre',
     privacyLink: 'politique de confidentialité',
     errors: {

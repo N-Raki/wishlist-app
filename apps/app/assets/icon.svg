@@ -1,0 +1,9 @@
+<!-- Source of the app icon (docs/design.md, « Icône »). The w is set in Gabarito ExtraBold. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img">
+  <title>Wish Me</title>
+  <rect width="1024" height="1024" fill="#FF7A59"/>
+  <g transform="translate(-83 37)">
+    <text x="500" y="700" text-anchor="middle" font-family="Gab" font-weight="800" font-size="560" letter-spacing="-20" fill="#1D1C22">w</text>
+    <path d="M770 250 Q 780 330 860 340 Q 780 350 770 430 Q 760 350 680 340 Q 760 330 770 250 Z" fill="#1D1C22"/>
+  </g>
+</svg>

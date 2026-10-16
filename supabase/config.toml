@@ -410,8 +410,16 @@ inspector_port = 8083
 # The Deno major version to use.
 deno_version = 2
 
-# [edge_runtime.secrets]
-# secret_key = "env(SECRET_VALUE)"
+# Local values only: preprod and production get theirs from GitHub at deploy (docs/setup.md).
+[edge_runtime.secrets]
+CRON_SECRET = "local-cron-secret"
+EMAIL_FROM = "wishme@example.test"
+MAILPIT_URL = "http://supabase_inbucket_wishme:8025"
+SITE_URL = "http://localhost:8081"
+
+# Called by a scheduled job with its own secret, not by signed-in users.
+[functions.inactive-accounts]
+verify_jwt = false
 
 [analytics]
 enabled = true

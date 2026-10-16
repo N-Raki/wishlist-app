@@ -60,6 +60,51 @@ Nécessite l'Apple Developer Program (voir 4), souscrit à la bascule (décision
 - [x] *Settings → Environments* : créer `preprod` et `production`. Dans chacun : variable `SUPABASE_PROJECT_REF` (l'identifiant du projet, dans son URL) et secret `SUPABASE_DB_PASSWORD`. Facultatif : un relecteur obligatoire sur `production` pour valider chaque mise en production.
 - [x] Protéger `main` : voir [Protection de `main`](#protection-de-main) ci-dessous.
 - [x] En dernier, variable de dépôt `DEPLOY_ENABLED` = `true`. Le prochain merge déploie la preprod puis la production.
+- [ ] Comptes inactifs : voir [ci-dessous](#comptes-inactifs).
+
+### Comptes inactifs
+Chaque matin, le workflow GitHub `Inactive accounts` envoie un e-mail aux comptes inutilisés depuis bientôt 3 ans, puis supprime ceux qui ne sont pas revenus 30 jours après. Il lui faut trois valeurs par environnement (preprod et production), à ranger dans GitHub. Tant qu'elles manquent, il ne fait rien et ne supprime rien. Compter 15 minutes.
+
+**Étape 1 : deux clés d'API Brevo**
+1. Se connecter sur [app.brevo.com](https://app.brevo.com).
+2. En haut à droite, cliquer sur le nom du compte, puis **Paramètres** → **SMTP et API** → **Clés API et MCP** (*API Keys & MCP*).
+3. Bouton **Générer une nouvelle clé API**, puis saisir le code de vérification reçu.
+4. Nom : `wishme-preprod`. Expiration : **Pas d'expiration**. Laisser **décochée** l'option de clé pour serveur MCP. Valider, puis **copier la clé tout de suite** (Brevo ne la remontre plus) et la coller provisoirement dans un bloc-notes.
+5. Recommencer avec le nom `wishme-prod`.
+
+Droits de la clé, dans la section **Permissions** du même formulaire : **Transactional email** sur **All**, tout le reste sur **None**. C'est le seul droit nécessaire (envoyer l'e-mail et vérifier chaque matin que la clé marche). Ensuite :
+- une clé par environnement, pour pouvoir en révoquer une seule ;
+- la clé ne vit que dans les secrets GitHub et Supabase, jamais dans un message ni dans le code ;
+- **désactiver le blocage des IP inconnues** pour les clés API : menu du compte → **Paramètres** → **Sécurité** → **IP autorisées** (*Authorized IPs*), ligne **Clés API** → **Désactiver pour l'API**. Les fonctions de Supabase n'ont pas d'adresse IP fixe, et Brevo active ce blocage tout seul au bout de 30 jours sans nouvelle IP : les e-mails partiraient bien les premières semaines, puis seraient refusés. Le blocage des clés SMTP (codes de connexion) n'est pas concerné.
+
+Brevo désactive aussi une clé restée 90 jours sans appel réussi. Ce n'est pas un problème : le ménage lit chaque matin les statistiques d'envoi, même quand il n'a personne à prévenir, ce qui garde la clé active et signale tout de suite une clé révoquée (le workflow passe au rouge).
+
+**Étape 2 : l'adresse d'expédition**
+1. Toujours dans Brevo, menu du compte → **Expéditeurs, domaines et IP dédiées** (*Senders, Domains & Dedicated IPs*) → onglet **Expéditeurs**.
+2. Noter l'adresse qui y figure avec une coche verte : c'est celle qui envoie déjà les codes de connexion (la même que *Sender email* dans Supabase, *Authentication → Emails → SMTP Settings*).
+
+**Étape 3 : deux secrets aléatoires**
+Ce secret empêche quiconque d'autre de déclencher le ménage. Dans PowerShell, coller cette ligne et appuyer sur Entrée :
+```powershell
+$b = New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); [Convert]::ToBase64String($b)
+```
+Elle affiche une suite de 44 caractères : la copier dans le bloc-notes. Relancer la ligne pour en obtenir une seconde, différente.
+
+**Étape 4 : tout ranger dans GitHub**
+1. Ouvrir le dépôt sur GitHub → **Settings** (onglet en haut) → dans la colonne de gauche, **Environments** → cliquer sur **preprod**.
+2. Section **Environment secrets** → **Add environment secret** :
+   - Name `CRON_SECRET`, Value : le premier secret aléatoire → **Add secret**.
+   - Name `BREVO_API_KEY`, Value : la clé `wishme-preprod` → **Add secret**.
+3. Section **Environment variables** → **Add environment variable** : Name `EMAIL_FROM`, Value : l'adresse de l'étape 2 → **Add variable**.
+4. Revenir à **Environments**, cliquer sur **production**, et refaire 2 et 3 avec le second secret aléatoire et la clé `wishme-prod` (même adresse `EMAIL_FROM`).
+5. Supprimer le bloc-notes : ces valeurs ne servent plus ailleurs.
+
+**Étape 5 : vérifier**
+1. Les valeurs partent vers Supabase au prochain déploiement, c'est-à-dire au prochain merge sur `main`. Attendre que le workflow **Deploy** soit vert (onglet **Actions**).
+2. Onglet **Actions** → dans la colonne de gauche, **Inactive accounts** → bouton **Run workflow** → **Run workflow**.
+3. Après une minute, les deux lignes `clean-up (preprod)` et `clean-up (production)` doivent être vertes. En ouvrant l'une d'elles, la dernière ligne affiche par exemple `{"warned":0,"deleted":0,"failed":0}` : aucun compte n'a encore 3 ans, c'est normal.
+
+Si la ligne `production` reste en attente avec « Waiting for review », c'est que l'environnement `production` exige une validation : le dire à Claude, qui sortira ce workflow de cet environnement.
 
 ### Protection de `main`
 But : rien n'arrive sur `main` (donc en production) sans PR dont les tests sont verts. GitHub propose deux mécanismes ; on prend les *rulesets*, plus récents et plus lisibles que la « branch protection » classique.
