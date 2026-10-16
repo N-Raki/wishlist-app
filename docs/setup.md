@@ -63,17 +63,41 @@ Nécessite l'Apple Developer Program (voir 4), souscrit à la bascule (décision
 - [ ] Comptes inactifs : voir [ci-dessous](#comptes-inactifs).
 
 ### Comptes inactifs
-Chaque jour, le workflow `Inactive accounts` prévient par e-mail les comptes inutilisés depuis bientôt 3 ans, puis les supprime 30 jours après. Tant que `CRON_SECRET` manque dans un environnement, il ne fait rien.
+Chaque jour à 9 h (heure de Paris), le workflow GitHub `Inactive accounts` envoie un e-mail aux comptes inutilisés depuis bientôt 3 ans, puis supprime ceux qui ne sont pas revenus 30 jours après. Il lui faut trois valeurs par environnement (preprod et production), à ranger dans GitHub. Tant qu'elles manquent, il ne fait rien et ne supprime rien. Compter 15 minutes.
 
-1. Brevo → *SMTP & API → API keys* : créer une clé `wishme-preprod`, et une autre `wishme-prod`.
-2. Générer deux secrets aléatoires, un par environnement. En PowerShell :
-   ```powershell
-   $b = New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); [Convert]::ToBase64String($b)
-   ```
-3. *Settings → Environments*, dans `preprod` puis dans `production` : secrets `CRON_SECRET` (le secret généré) et `BREVO_API_KEY` (la clé de cet environnement), variable `EMAIL_FROM` (l'adresse d'expédition déjà validée dans Brevo pour les e-mails de connexion).
-4. Le prochain déploiement transmet ces valeurs aux fonctions de Supabase. Pour vérifier, lancer le workflow à la main (*Actions → Inactive accounts → Run workflow*) : il doit finir en vert.
+**Étape 1 : deux clés d'API Brevo**
+1. Se connecter sur [app.brevo.com](https://app.brevo.com).
+2. En haut à droite, cliquer sur le nom du compte, puis sur **SMTP et API** (*SMTP & API*).
+3. Onglet **Clés API** (*API Keys*), bouton **Générer une nouvelle clé API**.
+4. Nom : `wishme-preprod`. Valider, puis **copier la clé tout de suite** (Brevo ne la remontre plus) et la coller provisoirement dans un bloc-notes.
+5. Recommencer avec le nom `wishme-prod`.
 
-Si `production` a un relecteur obligatoire, ce workflow attend aussi son accord chaque jour : dans ce cas, réserver le relecteur au workflow `Deploy` (*Deployment branches and tags*, ou un environnement dédié).
+**Étape 2 : l'adresse d'expédition**
+1. Toujours dans Brevo, menu du compte → **Expéditeurs, domaines et IP dédiées** (*Senders, Domains & Dedicated IPs*) → onglet **Expéditeurs**.
+2. Noter l'adresse qui y figure avec une coche verte : c'est celle qui envoie déjà les codes de connexion (la même que *Sender email* dans Supabase, *Authentication → Emails → SMTP Settings*).
+
+**Étape 3 : deux secrets aléatoires**
+Ce secret empêche quiconque d'autre de déclencher le ménage. Dans PowerShell, coller cette ligne et appuyer sur Entrée :
+```powershell
+$b = New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); [Convert]::ToBase64String($b)
+```
+Elle affiche une suite de 44 caractères : la copier dans le bloc-notes. Relancer la ligne pour en obtenir une seconde, différente.
+
+**Étape 4 : tout ranger dans GitHub**
+1. Ouvrir le dépôt sur GitHub → **Settings** (onglet en haut) → dans la colonne de gauche, **Environments** → cliquer sur **preprod**.
+2. Section **Environment secrets** → **Add environment secret** :
+   - Name `CRON_SECRET`, Value : le premier secret aléatoire → **Add secret**.
+   - Name `BREVO_API_KEY`, Value : la clé `wishme-preprod` → **Add secret**.
+3. Section **Environment variables** → **Add environment variable** : Name `EMAIL_FROM`, Value : l'adresse de l'étape 2 → **Add variable**.
+4. Revenir à **Environments**, cliquer sur **production**, et refaire 2 et 3 avec le second secret aléatoire et la clé `wishme-prod` (même adresse `EMAIL_FROM`).
+5. Supprimer le bloc-notes : ces valeurs ne servent plus ailleurs.
+
+**Étape 5 : vérifier**
+1. Les valeurs partent vers Supabase au prochain déploiement, c'est-à-dire au prochain merge sur `main`. Attendre que le workflow **Deploy** soit vert (onglet **Actions**).
+2. Onglet **Actions** → dans la colonne de gauche, **Inactive accounts** → bouton **Run workflow** → **Run workflow**.
+3. Après une minute, les deux lignes `clean-up (preprod)` et `clean-up (production)` doivent être vertes. En ouvrant l'une d'elles, la dernière ligne affiche par exemple `{"warned":0,"deleted":0,"failed":0}` : aucun compte n'a encore 3 ans, c'est normal.
+
+Si la ligne `production` reste en attente avec « Waiting for review », c'est que l'environnement `production` exige une validation : le dire à Claude, qui sortira ce workflow de cet environnement.
 
 ### Protection de `main`
 But : rien n'arrive sur `main` (donc en production) sans PR dont les tests sont verts. GitHub propose deux mécanismes ; on prend les *rulesets*, plus récents et plus lisibles que la « branch protection » classique.
