@@ -7,6 +7,7 @@ Point d'entrée pour toute session de travail. Lire ce fichier, puis seulement c
 | [roadmap.md](roadmap.md) | Les étapes de la refonte et où on en est | Toujours |
 | [spec.md](spec.md) | Ce que l'application doit faire (v2) | Travail sur une feature |
 | [design.md](design.md) | Direction visuelle, tokens, règles d'accessibilité | Tout travail d'interface |
+| [finitions.md](finitions.md) | Retours à régler avant la première version, analysés par thème | Avant de toucher à un écran |
 | [setup.md](setup.md) | Comptes et réglages à faire hors du code (Supabase, Expo, GitHub, stores) | Déploiement, ou quelque chose ne se déploie pas |
 | [legal/registre.md](legal/registre.md) | Registre des traitements de données personnelles | Toute nouvelle donnée ou nouveau prestataire |
 | [monetisation.md](monetisation.md) | Affiliation, premium : règles et points légaux | Tout ce qui touche à l'argent |
