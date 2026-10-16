@@ -11,7 +11,7 @@ Constaté : l'app passe sous la Dynamic Island ; un grand vide sous le pied de p
 
 Corrigé dans `Screen`, qui s'écarte seul des bords :
 - **Haut.** Un écran sans en-tête se décale de la barre d'état (déduit de la navigation, plus de prop `edges` : Compte l'avait oubliée) et le contenu défile sous une bande translucide, la matière de la barre d'onglets.
-- **Clavier.** `KeyboardAvoidingView` mesurait sa position dans son parent au lieu de l'écran : il ratait la hauteur de l'en-tête, davantage dans une feuille, et le clavier couvrait le bas des formulaires. `useKeyboardOverlap` mesure dans la fenêtre, et suit la barre de suggestions d'iOS quand elle s'ajoute au clavier. Glisser la page range le clavier. Focus d'office retiré de l'e-mail et du mot de passe de la connexion, et du souhait (règle 9 de design.md).
+- **Clavier.** `KeyboardAvoidingView` mesurait sa position dans son parent au lieu de l'écran : il ratait la hauteur de l'en-tête, davantage dans une feuille, et le clavier couvrait le bas des formulaires. `useKeyboardOverlap` mesure par rapport à l’écran (sur iOS, une feuille fausse la position dans la fenêtre), et suit la barre de suggestions d'iOS quand elle s'ajoute au clavier. Glisser la page range le clavier. Focus d'office retiré de l'e-mail et du mot de passe de la connexion, et du souhait (règle 9 de design.md).
 - **Boutons d'en-tête.** Sur iOS, des boutons natifs (`headerActions`) : une vue à nous donnait une gélule au lieu d'un rond. Ailleurs, `HeaderButton` (ex-`IconButton`) sans fond.
 - **Bas.** L'hypothèse de départ était fausse : la réserve de la barre d'onglets ne s'applique déjà qu'aux écrans des onglets. Si le vide persiste après cette PR, une capture de l'écran concerné dira d'où il vient.
 

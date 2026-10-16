@@ -1,8 +1,8 @@
 import { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
-import { Keyboard, type KeyboardEvent, LayoutAnimation, Platform, type View } from 'react-native';
+import { Dimensions, Keyboard, type KeyboardEvent, LayoutAnimation, Platform, type View } from 'react-native';
 
 /**
- * How much of `ref`'s view the keyboard covers, measured in window coordinates.
+ * How much of `ref`'s view the keyboard covers.
  *
  * React Native's KeyboardAvoidingView compares its position within its parent with the
  * keyboard's position on screen, so it misses by the height of the header, and by more in a
@@ -17,6 +17,13 @@ export function useKeyboardOverlap(ref: RefObject<View | null>) {
     const top = keyboardTop.current;
     if (top === null) {
       setOverlap(0);
+      return;
+    }
+    // On iOS, a page's position in the window misses the offset of the sheet it is in (the
+    // sheet is placed natively). Every page reaches the bottom of the screen, though, so the
+    // keyboard covers all of its own height there.
+    if (Platform.OS === 'ios') {
+      setOverlap(Math.max(0, Dimensions.get('window').height - top));
       return;
     }
     ref.current?.measureInWindow((_x, y, _width, height) => setOverlap(Math.max(0, y + height - top)));
