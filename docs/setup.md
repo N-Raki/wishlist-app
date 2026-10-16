@@ -63,7 +63,7 @@ Nécessite l'Apple Developer Program (voir 4), souscrit à la bascule (décision
 - [ ] Comptes inactifs : voir [ci-dessous](#comptes-inactifs).
 
 ### Comptes inactifs
-Chaque jour à 9 h (heure de Paris), le workflow GitHub `Inactive accounts` envoie un e-mail aux comptes inutilisés depuis bientôt 3 ans, puis supprime ceux qui ne sont pas revenus 30 jours après. Il lui faut trois valeurs par environnement (preprod et production), à ranger dans GitHub. Tant qu'elles manquent, il ne fait rien et ne supprime rien. Compter 15 minutes.
+Chaque matin, le workflow GitHub `Inactive accounts` envoie un e-mail aux comptes inutilisés depuis bientôt 3 ans, puis supprime ceux qui ne sont pas revenus 30 jours après. Il lui faut trois valeurs par environnement (preprod et production), à ranger dans GitHub. Tant qu'elles manquent, il ne fait rien et ne supprime rien. Compter 15 minutes.
 
 **Étape 1 : deux clés d'API Brevo**
 1. Se connecter sur [app.brevo.com](https://app.brevo.com).
