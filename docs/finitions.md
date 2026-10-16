@@ -6,14 +6,14 @@ Chaque retour a été rapproché du code pour trouver la cause commune et tous l
 
 Ordre proposé : 1 et 9 d'abord (ils gênent tous les essais), puis 2, 3, 4, 5, 6, 7, 8.
 
-## 1. Bords de l'écran sur iPhone
+## 1. Bords de l'écran sur iPhone — corrigé, à vérifier sur l'appareil
 Constaté : l'app passe sous la Dynamic Island ; un grand vide sous le pied de page (Conditions, Confidentialité) ; le clavier de la connexion cache les autres options ; une pastille blanche déborde derrière les boutons Fermer, Partager et « … ».
 
-- **Haut.** Les écrans à onglets (Mes listes, Proches, Compte, accueil) n'ont pas de barre : `Screen` les décale de la hauteur de la Dynamic Island au départ, puis le contenu défile dessous sans aucun fond. À vérifier sur l'appareil. Piste : un fond flouté ou dégradé en haut, comme le bas de la barre d'onglets (design.md).
-- **Bas.** `Screen` réserve la hauteur de la barre d'onglets même sur les écrans ouverts par-dessus, car elle reste montée en dessous. Écrans touchés : connexion, nom d'affichage, mot de passe, liste, souhait, suppression du compte, pages légales. La réserve doit dépendre de l'écran (dans les onglets ou pas), pas d'une valeur globale.
-- **Boutons d'en-tête.** `IconButton` dessine son propre fond, et iOS 26 entoure déjà chaque bouton d'en-tête de son effet « Liquid Glass » : on obtient deux fonds. Touche tous les boutons d'en-tête (Fermer sur chaque fenêtre, Partager, Options). Le bouton Retour natif est correct et sert de modèle.
-- **Clavier.** Ne donner le focus d'office qu'à un champ qui est le seul choix de l'écran (le code, le nom d'une liste). Pas à l'e-mail de la connexion, qui a d'autres options sous le clavier. Les autres `autoFocus` sont à revoir avec la même règle : mot de passe, souhait, nom d'affichage.
-- Vérification : captures sur iPhone récent (Dynamic Island) et Android, avec et sans clavier, pour chaque écran.
+Corrigé dans `Screen`, qui s'écarte seul des bords :
+- **Haut.** Un écran sans en-tête se décale de la barre d'état (déduit de la navigation, plus de prop `edges` : Compte l'avait oubliée) et le contenu défile sous une bande translucide, la matière de la barre d'onglets.
+- **Clavier.** `KeyboardAvoidingView` mesurait sa position dans son parent au lieu de l'écran : il ratait la hauteur de l'en-tête, davantage dans une feuille, et le clavier couvrait le bas des formulaires. `useKeyboardOverlap` mesure dans la fenêtre. Glisser la page range le clavier. Focus d'office retiré de l'e-mail et du mot de passe de la connexion, et du souhait (règle 9 de design.md).
+- **Boutons d'en-tête.** `HeaderButton` (ex-`IconButton`) ne dessine plus de fond.
+- **Bas.** L'hypothèse de départ était fausse : la réserve de la barre d'onglets ne s'applique déjà qu'aux écrans des onglets. Si le vide persiste après cette PR, une capture de l'écran concerné dira d'où il vient.
 
 ## 2. Hiérarchie des actions
 Constaté : « Renommer » et « Supprimer la liste » ont le même aspect, alors que l'une est anodine et l'autre irréversible.
@@ -91,10 +91,10 @@ Demandé : pouvoir choisir.
 ## 9. Essais sur Android (Expo Go)
 Constaté : « Failed to download remote update / Not compatible with this version of Expo Go » avec Expo Go 57.0.9.
 
-- À diagnostiquer :
-  - le runtime de la mise à jour publiée pour Expo Go (étape « Update for Expo Go » de `deploy.yml`) ;
-  - celui du commentaire de prévisualisation des PR.
-- Recommandation : passer aux builds de développement d'EAS (un APK interne, et iOS à la bascule) plutôt qu'Expo Go. Ils seront de toute façon nécessaires pour la connexion Apple et pour vérifier le point 1 dans les conditions réelles.
+- La mise à jour publiée a le bon runtime (`exposdk:57.0.0`, journal du déploiement du 16 octobre). La cause est donc côté Expo Go ou du serveur de mises à jour, que Claude ne peut pas joindre depuis son environnement.
+- Expo présente désormais Expo Go comme un outil d'apprentissage : le Play Store n'a que la version SDK 54, l'App Store s'arrête aussi à SDK 54.
+- Voie retenue : le build `preview` existant (APK interne, canal `preprod`), lancé à la main par `mobile.yml` (profil `preview`, plateforme `android`). Il reçoit chaque merge par mise à jour OTA, sans Expo Go. Pour l'iPhone, le même build demande l'Apple Developer Program (bascule).
+- Les aperçus par PR restent sur le web ; un build de développement (`expo-dev-client`) ne vaudra la peine que si l'on doit tester une PR sur téléphone avant merge.
 
 ## Hors de portée de Claude
 Pas de simulateur iOS dans son environnement : ce qui touche l'iPhone (surtout le point 1) se vérifie sur l'appareil de Raki, à chaque PR concernée.

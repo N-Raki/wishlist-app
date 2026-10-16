@@ -41,7 +41,8 @@ Source unique dans le code : `apps/app/src/theme/palette.ts`. Sur le web, les co
 
 ## Icône et écran de lancement
 Un « w » encre en Gabarito ExtraBold, avec une étincelle, sur fond corail (choisi par Raki le 2026-10-16). Source : `apps/app/assets/icon.svg`. Les fichiers PNG en sont tirés : icône 1024 px, Android adaptative (le w seul sur fond corail, et version monochrome), favicon, et écran de lancement (l'icône arrondie, au centre, sur le fond du thème clair ou sombre).
-- **Barre d'onglets** translucide (flou + saturation), le contenu défile dessous.
+- **Barre d'onglets** translucide (flou + saturation), le contenu défile dessous. Le haut des écrans sans en-tête (barre d'état, Dynamic Island) a la même matière (`BarBackground`).
+- **Boutons d'en-tête** : l'icône seule, sans fond, comme le bouton Retour natif ; iOS 26 pose déjà chacun sur son « Liquid Glass ».
 
 ## Règles d'interface
 Tirées des premiers retours de Raki sur l'app (2026-10-11). À vérifier sur chaque écran touché, avant d'ouvrir la PR.
@@ -54,6 +55,7 @@ Tirées des premiers retours de Raki sur l'app (2026-10-11). À vérifier sur ch
 6. **Les états vides sont la première impression.** Chaque écran est relu vide, avec un élément et avec beaucoup, et sans photo.
 7. **Rien ne déborde à 320 px** (WCAG 1.4.10, testé par `expectReflow` dans les tests e2e) ; un titre ne partage pas sa ligne avec un bouton.
 8. **Mentions légales et confidentialité** : en pied des pages publiques (accueil, liste vue par un visiteur), à côté de toute collecte de données (connexion), et dans l'onglet Compte une fois connecté.
+9. **Le clavier ne s'ouvre d'office que sur le seul choix de l'écran** (un code, le nom d'une liste). Pas quand d'autres options attendent dessous (connexion, souhait). `Screen` garde la page et son action au-dessus du clavier, et le glisser de la page le range.
 
 ## Accessibilité vérifiée sur les maquettes
 - Contrastes texte ≥ 4,5:1 (texte secondaire 5,85:1 sur le fond, placeholder 4,64:1).

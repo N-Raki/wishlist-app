@@ -1,11 +1,11 @@
-import { BlurView } from 'expo-blur';
 import { type Href, Link } from 'expo-router';
 import type { Tabs } from 'expo-router/js-tabs';
 import { type ComponentProps, type MouseEvent as ReactMouseEvent, useEffect } from 'react';
-import { type GestureResponderEvent, Platform, StyleSheet, Text, View } from 'react-native';
+import { type GestureResponderEvent, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { contentMaxWidth, fonts, minTouchTarget, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
+import { BarBackground } from './BarBackground';
 import { Icon, type IconName } from './Icon';
 import { Touchable } from './Touchable';
 import { useTabBarInset } from './tabBarInset';
@@ -31,15 +31,9 @@ export function TabBar({
   useEffect(() => () => setHeight(0), [setHeight]);
 
   return (
-    <BlurView
-      // Android blurs poorly and slowly: the translucent colour alone does the job there.
-      intensity={Platform.OS === 'android' ? 0 : 40}
-      tint="default"
+    <BarBackground
       onLayout={(event) => setHeight(event.nativeEvent.layout.height)}
-      style={[
-        styles.bar,
-        { backgroundColor: colors.chrome, borderTopColor: colors.hairline, paddingBottom: insets.bottom + space.sm },
-      ]}
+      style={[styles.bar, { borderTopColor: colors.hairline, paddingBottom: insets.bottom + space.sm }]}
     >
       <View role="navigation" aria-label={label} style={styles.items}>
         {state.routes.map((route, index) => {
@@ -67,7 +61,7 @@ export function TabBar({
           );
         })}
       </View>
-    </BlurView>
+    </BarBackground>
   );
 }
 

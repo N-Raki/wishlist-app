@@ -151,7 +151,6 @@ function CodeSteps() {
           keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
-          autoFocus
           enterKeyHint="send"
           onSubmitEditing={submitEmail}
         />
@@ -208,7 +207,6 @@ function CodeSteps() {
           textContentType="password"
           autoCapitalize="none"
           autoCorrect={false}
-          autoFocus={Boolean(email)}
           enterKeyHint="go"
           onSubmitEditing={submitPassword}
         />

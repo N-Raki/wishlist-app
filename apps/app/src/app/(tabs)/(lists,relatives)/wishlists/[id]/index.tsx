@@ -12,7 +12,7 @@ import { space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
 import { Dialog } from '@/ui/Dialog';
-import { IconButton } from '@/ui/IconButton';
+import { HeaderButton } from '@/ui/HeaderButton';
 import { LegalFooter } from '@/ui/LegalFooter';
 import { Screen } from '@/ui/Screen';
 import { HeaderItem } from '@/ui/stackOptions';
@@ -77,8 +77,8 @@ function OwnerList({ list }: { list: WishlistView }) {
           headerRight: () => (
             <HeaderItem>
               <View style={styles.headerActions}>
-                <IconButton icon="share" label={t('share.open')} onPress={() => setSharing(true)} />
-                <IconButton icon="more" label={t('wishlist.options')} onPress={() => setDialog('menu')} />
+                <HeaderButton icon="share" label={t('share.open')} onPress={() => setSharing(true)} />
+                <HeaderButton icon="more" label={t('wishlist.options')} onPress={() => setDialog('menu')} />
               </View>
             </HeaderItem>
           ),
@@ -174,7 +174,7 @@ function SharedList({ list }: { list: WishlistView }) {
         options={{
           headerRight: () => (
             <HeaderItem>
-              <IconButton icon="share" label={t('share.open')} onPress={() => setSharing(true)} />
+              <HeaderButton icon="share" label={t('share.open')} onPress={() => setSharing(true)} />
             </HeaderItem>
           ),
         }}
@@ -225,5 +225,5 @@ const styles = StyleSheet.create({
   heading: { gap: space.md },
   empty: { gap: space.sm },
   spacer: { flexGrow: 1 },
-  headerActions: { flexDirection: 'row', gap: space.sm },
+  headerActions: { flexDirection: 'row' },
 });

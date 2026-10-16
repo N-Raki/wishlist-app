@@ -3,7 +3,7 @@ import type { ComponentProps, ReactNode } from 'react';
 import { Platform, View } from 'react-native';
 import type { Colors } from '@/theme/palette';
 import { fonts, space } from '@/theme/tokens';
-import { IconButton } from './IconButton';
+import { HeaderButton } from './HeaderButton';
 import { TextLink } from './TextLink';
 
 type ScreenOptions = Extract<NonNullable<ComponentProps<typeof Stack>['screenOptions']>, (...args: never[]) => unknown>;
@@ -26,7 +26,7 @@ export function stackOptions(colors: Colors): ScreenOptions {
 export function closeButton(label: string, onPress: () => void) {
   return () => (
     <HeaderItem>
-      <IconButton icon="close" label={label} onPress={onPress} />
+      <HeaderButton icon="close" label={label} onPress={onPress} />
     </HeaderItem>
   );
 }

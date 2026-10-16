@@ -128,7 +128,6 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
         }}
         error={errors.name ? t('wishForm.errors.name') : null}
         maxLength={255}
-        autoFocus={!wish}
         autoCapitalize="sentences"
         enterKeyHint="next"
       />

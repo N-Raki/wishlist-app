@@ -10,17 +10,15 @@ type Props = Omit<PressableProps, 'children' | 'style'> & {
   label: string;
 };
 
-/** Round button holding a single icon, on a surface so it stays visible over any content. */
-export function IconButton({ icon, label, ...props }: Props) {
+/**
+ * Button holding a single icon, in a header. It draws no background of its own, like the
+ * native back button: iOS 26 already sets each header button on its "Liquid Glass", and a
+ * second surface showed through it.
+ */
+export function HeaderButton({ icon, label, ...props }: Props) {
   const colors = useColors();
   return (
-    <Touchable
-      role="button"
-      aria-label={label}
-      look={[styles.button, { backgroundColor: colors.surface }]}
-      pressedLook={styles.pressed}
-      {...props}
-    >
+    <Touchable role="button" aria-label={label} look={styles.button} pressedLook={styles.pressed} {...props}>
       <Icon name={icon} color={colors.text} />
     </Touchable>
   );
@@ -34,5 +32,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  pressed: { opacity: 0.7, transform: [{ scale: 0.94 }] },
+  pressed: { opacity: 0.5 },
 });
