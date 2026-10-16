@@ -3,7 +3,7 @@
 // .github/workflows/inactive-accounts.yml with CRON_SECRET; nobody else can call it.
 
 import { admin, deleteAccount, env, supabaseUrl } from '../_shared/account.ts';
-import { sendEmail } from '../_shared/email.ts';
+import { checkEmail, sendEmail } from '../_shared/email.ts';
 import { inactivityNotice } from './notice.ts';
 
 type Due = { user_id: string; email: string | null; locale: string | null; action: 'warn' | 'delete' };
@@ -27,6 +27,13 @@ Deno.serve(async (request) => {
   if (request.method !== 'POST') return new Response(null, { status: 405 });
   if (request.headers.get('Authorization') !== `Bearer ${env('CRON_SECRET')}`) {
     return new Response(null, { status: 401 });
+  }
+
+  try {
+    await checkEmail();
+  } catch (error) {
+    console.error('inactive-accounts', error);
+    return new Response(null, { status: 500 });
   }
 
   const response = await fetch(`${supabaseUrl}/rest/v1/rpc/inactive_accounts`, {

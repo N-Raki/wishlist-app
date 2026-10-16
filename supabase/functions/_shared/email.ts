@@ -3,13 +3,15 @@
 
 import { env } from './account.ts';
 
+const brevo = 'https://api.brevo.com/v3';
+
 export type Email = { to: string; subject: string; text: string; html: string };
 
 export async function sendEmail({ to, subject, text, html }: Email) {
   const from = { email: env('EMAIL_FROM'), name: 'Wish Me' };
   const brevoKey = Deno.env.get('BREVO_API_KEY');
   const response = brevoKey
-    ? await fetch('https://api.brevo.com/v3/smtp/email', {
+    ? await fetch(`${brevo}/smtp/email`, {
         method: 'POST',
         headers: { 'api-key': brevoKey, 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({ sender: from, to: [{ email: to }], subject, textContent: text, htmlContent: html }),
@@ -26,4 +28,14 @@ export async function sendEmail({ to, subject, text, html }: Email) {
         }),
       });
   if (!response.ok) throw new Error(`sending the e-mail failed: ${response.status} ${await response.text()}`);
+}
+
+// Brevo switches off a key after 90 days without a successful call, and a daily job may send
+// nothing for months: checking the account each run keeps the key alive and surfaces a revoked
+// key the same day rather than when a notice is due.
+export async function checkEmail() {
+  const brevoKey = Deno.env.get('BREVO_API_KEY');
+  if (!brevoKey) return;
+  const response = await fetch(`${brevo}/account`, { headers: { 'api-key': brevoKey, Accept: 'application/json' } });
+  if (!response.ok) throw new Error(`the Brevo key was refused: ${response.status} ${await response.text()}`);
 }

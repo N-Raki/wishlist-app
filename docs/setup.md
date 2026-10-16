@@ -67,10 +67,17 @@ Chaque matin, le workflow GitHub `Inactive accounts` envoie un e-mail aux compte
 
 **Étape 1 : deux clés d'API Brevo**
 1. Se connecter sur [app.brevo.com](https://app.brevo.com).
-2. En haut à droite, cliquer sur le nom du compte, puis sur **SMTP et API** (*SMTP & API*).
-3. Onglet **Clés API** (*API Keys*), bouton **Générer une nouvelle clé API**.
-4. Nom : `wishme-preprod`. Valider, puis **copier la clé tout de suite** (Brevo ne la remontre plus) et la coller provisoirement dans un bloc-notes.
+2. En haut à droite, cliquer sur le nom du compte, puis **Paramètres** → **SMTP et API** → **Clés API et MCP** (*API Keys & MCP*).
+3. Bouton **Générer une nouvelle clé API**, puis saisir le code de vérification reçu.
+4. Nom : `wishme-preprod`. Expiration : **Pas d'expiration**. Laisser **décochée** l'option de clé pour serveur MCP. Valider, puis **copier la clé tout de suite** (Brevo ne la remontre plus) et la coller provisoirement dans un bloc-notes.
 5. Recommencer avec le nom `wishme-prod`.
+
+Droits de la clé : Brevo ne permet pas de les restreindre, une clé ouvre tout le compte. D'où trois précautions :
+- une clé par environnement, pour pouvoir en révoquer une seule ;
+- la clé ne vit que dans les secrets GitHub et Supabase, jamais dans un message ni dans le code ;
+- **désactiver le blocage des IP inconnues** pour les clés API : menu du compte → **Paramètres** → **Sécurité** → **IP autorisées** (*Authorized IPs*), ligne **Clés API** → **Désactiver pour l'API**. Les fonctions de Supabase n'ont pas d'adresse IP fixe, et Brevo active ce blocage tout seul au bout de 30 jours sans nouvelle IP : les e-mails partiraient bien les premières semaines, puis seraient refusés. Le blocage des clés SMTP (codes de connexion) n'est pas concerné.
+
+Brevo désactive aussi une clé restée 90 jours sans appel réussi. Ce n'est pas un problème : le ménage interroge Brevo chaque matin, même quand il n'a personne à prévenir, ce qui garde la clé active et signale tout de suite une clé révoquée (le workflow passe au rouge).
 
 **Étape 2 : l'adresse d'expédition**
 1. Toujours dans Brevo, menu du compte → **Expéditeurs, domaines et IP dédiées** (*Senders, Domains & Dedicated IPs*) → onglet **Expéditeurs**.
