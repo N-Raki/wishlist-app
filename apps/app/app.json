@@ -37,6 +37,7 @@
       "expo-localization",
       "expo-sqlite",
       "expo-sharing",
+      "expo-web-browser",
       [
         "expo-image-picker",
         {

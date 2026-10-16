@@ -9,7 +9,9 @@ Les valeurs **publiques** (URL, clé publiable, identifiant de projet) peuvent �
 - [ ] Passer `wishme-prod` en offre **Pro** au plus tard à la bascule (sauvegardes quotidiennes, pas de mise en veille). La preprod peut rester gratuite (elle se met en veille après une semaine sans activité).
 - [x] Pour chaque projet, donner à Claude l'URL du projet et la clé **publiable** (*Project Settings → API Keys*).
 - [x] Pour chaque projet, dans *Authentication* :
-  - *URL Configuration* : Site URL = l'adresse du site de l'environnement (connue après l'étape 2 ci-dessous) ; Redirect URLs : ajouter `wishme://`.
+  - *URL Configuration* : Site URL = l'adresse du site de l'environnement (connue après l'étape 2 ci-dessous) ; Redirect URLs :
+    - preprod : `wishme://`, `wishme://auth/callback`, `https://wishme--preprod.expo.app/auth/callback`, `https://wishme--*.expo.app/auth/callback` (aperçus des PR) et `exp://**` (Expo Go) ;
+    - production : `wishme://`, `wishme://auth/callback` et `https://wishme.expo.app/auth/callback` (plus `https://wishme.fr/auth/callback` à la bascule).
   - *Sign In / Providers → Email* : longueur du code 6, expiration 600 s, mot de passe 8 caractères minimum.
   - *Emails → Templates* : pour « Confirm signup » et « Magic Link », sujet `Votre code Wish Me`, contenu = le fichier `supabase/templates/code.html`.
 - [x] Choisir un service d'envoi d'e-mails. Proposition : **Brevo** (société française, données dans l'UE, 300 e-mails/jour gratuits). Y authentifier le domaine `wishme.fr` (enregistrements DNS SPF et DKIM : ils s'ajoutent sans toucher à la v1), puis renseigner ses identifiants SMTP dans *Authentication → Emails → SMTP Settings* des deux projets. Sans ça, Supabase n'envoie que quelques e-mails par heure, et seulement aux membres de l'équipe.
@@ -31,9 +33,9 @@ Pour chacun des deux projets Supabase :
    - Authorized JavaScript origins : `https://wishme.expo.app` et `https://wishme--preprod.expo.app`.
    - Authorized redirect URIs : `https://<ref-preprod>.supabase.co/auth/v1/callback` et `https://<ref-prod>.supabase.co/auth/v1/callback`.
 5. Dans chaque projet Supabase, *Authentication → Sign In / Providers → Google* : activer, coller le Client ID et le Client secret.
-6. Dire à Claude que c'est fait (le Client ID est public, le secret ne sort pas de Supabase).
+Le bouton « Continuer avec Google » apparaît de lui-même dans l'environnement où Google est activé, sans nouvelle version de l'app.
 
-Un seul client Web suffit : sur Android et iOS, la connexion Google passe par le navigateur du système, puis revient dans l'app par le lien `wishme://`.
+Un seul client Web suffit : sur Android et iOS, la connexion Google passe par le navigateur du système, puis revient dans l'app par `wishme://auth/callback` (ou une adresse `exp://` dans Expo Go), d'où les Redirect URLs de Supabase ci-dessus.
 
 ### Connexion Apple (à la bascule)
 Nécessite l'Apple Developer Program (voir 4), souscrit à la bascule (décision du 2026-10-15) : Google sort d'abord sur le web et Android. Apple l'impose sur iOS dès qu'une connexion Google est proposée.

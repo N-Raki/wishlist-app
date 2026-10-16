@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { ActivityIndicator, type PressableProps, StyleSheet, Text } from 'react-native';
 import { fonts, minTouchTarget, radius, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
@@ -10,7 +11,8 @@ type Props = Omit<PressableProps, 'children' | 'style'> & {
   loading?: boolean;
   /** Compact buttons sit in headers and toolbars, next to other controls. */
   size?: 'regular' | 'compact';
-  icon?: IconName;
+  /** One of our icons, or a brand's own mark (Google's). */
+  icon?: IconName | ReactElement;
 };
 
 /** Main actions are filled pills, secondary ones outlined (docs/design.md). */
@@ -60,9 +62,11 @@ export function Button({
     >
       {loading ? (
         <ActivityIndicator color={look.text} accessibilityElementsHidden />
-      ) : icon ? (
+      ) : typeof icon === 'string' ? (
         <Icon name={icon} color={look.text} size={18} strokeWidth={2.4} />
-      ) : null}
+      ) : (
+        (icon ?? null)
+      )}
       <Text style={[styles.label, size === 'compact' && styles.compactLabel, { color: look.text }]}>{label}</Text>
     </Touchable>
   );

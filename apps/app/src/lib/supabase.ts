@@ -10,7 +10,10 @@ export const supabase = createClient<Database>(config.supabaseUrl, config.supaba
     storage: typeof localStorage === 'undefined' ? undefined : localStorage,
     persistSession: true,
     autoRefreshToken: true,
+    // Sign-in pages read the OAuth redirect themselves (src/app/auth/callback.tsx).
     detectSessionInUrl: false,
+    // OAuth returns a one-time code, exchanged with a secret kept on this device.
+    flowType: 'pkce',
   },
 });
 

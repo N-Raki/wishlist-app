@@ -175,6 +175,8 @@ export const fr = {
     passwordHeading: 'Connexion avec un mot de passe',
     passwordLabel: 'Mot de passe',
     useCode: 'Recevoir un code à la place',
+    continueWithGoogle: 'Continuer avec Google',
+    completing: 'Connexion en cours…',
     privacyNotice: 'Vos données sont traitées comme l’explique notre',
     privacyLink: 'politique de confidentialité',
     errors: {
@@ -182,6 +184,7 @@ export const fr = {
       invalidCode: 'Ce code est incorrect ou a expiré.',
       wrongPassword: 'Adresse ou mot de passe incorrect. En cas d’oubli, recevez un code à la place.',
       tooManyRequests: 'Trop de tentatives. Patientez une minute avant de réessayer.',
+      providerFailed: 'La connexion avec Google n’a pas abouti. Réessayez, ou recevez un code par e-mail.',
     },
   },
   profile: {

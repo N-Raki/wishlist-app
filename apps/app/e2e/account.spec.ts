@@ -105,3 +105,30 @@ test('a user sets a password, then signs in with it', async ({ page }) => {
   await page.getByRole('button', { name: 'Se connecter', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Mes listes' })).toBeVisible();
 });
+
+test('Google shows only when it is on, and a failed return reopens the sheet with the reason', async ({ page }) => {
+  await page.goto('/sign-in');
+  await expect(page.getByLabel('Adresse e-mail')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Continuer avec Google' })).toHaveCount(0);
+
+  // Turned on, with Google answering with an error instead of a code.
+  await page.route('**/auth/v1/settings', (route) => route.fulfill({ json: { external: { google: true } } }));
+  await page.route('**/auth/v1/authorize**', (route) =>
+    route.fulfill({
+      status: 302,
+      headers: { location: new URL('/auth/callback?error=server_error', page.url()).href },
+    }),
+  );
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Se connecter' }).click();
+  await page.getByRole('button', { name: 'Continuer avec Google' }).click();
+
+  await expect(page).toHaveURL(/\/sign-in\?failed=1$/);
+  await expect(page.getByRole('alert')).toHaveText(
+    'La connexion avec Google n’a pas abouti. Réessayez, ou recevez un code par e-mail.',
+  );
+  await expectAccessible(page);
+  // Closing the sheet leaves the user where they were.
+  await page.getByRole('button', { name: 'Fermer' }).click();
+  await expect(page).toHaveURL(/\/$/);
+});
