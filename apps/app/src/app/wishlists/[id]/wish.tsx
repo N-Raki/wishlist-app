@@ -103,7 +103,7 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
         <Button label={wish ? t('wishForm.save') : t('wishForm.add')} loading={save.isPending} onPress={submit} />
       }
     >
-      <Stack.Screen options={{ headerLeft: closeButton(t('common.close'), back) }} />
+      <Stack.Screen options={closeButton(t('common.close'), back)} />
       <Text variant="title">{title}</Text>
 
       <PhotoField

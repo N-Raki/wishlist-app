@@ -42,7 +42,7 @@ Source unique dans le code : `apps/app/src/theme/palette.ts`. Sur le web, les co
 ## Icône et écran de lancement
 Un « w » encre en Gabarito ExtraBold, avec une étincelle, sur fond corail (choisi par Raki le 2026-10-16). Source : `apps/app/assets/icon.svg`. Les fichiers PNG en sont tirés : icône 1024 px, Android adaptative (le w seul sur fond corail, et version monochrome), favicon, et écran de lancement (l'icône arrondie, au centre, sur le fond du thème clair ou sombre).
 - **Barre d'onglets** translucide (flou + saturation), le contenu défile dessous. Le haut des écrans sans en-tête (barre d'état, Dynamic Island) a la même matière (`BarBackground`).
-- **Boutons d'en-tête** : l'icône seule, sans fond, comme le bouton Retour natif ; iOS 26 pose déjà chacun sur son « Liquid Glass ».
+- **Boutons d'en-tête** (`headerActions`) : sur iOS, les boutons du système (symboles SF sur « Liquid Glass » rond, comme Retour) ; ailleurs, l'icône seule, sans fond. Couleur encre partout : le corail n'atteint pas 3:1 sur le fond clair.
 
 ## Règles d'interface
 Tirées des premiers retours de Raki sur l'app (2026-10-11). À vérifier sur chaque écran touché, avant d'ouvrir la PR.

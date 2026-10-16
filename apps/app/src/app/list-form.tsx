@@ -76,7 +76,7 @@ function NameForm({ title, submitLabel, initialName, busy, failed, onSubmit }: N
 
   return (
     <Screen title={title} action={<Button label={submitLabel} loading={busy} onPress={submit} />}>
-      <Stack.Screen options={{ headerLeft: closeButton(t('common.close'), () => goBack()) }} />
+      <Stack.Screen options={closeButton(t('common.close'), () => goBack())} />
       <Text variant="title">{title}</Text>
       <TextField
         label={t('listForm.nameLabel')}

@@ -34,10 +34,11 @@ export function useKeyboardOverlap(ref: RefObject<View | null>) {
       keyboardTop.current = visible ? event.endCoordinates.screenY : null;
       remeasure();
     };
-    // iOS announces the keyboard before it moves, Android once it is there.
+    // iOS announces the keyboard before it moves, Android once it is there. On iOS, the
+    // suggestion bar can grow the keyboard after it has shown: its every frame counts.
     const ios = Platform.OS === 'ios';
     const subscriptions = [
-      Keyboard.addListener(ios ? 'keyboardWillShow' : 'keyboardDidShow', (event) => follow(event, true)),
+      Keyboard.addListener(ios ? 'keyboardWillChangeFrame' : 'keyboardDidShow', (event) => follow(event, true)),
       Keyboard.addListener(ios ? 'keyboardWillHide' : 'keyboardDidHide', (event) => follow(event, false)),
     ];
     return () => {

@@ -12,10 +12,9 @@ import { space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
 import { Dialog } from '@/ui/Dialog';
-import { HeaderButton } from '@/ui/HeaderButton';
 import { LegalFooter } from '@/ui/LegalFooter';
 import { Screen } from '@/ui/Screen';
-import { HeaderItem } from '@/ui/stackOptions';
+import { headerActions } from '@/ui/stackOptions';
 import { Text } from '@/ui/Text';
 import { TextLink } from '@/ui/TextLink';
 
@@ -73,16 +72,10 @@ function OwnerList({ list }: { list: WishlistView }) {
       }
     >
       <Stack.Screen
-        options={{
-          headerRight: () => (
-            <HeaderItem>
-              <View style={styles.headerActions}>
-                <HeaderButton icon="share" label={t('share.open')} onPress={() => setSharing(true)} />
-                <HeaderButton icon="more" label={t('wishlist.options')} onPress={() => setDialog('menu')} />
-              </View>
-            </HeaderItem>
-          ),
-        }}
+        options={headerActions('right', [
+          { icon: 'share', label: t('share.open'), onPress: () => setSharing(true) },
+          { icon: 'more', label: t('wishlist.options'), onPress: () => setDialog('menu') },
+        ])}
       />
       <Text variant="title">{list.name}</Text>
 
@@ -171,13 +164,7 @@ function SharedList({ list }: { list: WishlistView }) {
       }
     >
       <Stack.Screen
-        options={{
-          headerRight: () => (
-            <HeaderItem>
-              <HeaderButton icon="share" label={t('share.open')} onPress={() => setSharing(true)} />
-            </HeaderItem>
-          ),
-        }}
+        options={headerActions('right', [{ icon: 'share', label: t('share.open'), onPress: () => setSharing(true) }])}
       />
       <ShareDialog list={list} visible={sharing} onClose={() => setSharing(false)} />
       <View style={styles.heading}>
@@ -225,5 +212,4 @@ const styles = StyleSheet.create({
   heading: { gap: space.md },
   empty: { gap: space.sm },
   spacer: { flexGrow: 1 },
-  headerActions: { flexDirection: 'row' },
 });
