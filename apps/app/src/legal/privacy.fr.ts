@@ -4,7 +4,7 @@ import type { LegalDocument } from './types';
 // Keep in sync with docs/legal/registre.md: every change of data or provider updates both.
 export const privacyFr: LegalDocument = {
   title: 'Politique de confidentialité',
-  updatedOn: '15 octobre 2026',
+  updatedOn: '16 octobre 2026',
   sections: [
     {
       heading: 'En bref',
@@ -39,7 +39,7 @@ export const privacyFr: LegalDocument = {
     {
       heading: 'Combien de temps',
       paragraphs: [
-        'Vos données sont conservées tant que votre compte existe. Quand vous le supprimez, elles sont effacées immédiatement\u00A0; elles disparaissent des sauvegardes au bout de 7\u00A0jours au plus.',
+        'Vos données sont conservées tant que votre compte existe. Un compte inutilisé pendant 3\u00A0ans est supprimé, après un e-mail d’avertissement 30\u00A0jours avant\u00A0: il suffit de vous connecter pour le garder. Quand vous le supprimez, elles sont effacées immédiatement\u00A0; elles disparaissent des sauvegardes au bout de 7\u00A0jours au plus.',
         'Les journaux techniques sont effacés automatiquement par nos hébergeurs après quelques jours (7\u00A0jours au plus chez Supabase).',
       ],
     },

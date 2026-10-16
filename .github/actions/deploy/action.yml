@@ -14,6 +14,18 @@ inputs:
   web-flags:
     description: Flags for `eas deploy` (an alias, or --prod).
     required: true
+  site-url:
+    description: Address of the website, for links in e-mails sent by the server functions.
+    required: true
+  cron-secret:
+    description: Secret of the daily clean-up of inactive accounts; nothing is set while empty.
+    required: false
+  brevo-api-key:
+    description: Brevo API key, for e-mails sent by the server functions.
+    required: false
+  email-from:
+    description: Sender address of those e-mails, authenticated in Brevo.
+    required: false
 outputs:
   url:
     description: Address of the deployed website.
@@ -32,6 +44,21 @@ runs:
       env:
         PROJECT_REF: ${{ inputs.supabase-project-ref }}
       run: npx supabase functions deploy --project-ref "$PROJECT_REF" --use-api
+    - name: Server function secrets
+      shell: bash
+      env:
+        PROJECT_REF: ${{ inputs.supabase-project-ref }}
+        SITE_URL: ${{ inputs.site-url }}
+        CRON_SECRET: ${{ inputs.cron-secret }}
+        BREVO_API_KEY: ${{ inputs.brevo-api-key }}
+        EMAIL_FROM: ${{ inputs.email-from }}
+      run: |
+        if [ -z "$CRON_SECRET" ]; then
+          echo "CRON_SECRET is not set for this environment: inactive accounts are not cleaned up yet."
+          exit 0
+        fi
+        npx supabase secrets set --project-ref "$PROJECT_REF" \
+          "SITE_URL=$SITE_URL" "CRON_SECRET=$CRON_SECRET" "BREVO_API_KEY=$BREVO_API_KEY" "EMAIL_FROM=$EMAIL_FROM"
     - name: Website
       id: web
       shell: bash

@@ -60,6 +60,20 @@ Nécessite l'Apple Developer Program (voir 4), souscrit à la bascule (décision
 - [x] *Settings → Environments* : créer `preprod` et `production`. Dans chacun : variable `SUPABASE_PROJECT_REF` (l'identifiant du projet, dans son URL) et secret `SUPABASE_DB_PASSWORD`. Facultatif : un relecteur obligatoire sur `production` pour valider chaque mise en production.
 - [x] Protéger `main` : voir [Protection de `main`](#protection-de-main) ci-dessous.
 - [x] En dernier, variable de dépôt `DEPLOY_ENABLED` = `true`. Le prochain merge déploie la preprod puis la production.
+- [ ] Comptes inactifs : voir [ci-dessous](#comptes-inactifs).
+
+### Comptes inactifs
+Chaque jour, le workflow `Inactive accounts` prévient par e-mail les comptes inutilisés depuis bientôt 3 ans, puis les supprime 30 jours après. Tant que `CRON_SECRET` manque dans un environnement, il ne fait rien.
+
+1. Brevo → *SMTP & API → API keys* : créer une clé `wishme-preprod`, et une autre `wishme-prod`.
+2. Générer deux secrets aléatoires, un par environnement. En PowerShell :
+   ```powershell
+   $b = New-Object byte[] 32; [Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($b); [Convert]::ToBase64String($b)
+   ```
+3. *Settings → Environments*, dans `preprod` puis dans `production` : secrets `CRON_SECRET` (le secret généré) et `BREVO_API_KEY` (la clé de cet environnement), variable `EMAIL_FROM` (l'adresse d'expédition déjà validée dans Brevo pour les e-mails de connexion).
+4. Le prochain déploiement transmet ces valeurs aux fonctions de Supabase. Pour vérifier, lancer le workflow à la main (*Actions → Inactive accounts → Run workflow*) : il doit finir en vert.
+
+Si `production` a un relecteur obligatoire, ce workflow attend aussi son accord chaque jour : dans ce cas, réserver le relecteur au workflow `Deploy` (*Deployment branches and tags*, ou un environnement dédié).
 
 ### Protection de `main`
 But : rien n'arrive sur `main` (donc en production) sans PR dont les tests sont verts. GitHub propose deux mécanismes ; on prend les *rulesets*, plus récents et plus lisibles que la « branch protection » classique.

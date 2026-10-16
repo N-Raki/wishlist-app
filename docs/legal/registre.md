@@ -11,9 +11,9 @@ Responsable : l'éditeur de Wish Me (coordonnées dans `apps/app/src/legal/publi
 | Base légale | Exécution du contrat (art. 6.1.b) |
 | Personnes | Utilisateurs inscrits, 15 ans et plus |
 | Données | E-mail ; nom d'affichage (obligatoire, choisi à la première connexion) ; dates de création et de dernière connexion ; méthodes de connexion liées ; mot de passe s'il en choisit un (facultatif, conservé uniquement sous forme d'empreinte hachée) ; s'il se connecte avec Google : e-mail, nom, photo de profil et identifiant Google transmis par Google (le prénom sert à proposer le nom d'affichage, l'ensemble figure dans l'export) |
-| Destinataires | Supabase (base et authentification, région Paris) ; Brevo (envoi des e-mails de connexion, France) ; Google, responsable de sa propre connexion, seulement pour qui la choisit |
+| Destinataires | Supabase (base et authentification, région Paris) ; Brevo (envoi des e-mails de connexion et d'avertissement d'inactivité, France) ; Google, responsable de sa propre connexion, seulement pour qui la choisit |
 | Transferts hors UE | Supabase Inc. et Expo (650 Industries, Inc.), États-Unis, en tant que sous-traitants : clauses contractuelles types de leurs DPA ; Expo est aussi certifié Data Privacy Framework |
-| Durée | Tant que le compte existe ; effacement immédiat à la suppression, sauvegardes purgées sous 7 jours |
+| Durée | Tant que le compte existe, et au plus 3 ans sans utilisation : un e-mail prévient 30 jours avant la suppression, une connexion l'annule (date de l'avertissement conservée et incluse dans l'export) ; effacement immédiat à la suppression, sauvegardes purgées sous 7 jours |
 | Sécurité | Connexion par code à usage unique (10 min), ou par mot de passe facultatif : 8 caractères minimum, haché, choisi ou changé après une connexion récente ou un nouveau code, chaque changement signalé par e-mail ; ou par Google (flux OAuth avec PKCE, adresses de retour limitées à celles de l'app) ; RLS testée en CI ; secrets hors du code |
 | Droits | Export (JSON) et suppression dans l'app ; le reste par e-mail |
 

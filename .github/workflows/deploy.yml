@@ -40,6 +40,10 @@ jobs:
           supabase-project-ref: ${{ vars.SUPABASE_PROJECT_REF }}
           supabase-db-password: ${{ secrets.SUPABASE_DB_PASSWORD }}
           web-flags: --alias preprod
+          site-url: https://wishme--preprod.expo.app
+          cron-secret: ${{ secrets.CRON_SECRET }}
+          brevo-api-key: ${{ secrets.BREVO_API_KEY }}
+          email-from: ${{ vars.EMAIL_FROM }}
       - name: Smoke test
         env:
           URL: ${{ steps.deploy.outputs.url }}
@@ -77,3 +81,7 @@ jobs:
           supabase-project-ref: ${{ vars.SUPABASE_PROJECT_REF }}
           supabase-db-password: ${{ secrets.SUPABASE_DB_PASSWORD }}
           web-flags: --prod
+          site-url: https://wishme.expo.app
+          cron-secret: ${{ secrets.CRON_SECRET }}
+          brevo-api-key: ${{ secrets.BREVO_API_KEY }}
+          email-from: ${{ vars.EMAIL_FROM }}

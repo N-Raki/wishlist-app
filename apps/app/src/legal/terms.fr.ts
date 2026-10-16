@@ -19,6 +19,7 @@ export const termsFr: LegalDocument = {
       paragraphs: [
         'Il faut avoir au moins 15 ans pour créer un compte. Il est personnel : vous restez responsable de ce qui est fait depuis votre adresse e-mail et, si vous en choisissez un, de votre mot de passe.',
         'Vous pouvez supprimer votre compte à tout moment depuis « Mon compte » : vos listes, vos souhaits et vos réservations disparaissent avec lui.',
+        'Un compte inutilisé pendant 3\u00A0ans est supprimé de la même façon, après un e-mail d’avertissement 30\u00A0jours avant. Il suffit de vous connecter pour le garder.',
       ],
     },
     {

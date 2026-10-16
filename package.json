@@ -20,7 +20,9 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
+    "@types/pg": "^8.23.1",
     "eas-cli": "^24.12.1",
+    "pg": "^8.23.1",
     "supabase": "2.120.0"
   }
 }

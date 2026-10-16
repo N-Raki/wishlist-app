@@ -18,6 +18,7 @@ export const termsEn: LegalDocument = {
       paragraphs: [
         'You must be at least 15 to create an account. It is personal: you remain responsible for what is done from your e-mail address and, if you choose one, your password.',
         'You can delete your account at any time from “My account”: your lists, wishes and reservations go with it.',
+        'An account unused for 3 years is deleted the same way, after a warning e-mail 30 days before. Signing in is enough to keep it.',
       ],
     },
     {
