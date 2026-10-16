@@ -31,11 +31,13 @@ export async function sendEmail({ to, subject, text, html }: Email) {
 }
 
 // Brevo switches off a key after 90 days without a successful call, and a daily job may send
-// nothing for months: checking the account each run keeps the key alive and surfaces a revoked
+// nothing for months: a read within the key's only scope (transactional e-mail) each run keeps the key alive and surfaces a revoked
 // key the same day rather than when a notice is due.
 export async function checkEmail() {
   const brevoKey = Deno.env.get('BREVO_API_KEY');
   if (!brevoKey) return;
-  const response = await fetch(`${brevo}/account`, { headers: { 'api-key': brevoKey, Accept: 'application/json' } });
+  const response = await fetch(`${brevo}/smtp/statistics/aggregatedReport?days=1`, {
+    headers: { 'api-key': brevoKey, Accept: 'application/json' },
+  });
   if (!response.ok) throw new Error(`the Brevo key was refused: ${response.status} ${await response.text()}`);
 }

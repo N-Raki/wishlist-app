@@ -72,12 +72,12 @@ Chaque matin, le workflow GitHub `Inactive accounts` envoie un e-mail aux compte
 4. Nom : `wishme-preprod`. Expiration : **Pas d'expiration**. Laisser **décochée** l'option de clé pour serveur MCP. Valider, puis **copier la clé tout de suite** (Brevo ne la remontre plus) et la coller provisoirement dans un bloc-notes.
 5. Recommencer avec le nom `wishme-prod`.
 
-Droits de la clé : Brevo ne permet pas de les restreindre, une clé ouvre tout le compte. D'où trois précautions :
+Droits de la clé, dans la section **Permissions** du même formulaire : **Transactional email** sur **All**, tout le reste sur **None**. C'est le seul droit nécessaire (envoyer l'e-mail et vérifier chaque matin que la clé marche). Ensuite :
 - une clé par environnement, pour pouvoir en révoquer une seule ;
 - la clé ne vit que dans les secrets GitHub et Supabase, jamais dans un message ni dans le code ;
 - **désactiver le blocage des IP inconnues** pour les clés API : menu du compte → **Paramètres** → **Sécurité** → **IP autorisées** (*Authorized IPs*), ligne **Clés API** → **Désactiver pour l'API**. Les fonctions de Supabase n'ont pas d'adresse IP fixe, et Brevo active ce blocage tout seul au bout de 30 jours sans nouvelle IP : les e-mails partiraient bien les premières semaines, puis seraient refusés. Le blocage des clés SMTP (codes de connexion) n'est pas concerné.
 
-Brevo désactive aussi une clé restée 90 jours sans appel réussi. Ce n'est pas un problème : le ménage interroge Brevo chaque matin, même quand il n'a personne à prévenir, ce qui garde la clé active et signale tout de suite une clé révoquée (le workflow passe au rouge).
+Brevo désactive aussi une clé restée 90 jours sans appel réussi. Ce n'est pas un problème : le ménage lit chaque matin les statistiques d'envoi, même quand il n'a personne à prévenir, ce qui garde la clé active et signale tout de suite une clé révoquée (le workflow passe au rouge).
 
 **Étape 2 : l'adresse d'expédition**
 1. Toujours dans Brevo, menu du compte → **Expéditeurs, domaines et IP dédiées** (*Senders, Domains & Dedicated IPs*) → onglet **Expéditeurs**.
