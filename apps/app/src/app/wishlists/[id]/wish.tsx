@@ -13,6 +13,7 @@ import { fonts, minTouchTarget, radius, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
 import { Dialog } from '@/ui/Dialog';
+import { Divider } from '@/ui/Divider';
 import { Screen } from '@/ui/Screen';
 import { closeButton } from '@/ui/stackOptions';
 import { Text } from '@/ui/Text';
@@ -208,41 +209,39 @@ function Form({ listId, wish }: { listId: string; wish?: Wish }) {
         </Text>
       ) : null}
 
-      {/* Out of the way at the end of the form, and confirmed before anything is lost. */}
+      {/* Out of the way at the end of the form, set apart, and confirmed before anything is lost. */}
       {wish ? (
-        <Button
-          variant="secondary"
-          label={t('wishForm.delete')}
-          disabled={save.isPending}
-          onPress={() => setConfirmDelete(true)}
-        />
-      ) : null}
-
-      {wish ? (
-        <Dialog
-          visible={confirmDelete}
-          onClose={() => setConfirmDelete(false)}
-          title={t('wishForm.deleteTitle')}
-          body={t('wishForm.deleteBody')}
-        >
-          {remove.isError ? (
-            <Text role="alert" style={{ color: colors.danger }}>
-              {t('common.genericError')}
-            </Text>
-          ) : null}
-          <Button
-            variant="danger"
-            label={t('wishForm.deleteConfirm')}
-            loading={remove.isPending}
-            onPress={() => remove.mutate([wish], { onSuccess: back })}
-          />
+        <>
+          <View style={styles.spacer} />
+          <Divider />
           <Button
             variant="secondary"
-            label={t('wishForm.cancel')}
-            disabled={remove.isPending}
-            onPress={() => setConfirmDelete(false)}
+            destructive
+            label={t('wishForm.delete')}
+            disabled={save.isPending}
+            onPress={() => setConfirmDelete(true)}
           />
-        </Dialog>
+          <Dialog
+            visible={confirmDelete}
+            onClose={() => setConfirmDelete(false)}
+            title={t('wishForm.deleteTitle')}
+            body={t('wishForm.deleteBody')}
+            dismissLabel={t('wishForm.cancel')}
+            busy={remove.isPending}
+          >
+            {remove.isError ? (
+              <Text role="alert" style={{ color: colors.danger }}>
+                {t('common.genericError')}
+              </Text>
+            ) : null}
+            <Button
+              destructive
+              label={t('wishForm.deleteConfirm')}
+              loading={remove.isPending}
+              onPress={() => remove.mutate([wish], { onSuccess: back })}
+            />
+          </Dialog>
+        </>
       ) : null}
     </Screen>
   );
@@ -332,4 +331,5 @@ const styles = StyleSheet.create({
   },
   currencyLabel: { fontFamily: fonts.semiBold, fontSize: 15 },
   pressed: { opacity: 0.7 },
+  spacer: { height: space.lg },
 });

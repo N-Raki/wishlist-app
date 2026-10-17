@@ -56,7 +56,10 @@ test('an owner creates a list, fills it, changes it, then deletes it', async ({ 
   await page.getByRole('button', { name: 'Enregistrer' }).click();
   await expect(page.getByRole('heading', { name: 'Anniversaire' })).toBeVisible();
 
+  // Deleting is set apart from the harmless choices, in red (docs/design.md, rule 10).
   await page.getByRole('button', { name: 'Options de la liste' }).click();
+  await expect(page.getByRole('dialog', { name: 'Options de la liste' })).toBeVisible();
+  await expectAccessible(page);
   await page.getByRole('button', { name: 'Supprimer la liste' }).click();
   // The dialog takes its role once it has faded in.
   await expect(page.getByRole('dialog', { name: 'Supprimer « Anniversaire » ?' })).toBeVisible();

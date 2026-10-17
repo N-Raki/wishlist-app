@@ -3,6 +3,7 @@ import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { contentMaxWidth, radius, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
+import { Button } from './Button';
 import { Text } from './Text';
 
 type Props = {
@@ -10,7 +11,11 @@ type Props = {
   onClose: () => void;
   title: string;
   body?: string;
-  /** The choices, as buttons; the last one is closest to the thumb. */
+  /** The way out, under the choices and closest to the thumb: "Cancel", "Close". */
+  dismissLabel: string;
+  /** While a choice is being carried out, the dialog stays open. */
+  busy?: boolean;
+  /** The choices, as buttons. */
   children: ReactNode;
 };
 
@@ -19,16 +24,19 @@ type Props = {
  * that cannot be undone. Rises from the bottom over a dimmed page; tapping outside or the
  * system back gesture closes it.
  */
-export function Dialog({ visible, onClose, title, body, children }: Props) {
+export function Dialog({ visible, onClose, title, body, dismissLabel, busy = false, children }: Props) {
   const colors = useColors();
   const insets = useSafeAreaInsets();
+  const dismiss = () => {
+    if (!busy) onClose();
+  };
   return (
     // On the web the modal itself is the dialog (role, aria-modal, focus trap, Escape): it takes the name.
     <Modal
       visible={visible}
       transparent
       animationType="fade"
-      onRequestClose={onClose}
+      onRequestClose={dismiss}
       statusBarTranslucent
       aria-label={title}
     >
@@ -36,7 +44,7 @@ export function Dialog({ visible, onClose, title, body, children }: Props) {
         <Pressable
           aria-hidden
           tabIndex={-1}
-          onPress={onClose}
+          onPress={dismiss}
           style={[StyleSheet.absoluteFill, { backgroundColor: colors.scrim }]}
         />
         <View style={[styles.card, { backgroundColor: colors.surface, marginBottom: insets.bottom + space.lg }]}>
@@ -44,7 +52,10 @@ export function Dialog({ visible, onClose, title, body, children }: Props) {
             <Text variant="heading">{title}</Text>
             {body ? <Text tone="secondary">{body}</Text> : null}
           </View>
-          <View style={styles.actions}>{children}</View>
+          <View style={styles.actions}>
+            {children}
+            <Button variant="plain" label={dismissLabel} disabled={busy} onPress={dismiss} />
+          </View>
         </View>
       </View>
     </Modal>

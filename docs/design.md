@@ -10,7 +10,7 @@ Une liste de souhaits est d'abord une vitrine de cadeaux : les photos portent l'
 2. **Une seule couleur d'accent**, toujours avec du texte encre dessus (jamais blanc sur corail).
 3. **Le secret est expliqué au bon moment.** Côté propriétaire, aucun état de réservation n'apparaît. La promesse de surprise est dite là où elle rassure : sur une liste encore vide et au moment de partager, pas en pastille permanente.
 4. **Un vocabulaire de réservation unique** : « Réserver », « Léa s’en occupe » + « Participer », « Vous et Hugo » (ou « Vous l’offrez avec Hugo » quand la place le permet).
-5. **Actions principales en pilule pleine**, secondaires en pilule à bord.
+5. **Actions principales en pilule pleine**, secondaires en pilule à bord, et la sortie (« Annuler », une autre façon de faire) en texte seul (règle 10).
 6. **L'invité comprend pourquoi se connecter.** Sur la liste, un encart dit ce que la connexion apporte (voir ce qui est pris, pas de doublon, surprise gardée) ; « Réserver » ouvre une feuille de connexion qui rappelle le souhait choisi, et la réservation se fait dès la connexion.
 
 ## Tokens
@@ -56,6 +56,7 @@ Tirées des premiers retours de Raki sur l'app (2026-10-11). À vérifier sur ch
 7. **Rien ne déborde à 320 px** (WCAG 1.4.10, testé par `expectReflow` dans les tests e2e) ; un titre ne partage pas sa ligne avec un bouton.
 8. **Mentions légales et confidentialité** : en pied des pages publiques (accueil, liste vue par un visiteur), à côté de toute collecte de données (connexion), et dans l'onglet Compte une fois connecté.
 9. **Le clavier ne s'ouvre d'office que sur le seul choix de l'écran** (un code, le nom d'une liste). Pas quand d'autres options attendent dessous (connexion, souhait). `Screen` garde la page et son action au-dessus du clavier, et le glisser de la page le range.
+10. **Les actions se hiérarchisent, la destruction se voit** (`Button`). Trois niveaux : pilule pleine pour l'action principale (une au plus par écran), pilule à bord pour les autres, texte seul pour sortir (« Annuler », « Fermer ») ou prendre une autre voie, et seulement sous d'autres boutons, pour qu'il se lise comme un bouton. Ce qui fait perdre quelque chose est rouge (`destructive`), en dernier et sous un filet (`Divider`) ; s'il ne se défait pas, une confirmation suit, avec le seul bouton rouge plein de l'app. Ce qui se défait aussitôt (annuler une réservation, se déconnecter) n'est ni rouge ni confirmé.
 
 ## Accessibilité vérifiée sur les maquettes
 - Contrastes texte ≥ 4,5:1 (texte secondaire 5,85:1 sur le fond, placeholder 4,64:1).

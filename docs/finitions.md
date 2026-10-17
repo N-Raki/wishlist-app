@@ -15,19 +15,16 @@ Corrigé dans `Screen`, qui s'écarte seul des bords :
 - **Boutons d'en-tête.** Sur iOS, des boutons natifs (`headerActions`) : une vue à nous donnait une gélule au lieu d'un rond. Ailleurs, `HeaderButton` (ex-`IconButton`) sans fond.
 - **Bas.** L'hypothèse de départ était fausse : la réserve de la barre d'onglets ne s'applique déjà qu'aux écrans des onglets. Si le vide persiste après cette PR, une capture de l'écran concerné dira d'où il vient.
 
-## 2. Hiérarchie des actions
+## 2. Hiérarchie des actions — corrigé
 Constaté : « Renommer » et « Supprimer la liste » ont le même aspect, alors que l'une est anodine et l'autre irréversible.
 
-- Règle à écrire dans design.md, puis appliquer partout :
-  - une action principale par écran ;
-  - les actions secondaires en retrait ;
-  - toute action destructive en rouge (`danger`), placée en dernier et séparée des autres ;
-  - une confirmation pour ce qui ne se défait pas.
-- À passer en revue :
-  - les menus (options d'une liste, d'un souhait) ;
-  - la page Compte (déconnexion, suppression du compte) ;
-  - les fenêtres de confirmation ;
-  - l'annulation d'une réservation.
+Règle 10 de design.md, portée par `Button` (`variant` primary, secondary ou plain ; `destructive`) et `Dialog` (le bouton pour sortir est intégré) :
+- **Menu d'une liste.** « Supprimer la liste » en rouge, sous un filet, après « Renommer » ; « Annuler » en texte seul.
+- **Formulaire d'un souhait.** « Supprimer ce souhait » en rouge, sous un filet en fin de formulaire. Il n'y a pas de menu de souhait : le formulaire en tient lieu.
+- **Compte.** « Supprimer mon compte » en rouge, en dernier, sous un filet ; « Se déconnecter » reste neutre (on se reconnecte).
+- **Confirmations** (liste, souhait, compte) : bouton rouge plein, « Annuler » en texte seul ; ni toucher dehors ni Retour ne ferment pendant la suppression.
+- **Connexion.** Les autres voies (mot de passe, code, renvoyer le code, changer d'adresse) passent en texte seul ; Google reste à bord, c'est une vraie alternative.
+- **Annuler une réservation** : inchangé, sans confirmation ni rouge. Elle se défait : juste après, l'action redevient « Réserver » (ou « Participer »).
 
 ## 3. Web et grands écrans
 Constaté : tout est pensé pour le mobile ; sur ordinateur, les boutons ne montrent qu'une icône et la mise en page ne s'adapte pas.

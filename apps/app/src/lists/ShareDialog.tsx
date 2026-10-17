@@ -42,6 +42,7 @@ export function ShareDialog({ list, visible, onClose }: { list: WishlistView; vi
       onClose={close}
       title={t('share.title', { name: list.name })}
       body={list.is_owner ? t('share.ownerPromise') : t('share.relativeBody')}
+      dismissLabel={t('common.close')}
     >
       {status ? (
         <Text
@@ -67,7 +68,6 @@ export function ShareDialog({ list, visible, onClose }: { list: WishlistView; vi
           }
         />
       ) : null}
-      <Button variant="secondary" label={t('common.close')} onPress={close} />
     </Dialog>
   );
 }

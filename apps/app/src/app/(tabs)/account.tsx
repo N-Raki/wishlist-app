@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase';
 import { radius, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
+import { Divider } from '@/ui/Divider';
 import { LegalFooter } from '@/ui/LegalFooter';
 import { Screen } from '@/ui/Screen';
 import { Text } from '@/ui/Text';
@@ -65,10 +66,16 @@ export default function Account() {
         ) : null}
       </View>
 
-      <View style={styles.section}>
-        <Button variant="secondary" label={t('account.signOut')} onPress={() => supabase.auth.signOut()} />
-        <Button variant="secondary" label={t('account.delete')} onPress={() => router.push('/delete-account')} />
-      </View>
+      <Button variant="secondary" label={t('account.signOut')} onPress={() => supabase.auth.signOut()} />
+
+      {/* Last and set apart: the one thing on this page that cannot be undone. */}
+      <Divider />
+      <Button
+        variant="secondary"
+        destructive
+        label={t('account.delete')}
+        onPress={() => router.push('/delete-account')}
+      />
 
       <View style={styles.spacer} />
       <LegalFooter />
