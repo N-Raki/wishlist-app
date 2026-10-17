@@ -7,7 +7,10 @@ import { Touchable } from './Touchable';
 
 type Props = Omit<PressableProps, 'children' | 'style'> & {
   label: string;
-  variant?: 'primary' | 'secondary' | 'danger';
+  /** How much the action stands out: one primary per screen at most (docs/design.md). */
+  variant?: 'primary' | 'secondary' | 'plain';
+  /** Loses something: drawn in red. Filled only to confirm what cannot be undone. */
+  destructive?: boolean;
   loading?: boolean;
   /** Compact buttons sit in headers and toolbars, next to other controls. */
   size?: 'regular' | 'compact';
@@ -15,10 +18,14 @@ type Props = Omit<PressableProps, 'children' | 'style'> & {
   icon?: IconName | ReactElement;
 };
 
-/** Main actions are filled pills, secondary ones outlined (docs/design.md). */
+/**
+ * Three levels of emphasis (docs/design.md): the main action is a filled pill, the others are
+ * outlined, and the way out (cancel, another way in) is plain text.
+ */
 export function Button({
   label,
   variant = 'primary',
+  destructive = false,
   loading = false,
   size = 'regular',
   icon,
@@ -26,22 +33,13 @@ export function Button({
   ...props
 }: Props) {
   const colors = useColors();
+  const ink = destructive ? colors.danger : colors.text;
   const look = {
-    primary: {
-      background: colors.accent,
-      text: colors.onAccent,
-      border: colors.accent,
-    },
-    secondary: {
-      background: 'transparent',
-      text: colors.text,
-      border: colors.border,
-    },
-    danger: {
-      background: colors.danger,
-      text: colors.onDanger,
-      border: colors.danger,
-    },
+    primary: destructive
+      ? { background: colors.danger, text: colors.onDanger, border: colors.danger }
+      : { background: colors.accent, text: colors.onAccent, border: colors.accent },
+    secondary: { background: 'transparent', text: ink, border: destructive ? colors.danger : colors.border },
+    plain: { background: 'transparent', text: ink, border: 'transparent' },
   }[variant];
   const inactive = disabled || loading;
 
@@ -57,7 +55,7 @@ export function Button({
         { backgroundColor: look.background, borderColor: look.border },
         disabled && styles.disabled,
       ]}
-      pressedLook={styles.pressed}
+      pressedLook={variant === 'plain' ? styles.plainPressed : styles.pressed}
       {...props}
     >
       {loading ? (
@@ -85,6 +83,8 @@ const styles = StyleSheet.create({
   },
   compact: { minHeight: minTouchTarget, paddingHorizontal: space.lg, gap: space.xs },
   pressed: { opacity: 0.8, transform: [{ scale: 0.97 }] },
+  // Nothing to shrink: the text dims, like the header buttons.
+  plainPressed: { opacity: 0.5 },
   disabled: { opacity: 0.5 },
   label: { fontFamily: fonts.semiBold, fontSize: 17, lineHeight: 22 },
   compactLabel: { fontFamily: fonts.bold, fontSize: 15, lineHeight: 20 },

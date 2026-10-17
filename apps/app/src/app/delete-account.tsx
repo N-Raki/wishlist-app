@@ -38,9 +38,9 @@ export default function DeleteAccount() {
         </Text>
       ) : null}
       <View style={{ gap: space.md }}>
-        <Button variant="danger" label={t('deleteAccount.confirm')} loading={state === 'busy'} onPress={confirm} />
+        <Button destructive label={t('deleteAccount.confirm')} loading={state === 'busy'} onPress={confirm} />
         <Button
-          variant="secondary"
+          variant="plain"
           label={t('deleteAccount.cancel')}
           disabled={state === 'busy'}
           onPress={() => router.back()}

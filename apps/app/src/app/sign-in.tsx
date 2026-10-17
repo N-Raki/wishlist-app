@@ -168,7 +168,7 @@ function CodeSteps() {
             {providerError}
           </Text>
         ) : null}
-        <Button variant="secondary" label={t('signIn.usePassword')} disabled={busy} onPress={() => goTo('password')} />
+        <Button variant="plain" label={t('signIn.usePassword')} disabled={busy} onPress={() => goTo('password')} />
         <Text variant="caption" tone="secondary">
           {t('signIn.termsNotice')} <TextLink href="/terms">{t('signIn.termsLink')}</TextLink>.{' '}
           {t('signIn.privacyNotice')} <TextLink href="/privacy">{t('signIn.privacyLink')}</TextLink>.
@@ -210,7 +210,7 @@ function CodeSteps() {
           onSubmitEditing={submitPassword}
         />
         <Button label={t('signIn.verify')} loading={busy} onPress={submitPassword} />
-        <Button variant="secondary" label={t('signIn.useCode')} disabled={busy} onPress={() => goTo('email')} />
+        <Button variant="plain" label={t('signIn.useCode')} disabled={busy} onPress={() => goTo('email')} />
       </Screen>
     );
   }
@@ -236,9 +236,10 @@ function CodeSteps() {
         onSubmitEditing={submitCode}
       />
       <Button label={t('signIn.verify')} loading={busy} onPress={submitCode} />
-      <View style={{ gap: space.md }}>
+      {/* Plain buttons carry their own height: stacked, they need no gap. */}
+      <View>
         <Button
-          variant="secondary"
+          variant="plain"
           label={t('signIn.resend')}
           disabled={busy}
           onPress={() =>
@@ -249,7 +250,7 @@ function CodeSteps() {
           }
         />
         <Button
-          variant="secondary"
+          variant="plain"
           label={t('signIn.changeEmail')}
           disabled={busy}
           onPress={() => {

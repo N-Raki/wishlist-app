@@ -12,6 +12,7 @@ import { space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
 import { Dialog } from '@/ui/Dialog';
+import { Divider } from '@/ui/Divider';
 import { LegalFooter } from '@/ui/LegalFooter';
 import { Screen } from '@/ui/Screen';
 import { headerActions } from '@/ui/stackOptions';
@@ -106,6 +107,8 @@ function OwnerList({ list }: { list: WishlistView }) {
         onClose={() => setDialog(null)}
         title={dialog === 'delete' ? t('wishlist.deleteTitle', { name: list.name }) : t('wishlist.options')}
         body={dialog === 'delete' ? t('wishlist.deleteBody') : undefined}
+        dismissLabel={t('wishlist.cancel')}
+        busy={remove.isPending}
       >
         {dialog === 'delete' ? (
           <>
@@ -115,7 +118,7 @@ function OwnerList({ list }: { list: WishlistView }) {
               </Text>
             ) : null}
             <Button
-              variant="danger"
+              destructive
               label={t('wishlist.deleteConfirm')}
               loading={remove.isPending}
               onPress={() => remove.mutate([list], { onSuccess: () => router.dismissTo('/') })}
@@ -131,15 +134,10 @@ function OwnerList({ list }: { list: WishlistView }) {
                 router.push({ pathname: '/list-form', params: { id: list.id } });
               }}
             />
-            <Button variant="secondary" label={t('wishlist.delete')} onPress={() => setDialog('delete')} />
+            <Divider />
+            <Button variant="secondary" destructive label={t('wishlist.delete')} onPress={() => setDialog('delete')} />
           </>
         )}
-        <Button
-          variant="secondary"
-          label={t('wishlist.cancel')}
-          disabled={remove.isPending}
-          onPress={() => setDialog(null)}
-        />
       </Dialog>
     </Screen>
   );
