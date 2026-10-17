@@ -8,7 +8,7 @@ import { useListMutation, useWishlist } from '@/lists/queries';
 import { describeReservation, reservationState } from '@/lists/reservations';
 import { ShareDialog } from '@/lists/ShareDialog';
 import { WishGrid, WishTile } from '@/lists/WishGrid';
-import { space } from '@/theme/tokens';
+import { contentMaxWidth, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
 import { Dialog } from '@/ui/Dialog';
@@ -66,6 +66,8 @@ function OwnerList({ list }: { list: WishlistView }) {
   return (
     <Screen
       title={list.name}
+      width="wide"
+      heading={<Text variant="title">{list.name}</Text>}
       action={
         <Link href={{ pathname: '/wishlists/[id]/wish', params: { id: list.id } }} asChild>
           <Button role="link" icon="plus" label={t('wishlist.addWish')} />
@@ -74,12 +76,15 @@ function OwnerList({ list }: { list: WishlistView }) {
     >
       <Stack.Screen
         options={headerActions('right', [
-          { icon: 'share', label: t('share.open'), onPress: () => setSharing(true) },
-          { icon: 'more', label: t('wishlist.options'), onPress: () => setDialog('menu') },
+          { icon: 'share', label: t('share.open'), shortLabel: t('share.openShort'), onPress: () => setSharing(true) },
+          {
+            icon: 'more',
+            label: t('wishlist.options'),
+            shortLabel: t('wishlist.optionsShort'),
+            onPress: () => setDialog('menu'),
+          },
         ])}
       />
-      <Text variant="title">{list.name}</Text>
-
       {list.wishes.length === 0 ? (
         // What a new list is for, and the promise that makes it safe to share: said once, here,
         // rather than as a permanent badge (docs/design.md).
@@ -153,6 +158,15 @@ function SharedList({ list }: { list: WishlistView }) {
   return (
     <Screen
       title={list.name}
+      width="wide"
+      heading={
+        <View style={styles.heading}>
+          <Text variant="bodyStrong" tone="secondary">
+            {list.owner_name ? t('wishlist.ownerList', { name: list.owner_name }) : t('wishlist.someone')}
+          </Text>
+          <Text variant="title">{list.name}</Text>
+        </View>
+      }
       action={
         isGuest ? (
           <Link href="/sign-in" asChild>
@@ -162,15 +176,11 @@ function SharedList({ list }: { list: WishlistView }) {
       }
     >
       <Stack.Screen
-        options={headerActions('right', [{ icon: 'share', label: t('share.open'), onPress: () => setSharing(true) }])}
+        options={headerActions('right', [
+          { icon: 'share', label: t('share.open'), shortLabel: t('share.openShort'), onPress: () => setSharing(true) },
+        ])}
       />
       <ShareDialog list={list} visible={sharing} onClose={() => setSharing(false)} />
-      <View style={styles.heading}>
-        <Text variant="bodyStrong" tone="secondary">
-          {list.owner_name ? t('wishlist.ownerList', { name: list.owner_name }) : t('wishlist.someone')}
-        </Text>
-        <Text variant="title">{list.name}</Text>
-      </View>
       {isGuest ? (
         // Why signing in is worth it, said where the wish to reserve is born (docs/design.md).
         <View style={styles.empty}>
@@ -208,6 +218,6 @@ function SharedList({ list }: { list: WishlistView }) {
 
 const styles = StyleSheet.create({
   heading: { gap: space.md },
-  empty: { gap: space.sm },
+  empty: { gap: space.sm, maxWidth: contentMaxWidth },
   spacer: { flexGrow: 1 },
 });

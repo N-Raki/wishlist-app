@@ -53,6 +53,7 @@ export const en: Translations = {
     someone: 'A shared list',
     empty: 'Nothing yet. The ideas on this list will show up here.',
     options: 'List options',
+    optionsShort: 'Options',
     rename: 'Rename',
     delete: 'Delete the list',
     deleteTitle: 'Delete “{{name}}”?',
@@ -134,6 +135,8 @@ export const en: Translations = {
   },
   share: {
     open: 'Share the list',
+    /** Shown next to the icon on large screens; within `open`, which stays the button's name. */
+    openShort: 'Share',
     title: 'Share “{{name}}”',
     ownerPromise:
       'Your relatives will see the list and can reserve a gift, alone or together. You will never know who gives what.',

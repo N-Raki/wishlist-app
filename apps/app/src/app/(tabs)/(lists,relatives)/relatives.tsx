@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { groupByOwner, type VisitedList } from '@/lists/api';
 import { useVisitedLists } from '@/lists/queries';
-import { radius, space } from '@/theme/tokens';
+import { contentMaxWidth, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
+import { Card } from '@/ui/Card';
+import { Grid } from '@/ui/Grid';
 import { Icon } from '@/ui/Icon';
 import { Screen } from '@/ui/Screen';
 import { Text } from '@/ui/Text';
-import { Touchable } from '@/ui/Touchable';
 
 // "Relatives": the lists of others the user opened from a link while signed in, by person,
 // most recent first (docs/spec.md). Opening a list adds it, so the tab refreshes when shown.
@@ -26,8 +27,7 @@ export default function Relatives() {
   );
 
   return (
-    <Screen title={t('relatives.title')}>
-      <Text variant="display">{t('relatives.title')}</Text>
+    <Screen title={t('relatives.title')} width="wide" heading={<Text variant="display">{t('relatives.title')}</Text>}>
       {lists.isPending ? (
         <ActivityIndicator color={colors.textSecondary} />
       ) : lists.isError ? (
@@ -38,7 +38,7 @@ export default function Relatives() {
           <Button variant="secondary" label={t('wishlist.retry')} onPress={() => lists.refetch()} />
         </View>
       ) : lists.data.length === 0 ? (
-        <View style={styles.group}>
+        <View style={styles.empty}>
           <Text variant="heading">{t('relatives.emptyTitle')}</Text>
           <Text tone="secondary">{t('relatives.emptyBody')}</Text>
         </View>
@@ -46,13 +46,11 @@ export default function Relatives() {
         groupByOwner(lists.data).map((group) => (
           <View key={group.ownerId} style={styles.group}>
             <Text variant="heading">{group.ownerName ?? t('reservation.relatives', { count: 1 })}</Text>
-            <View role="list" style={styles.lists}>
+            <Grid minCellWidth={320} rowGap={space.sm}>
               {group.lists.map((list) => (
-                <View key={list.wishlist_id} role="listitem">
-                  <VisitedCard list={list} />
-                </View>
+                <VisitedCard key={list.wishlist_id} list={list} />
               ))}
-            </View>
+            </Grid>
           </View>
         ))
       )}
@@ -65,7 +63,7 @@ function VisitedCard({ list }: { list: VisitedList }) {
   const colors = useColors();
   return (
     <Link href={{ pathname: '/wishlists/[id]', params: { id: list.wishlist_id } }} asChild>
-      <Touchable look={[styles.card, { backgroundColor: colors.surface }]} pressedLook={styles.pressed}>
+      <Card look={styles.card}>
         <View style={styles.cardText}>
           <Text variant="bodyStrong" numberOfLines={2}>
             {list.name}
@@ -75,16 +73,16 @@ function VisitedCard({ list }: { list: VisitedList }) {
           </Text>
         </View>
         <Icon name="chevronRight" color={colors.textSecondary} />
-      </Touchable>
+      </Card>
     </Link>
   );
 }
 
 const styles = StyleSheet.create({
   group: { gap: space.md },
-  lists: { gap: space.sm },
+  empty: { gap: space.md, maxWidth: contentMaxWidth },
   card: {
-    borderRadius: radius.card,
+    flexGrow: 1,
     paddingHorizontal: space.lg,
     paddingVertical: space.md,
     flexDirection: 'row',
@@ -92,5 +90,4 @@ const styles = StyleSheet.create({
     gap: space.md,
   },
   cardText: { flex: 1, gap: 2 },
-  pressed: { opacity: 0.85, transform: [{ scale: 0.99 }] },
 });

@@ -1,17 +1,18 @@
 import { Link } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { radius, space } from '@/theme/tokens';
+import { contentMaxWidth, radius, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
+import { Card } from '@/ui/Card';
+import { Grid } from '@/ui/Grid';
 import { Icon } from '@/ui/Icon';
 import { Text } from '@/ui/Text';
-import { Touchable } from '@/ui/Touchable';
 import { type MyList, previewSize } from './api';
 import { useMyLists } from './queries';
 import { WishArt } from './WishGrid';
 
-/** "My lists": the signed-in home. */
+/** "My lists": the signed-in home, under its heading. */
 export function MyLists() {
   const { t } = useTranslation();
   const colors = useColors();
@@ -19,8 +20,6 @@ export function MyLists() {
 
   return (
     <>
-      <Text variant="display">{t('lists.title')}</Text>
-
       {lists.isPending ? (
         <ActivityIndicator color={colors.textSecondary} />
       ) : lists.isError ? (
@@ -38,13 +37,11 @@ export function MyLists() {
           <Text tone="secondary">{t('lists.noListsBody')}</Text>
         </View>
       ) : (
-        <View role="list" style={styles.lists}>
+        <Grid minCellWidth={320}>
           {lists.data.map((list) => (
-            <View key={list.id} role="listitem">
-              <ListCard list={list} />
-            </View>
+            <ListCard key={list.id} list={list} />
           ))}
-        </View>
+        </Grid>
       )}
     </>
   );
@@ -57,7 +54,7 @@ function ListCard({ list }: { list: MyList }) {
 
   return (
     <Link href={`/wishlists/${list.id}`} asChild>
-      <Touchable look={[styles.card, { backgroundColor: colors.surface }]} pressedLook={styles.pressed}>
+      <Card look={styles.card}>
         <View aria-hidden style={styles.strip}>
           {Array.from({ length: previewSize }, (_, index) => {
             const wish = list.preview[index];
@@ -90,17 +87,15 @@ function ListCard({ list }: { list: MyList }) {
           </View>
           <Icon name="chevronRight" color={colors.textSecondary} />
         </View>
-      </Touchable>
+      </Card>
     </Link>
   );
 }
 
 const styles = StyleSheet.create({
-  lists: { gap: space.md },
   message: { gap: space.md },
-  empty: { gap: space.sm },
-  card: { borderRadius: radius.card, padding: space.md, gap: space.md },
-  pressed: { opacity: 0.85, transform: [{ scale: 0.99 }] },
+  empty: { gap: space.sm, maxWidth: contentMaxWidth },
+  card: { flexGrow: 1, padding: space.md, gap: space.md },
   strip: { flexDirection: 'row', gap: space.sm, height: 78 },
   more: { flex: 1, borderRadius: radius.field, alignItems: 'center', justifyContent: 'center' },
   cardFooter: { flexDirection: 'row', alignItems: 'center', gap: space.md, paddingHorizontal: space.sm },

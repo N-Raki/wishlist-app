@@ -13,6 +13,8 @@ const themeCss = `
 :root{${declarations('light')}color-scheme:light dark;}
 @media (prefers-color-scheme: dark){:root{${declarations('dark')}}}
 body{background-color:var(--color-background);}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;}}
+@media (prefers-reduced-transparency: reduce){:root{--color-chrome:var(--color-background);}}
 `;
 
 export default function Root({ children }: PropsWithChildren) {

@@ -37,16 +37,20 @@ export async function enterCode(page: Page, email: string, name: string) {
 export async function expectReflow(page: Page) {
   const size = page.viewportSize();
   await page.setViewportSize({ width: 320, height: 640 });
-  const overflowing = await page.evaluate(() =>
-    [...document.querySelectorAll('body *')]
-      .filter((element) => {
-        const box = element.getBoundingClientRect();
-        return box.width > 0 && box.height > 0 && (box.right > window.innerWidth + 1 || box.left < -1);
-      })
-      .map((element) => `${element.tagName.toLowerCase()} “${element.textContent?.slice(0, 40) ?? ''}”`),
-  );
+  // The layout follows the window a render after it is resized (src/ui/layout.ts): wait for it.
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        [...document.querySelectorAll('body *')]
+          .filter((element) => {
+            const box = element.getBoundingClientRect();
+            return box.width > 0 && box.height > 0 && (box.right > window.innerWidth + 1 || box.left < -1);
+          })
+          .map((element) => `${element.tagName.toLowerCase()} “${element.textContent?.slice(0, 40) ?? ''}”`),
+      ),
+    )
+    .toEqual([]);
   if (size) await page.setViewportSize(size);
-  expect(overflowing).toEqual([]);
 }
 
 /** No WCAG 2.2 AA violation that axe can detect on the page as it is now. */

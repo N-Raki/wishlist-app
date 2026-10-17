@@ -15,8 +15,17 @@ export const space = {
 /** Smallest touch target on every platform (WCAG 2.5.8, Apple HIG). */
 export const minTouchTarget = 44;
 
-/** Readable column width on large screens. */
+/**
+ * From this window width, the layout is for large screens: tablets and computers
+ * (docs/design.md, "Grands écrans"). Below it, a phone: one column and the thumb's reach.
+ */
+export const largeScreenMinWidth = 768;
+
+/** Readable column width: forms, text, settings. */
 export const contentMaxWidth = 560;
+
+/** Column of the pages that are grids (lists, wishes), on large screens. */
+export const wideContentMaxWidth = 1080;
 
 // Custom fonts need one family per weight: Android does not synthesise bold from fontWeight.
 // On the web, pages show before the font arrives, so a system fallback is named too.
