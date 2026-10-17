@@ -59,6 +59,8 @@ const transition =
   Platform.OS === 'web'
     ? ({
         transitionProperty: 'background-color, box-shadow, opacity, transform',
-        transitionDuration: '150ms',
+        // Short and decelerating: the press must still feel instant.
+        transitionDuration: '120ms',
+        transitionTimingFunction: 'ease-out',
       } as ViewStyle)
     : undefined;

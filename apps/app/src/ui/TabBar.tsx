@@ -54,7 +54,8 @@ export function TabBar({ state, navigation, items, label, atTop }: Props) {
           <Touchable
             aria-current={current ? 'page' : undefined}
             look={[styles.topItem, current && { backgroundColor: colors.surface }]}
-            hoveredLook={current ? undefined : { backgroundColor: colors.surfaceMuted }}
+            // A faint tint, so the page under the pointer never looks more chosen than the current one.
+            hoveredLook={current ? undefined : { backgroundColor: colors.hairline }}
             pressedLook={styles.pressed}
           >
             <Icon name={item.icon} color={color} size={20} strokeWidth={current ? 2.4 : 1.9} />
