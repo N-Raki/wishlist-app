@@ -43,7 +43,7 @@ export default function Password() {
 
   return (
     <Screen title={t('password.title')} action={<Button label={t('password.save')} loading={busy} onPress={submit} />}>
-      <Stack.Screen options={{ headerLeft: closeButton(t('common.close'), () => goBack('/account')) }} />
+      <Stack.Screen options={closeButton(t('common.close'), () => goBack('/account'))} />
       <View style={{ gap: space.sm }}>
         <Text variant="title">{t('password.title')}</Text>
         <Text tone="secondary">{t('password.body', { count: passwordMinLength })}</Text>

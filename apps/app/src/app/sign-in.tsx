@@ -47,7 +47,10 @@ function NameStep() {
       title={t('signIn.title')}
       action={<Button label={t('profile.continue')} loading={form.busy} onPress={form.submit} />}
     >
-      <Stack.Screen options={{ headerLeft: () => null, gestureEnabled: false }} />
+      <Stack.Screen
+        // Clears the close button the e-mail step put there, on every platform.
+        options={{ headerLeft: () => null, unstable_headerLeftItems: () => [], gestureEnabled: false }}
+      />
       <View style={{ gap: space.sm }}>
         <Text variant="title">{t('profile.nameHeading')}</Text>
         <Text tone="secondary">{t('profile.nameBody')}</Text>
@@ -116,11 +119,7 @@ function CodeSteps() {
     setNotice(null);
   }
 
-  const header = (
-    <Stack.Screen
-      options={{ headerLeft: router.canGoBack() ? closeButton(t('common.close'), () => goBack()) : undefined }}
-    />
-  );
+  const header = <Stack.Screen options={router.canGoBack() ? closeButton(t('common.close'), () => goBack()) : {}} />;
 
   function submitEmail() {
     const trimmed = email.trim();
@@ -151,7 +150,6 @@ function CodeSteps() {
           keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
-          autoFocus
           enterKeyHint="send"
           onSubmitEditing={submitEmail}
         />
@@ -208,7 +206,6 @@ function CodeSteps() {
           textContentType="password"
           autoCapitalize="none"
           autoCorrect={false}
-          autoFocus={Boolean(email)}
           enterKeyHint="go"
           onSubmitEditing={submitPassword}
         />

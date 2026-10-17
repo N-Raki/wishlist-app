@@ -23,7 +23,7 @@ function EditName({ initialName }: { initialName: string }) {
       title={t('profile.editTitle')}
       action={<Button label={t('profile.save')} loading={form.busy} onPress={form.submit} />}
     >
-      <Stack.Screen options={{ headerLeft: closeButton(t('common.close'), () => goBack('/account')) }} />
+      <Stack.Screen options={closeButton(t('common.close'), () => goBack('/account'))} />
       <Text variant="title">{t('profile.editTitle')}</Text>
       <Text tone="secondary">{t('profile.editBody')}</Text>
       {form.field}

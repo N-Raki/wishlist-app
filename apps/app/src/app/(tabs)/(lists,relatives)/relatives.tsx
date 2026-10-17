@@ -26,7 +26,7 @@ export default function Relatives() {
   );
 
   return (
-    <Screen edges="all" title={t('relatives.title')}>
+    <Screen title={t('relatives.title')}>
       <Text variant="display">{t('relatives.title')}</Text>
       {lists.isPending ? (
         <ActivityIndicator color={colors.textSecondary} />

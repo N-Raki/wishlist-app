@@ -16,7 +16,6 @@ export default function Home() {
   if (session) {
     return (
       <Screen
-        edges="all"
         title={t('lists.title')}
         action={
           <Link href="/list-form" asChild>
@@ -30,7 +29,7 @@ export default function Home() {
   }
 
   return (
-    <Screen edges="all" description={t('home.tagline')}>
+    <Screen description={t('home.tagline')}>
       <Text variant="display">Wish Me</Text>
       <Text variant="title">{t('home.tagline')}</Text>
       <Showcase />
