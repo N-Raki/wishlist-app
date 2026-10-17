@@ -1,11 +1,9 @@
-import { Link, router } from 'expo-router';
+import { Link } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, View } from 'react-native';
 import { useSession } from '@/auth/SessionProvider';
-import { Showcase } from '@/home/Showcase';
+import { Welcome } from '@/home/Welcome';
 import { MyLists } from '@/lists/MyLists';
 import { Button } from '@/ui/Button';
-import { LegalFooter } from '@/ui/LegalFooter';
 import { Screen } from '@/ui/Screen';
 import { Text } from '@/ui/Text';
 
@@ -30,19 +28,5 @@ export default function Home() {
     );
   }
 
-  return (
-    <Screen description={t('home.tagline')}>
-      <Text variant="display">Wish Me</Text>
-      <Text variant="title">{t('home.tagline')}</Text>
-      <Showcase />
-      <Text tone="secondary">{t('home.intro')}</Text>
-      <Button label={t('home.signIn')} onPress={() => router.push('/sign-in')} />
-      <View style={styles.spacer} />
-      <LegalFooter />
-    </Screen>
-  );
+  return <Welcome />;
 }
-
-const styles = StyleSheet.create({
-  spacer: { flexGrow: 1 },
-});

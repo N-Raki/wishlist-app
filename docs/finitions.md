@@ -33,11 +33,13 @@ Section « Grands écrans » de design.md : un point de rupture à 768 px (`larg
 
 Testé par `e2e/large-screens.spec.ts`. L'iPad reprend la navigation en haut et les grilles, à vérifier sur l'appareil.
 
-## 4. Accueil sans compte et états vides
+## 4. Accueil sans compte et états vides — corrigé
 Constaté : l'accueil d'un visiteur non connecté manque d'allure, notamment ses exemples de cadeaux sans image.
 
-- Refaire l'accueil (`src/home/Showcase.tsx`) avec la direction « Vitrine » : des exemples visuels (illustrations ou photos libres de droits), comment ça marche en trois temps, un seul appel à l'action.
-- Même cause ailleurs : un souhait sans photo doit avoir l'air voulu, pas manquant. À appliquer à la tuile de souhait (`WishGrid`) et aux états vides de Mes listes, d'une liste et de Proches, pour qu'ils restent cohérents avec l'accueil.
+Sections « Illustrations » et « Accueil sans compte » de design.md :
+- **Accueil** (`src/home/Welcome.tsx`). Un exemple de liste avec de vrais objets (illustrations Fluent Emoji, licence MIT, créditées dans les mentions légales), « Comment ça marche » en trois temps, un seul appel à l'action, « Créer ma liste » ; « Se connecter » reste en haut. Côte à côte sur grand écran.
+- **Souhait sans photo.** L'initiale devient très grande et coupée par le coin de la vignette (`WishArt`), sur la liste et la fiche du souhait.
+- **États vides** de Mes listes, d'une liste (propriétaire et proche) et de Proches : `EmptyState`, avec une illustration de la même famille que l'accueil.
 
 ## 5. Saisie du code
 Demandé : six cases au lieu d'un seul champ.

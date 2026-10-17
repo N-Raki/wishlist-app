@@ -4,12 +4,30 @@ export const fr = {
   home: {
     tagline: 'Des listes de souhaits qui gardent la surprise.',
     intro: 'Créez votre liste, partagez le lien\u00A0: vos proches s’organisent sans rien vous dévoiler.',
+    start: 'Créer ma liste',
     signIn: 'Se connecter',
     showcase: {
-      vinyl: 'Platine vinyle',
-      trip: 'Week-end à Lisbonne',
+      headphones: 'Casque sans fil',
+      suitcase: 'Week-end à Lisbonne',
+      camera: 'Appareil photo instantané',
+      plant: 'Monstera',
       claimed: '{{name}} s’en occupe',
       shared: 'Vous et {{name}}',
+    },
+    steps: {
+      title: 'Comment ça marche',
+      add: {
+        title: 'Notez vos idées',
+        body: 'Un nom suffit. Ajoutez un prix, une photo ou le lien du produit pour aider à bien choisir.',
+      },
+      share: {
+        title: 'Partagez le lien',
+        body: 'Par message, par e-mail, où vous voulez. Vos proches voient la liste sans créer de compte.',
+      },
+      surprise: {
+        title: 'Gardez la surprise',
+        body: 'Ils réservent un cadeau ou se cotisent à plusieurs. Vous, vous ne voyez rien.',
+      },
     },
   },
   tabs: {
@@ -51,7 +69,8 @@ export const fr = {
     noPrice: 'Prix non indiqué',
     ownerList: 'La liste de {{name}}',
     someone: 'Une liste partagée',
-    empty: 'Rien pour l’instant. Les idées de cette liste apparaîtront ici.',
+    emptyTitle: 'Pas encore d’idées',
+    emptyBody: 'Les souhaits de cette liste apparaîtront ici dès qu’ils seront ajoutés.',
     options: 'Options de la liste',
     optionsShort: 'Options',
     rename: 'Renommer',

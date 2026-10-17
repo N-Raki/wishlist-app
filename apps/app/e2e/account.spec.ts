@@ -17,11 +17,11 @@ test('a visitor signs in with a code, exports their data, then deletes their acc
 
   await page.getByRole('button', { name: 'Supprimer mon compte' }).click();
   await page.getByRole('button', { name: 'Supprimer définitivement' }).click();
-  await expect(page.getByRole('button', { name: 'Se connecter' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Se connecter' })).toBeVisible();
 
   // Signed out and gone: the account page is out of reach.
   await page.goto('/account');
-  await expect(page.getByRole('button', { name: 'Se connecter' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Se connecter' })).toBeVisible();
 });
 
 test('a wrong code is refused with an explanation', async ({ page }) => {
@@ -94,7 +94,7 @@ test('a user sets a password, then signs in with it', async ({ page }) => {
     .toContain('Mot de passe Wish Me modifié');
 
   await page.getByRole('button', { name: 'Se déconnecter' }).click();
-  await page.getByRole('button', { name: 'Se connecter' }).click();
+  await page.getByRole('link', { name: 'Se connecter' }).click();
   await page.getByRole('button', { name: 'Se connecter avec un mot de passe' }).click();
   await page.getByLabel('Adresse e-mail').fill(email);
   await page.getByLabel('Mot de passe', { exact: true }).fill('pas le bon');
@@ -120,7 +120,7 @@ test('Google shows only when it is on, and a failed return reopens the sheet wit
     }),
   );
   await page.goto('/');
-  await page.getByRole('button', { name: 'Se connecter' }).click();
+  await page.getByRole('link', { name: 'Se connecter' }).click();
   await page.getByRole('button', { name: 'Continuer avec Google' }).click();
 
   await expect(page).toHaveURL(/\/sign-in\?failed=1$/);

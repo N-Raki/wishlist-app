@@ -4,7 +4,7 @@ import type { LegalDocument } from './types';
 // Mentions required by the French LCEN (article 6-III).
 export const legalNoticeFr: LegalDocument = {
   title: 'Mentions légales',
-  updatedOn: '10 octobre 2026',
+  updatedOn: '17 octobre 2026',
   sections: [
     {
       heading: 'Éditeur',
@@ -24,6 +24,13 @@ export const legalNoticeFr: LegalDocument = {
     {
       heading: 'Données personnelles',
       paragraphs: ['Leur traitement est décrit dans la politique de confidentialité.'],
+    },
+    {
+      heading: 'Crédits',
+      paragraphs: [
+        'Illustrations\u00A0: Fluent Emoji, © Microsoft Corporation, sous licence MIT (github.com/microsoft/fluentui-emoji).',
+        'Police de caractères\u00A0: Gabarito, sous licence SIL Open Font License 1.1.',
+      ],
     },
   ],
 };
