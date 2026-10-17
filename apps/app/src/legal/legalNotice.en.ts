@@ -3,7 +3,7 @@ import type { LegalDocument } from './types';
 
 export const legalNoticeEn: LegalDocument = {
   title: 'Legal notice',
-  updatedOn: 'October 10, 2026',
+  updatedOn: 'October 17, 2026',
   sections: [
     {
       heading: 'Publisher',
@@ -23,6 +23,13 @@ export const legalNoticeEn: LegalDocument = {
     {
       heading: 'Personal data',
       paragraphs: ['How it is processed is described in the privacy policy.'],
+    },
+    {
+      heading: 'Credits',
+      paragraphs: [
+        'Illustrations: Fluent Emoji, © Microsoft Corporation, under the MIT license (github.com/microsoft/fluentui-emoji).',
+        'Typeface: Gabarito, under the SIL Open Font License 1.1.',
+      ],
     },
   ],
 };

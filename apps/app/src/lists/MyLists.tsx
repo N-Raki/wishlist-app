@@ -1,10 +1,11 @@
 import { Link } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { contentMaxWidth, radius, space } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
 import { Card } from '@/ui/Card';
+import { EmptyState } from '@/ui/EmptyState';
 import { Grid } from '@/ui/Grid';
 import { Icon } from '@/ui/Icon';
 import { Text } from '@/ui/Text';
@@ -30,12 +31,7 @@ export function MyLists() {
           <Button variant="secondary" label={t('wishlist.retry')} onPress={() => lists.refetch()} />
         </View>
       ) : lists.data.length === 0 ? (
-        // Plain text, not a card: only what can be tapped looks tappable. The way on is the
-        // "New list" action at the bottom of the screen.
-        <View style={styles.empty}>
-          <Text variant="heading">{t('lists.noListsTitle')}</Text>
-          <Text tone="secondary">{t('lists.noListsBody')}</Text>
-        </View>
+        <EmptyState illustration="gift" title={t('lists.noListsTitle')} body={t('lists.noListsBody')} />
       ) : (
         <Grid minCellWidth={320}>
           {lists.data.map((list) => (
@@ -94,7 +90,6 @@ function ListCard({ list }: { list: MyList }) {
 
 const styles = StyleSheet.create({
   message: { gap: space.md },
-  empty: { gap: space.sm, maxWidth: contentMaxWidth },
   card: { flexGrow: 1, padding: space.md, gap: space.md },
   strip: { flexDirection: 'row', gap: space.sm, height: 78 },
   more: { flex: 1, borderRadius: radius.field, alignItems: 'center', justifyContent: 'center' },

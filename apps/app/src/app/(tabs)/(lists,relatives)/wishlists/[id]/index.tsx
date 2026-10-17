@@ -13,6 +13,7 @@ import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
 import { Dialog } from '@/ui/Dialog';
 import { Divider } from '@/ui/Divider';
+import { EmptyState } from '@/ui/EmptyState';
 import { LegalFooter } from '@/ui/LegalFooter';
 import { Screen } from '@/ui/Screen';
 import { headerActions } from '@/ui/stackOptions';
@@ -88,10 +89,7 @@ function OwnerList({ list }: { list: WishlistView }) {
       {list.wishes.length === 0 ? (
         // What a new list is for, and the promise that makes it safe to share: said once, here,
         // rather than as a permanent badge (docs/design.md).
-        <View style={styles.empty}>
-          <Text variant="heading">{t('wishlist.ownerEmptyTitle')}</Text>
-          <Text tone="secondary">{t('wishlist.ownerEmptyBody')}</Text>
-        </View>
+        <EmptyState illustration="idea" title={t('wishlist.ownerEmptyTitle')} body={t('wishlist.ownerEmptyBody')} />
       ) : (
         <WishGrid>
           {list.wishes.map((wish, index) => (
@@ -183,7 +181,7 @@ function SharedList({ list }: { list: WishlistView }) {
       <ShareDialog list={list} visible={sharing} onClose={() => setSharing(false)} />
       {isGuest ? (
         // Why signing in is worth it, said where the wish to reserve is born (docs/design.md).
-        <View style={styles.empty}>
+        <View style={styles.note}>
           <Text variant="heading">{t('reservation.guestHeading')}</Text>
           <Text tone="secondary">
             {t('reservation.guestBody', { owner: list.owner_name ?? t('reservation.guestOwnerFallback') })}
@@ -191,7 +189,7 @@ function SharedList({ list }: { list: WishlistView }) {
         </View>
       ) : null}
       {list.wishes.length === 0 ? (
-        <Text tone="secondary">{t('wishlist.empty')}</Text>
+        <EmptyState illustration="hourglass" title={t('wishlist.emptyTitle')} body={t('wishlist.emptyBody')} />
       ) : (
         <WishGrid>
           {list.wishes.map((wish, index) => (
@@ -218,6 +216,6 @@ function SharedList({ list }: { list: WishlistView }) {
 
 const styles = StyleSheet.create({
   heading: { gap: space.md },
-  empty: { gap: space.sm, maxWidth: contentMaxWidth },
+  note: { gap: space.sm, maxWidth: contentMaxWidth },
   spacer: { flexGrow: 1 },
 });

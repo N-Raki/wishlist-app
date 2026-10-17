@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { type Href, Link } from 'expo-router';
-import type { ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { fonts, radius, space } from '@/theme/tokens';
@@ -120,11 +120,48 @@ export function WishArt({
       />
     );
   }
+  if (size === 'thumb') {
+    return (
+      <View aria-hidden style={[frame, { backgroundColor: colors[tint.background] }]}>
+        <Text style={[styles.thumbInitial, { color: colors[tint.ink] }]}>{initialOf(wish.name)}</Text>
+      </View>
+    );
+  }
+  return <Monogram initial={initialOf(wish.name)} background={colors[tint.background]} ink={colors[tint.ink]} />;
+}
+
+/**
+ * A tile without a photo: its initial set very large and cropped by the tile's corner, like a
+ * printed label, so it reads as chosen rather than as a missing picture or an avatar. The size
+ * follows the tile's width, which only layout knows; until then the tile shows its tint alone.
+ */
+function Monogram({ initial, background, ink }: { initial: string; background: string; ink: string }) {
+  const [width, setWidth] = useState(0);
+  const fontSize = width * 1.2;
   return (
-    <View aria-hidden style={[frame, { backgroundColor: colors[tint.background] }]}>
-      <Text style={[size === 'tile' ? styles.initial : styles.thumbInitial, { color: colors[tint.ink] }]}>
-        {initialOf(wish.name)}
-      </Text>
+    <View
+      aria-hidden
+      onLayout={(event) => setWidth(event.nativeEvent.layout.width)}
+      style={[styles.tile, { backgroundColor: background }]}
+    >
+      {width > 0 ? (
+        <Text
+          numberOfLines={1}
+          style={[
+            styles.monogram,
+            {
+              color: ink,
+              fontSize,
+              lineHeight: fontSize,
+              letterSpacing: -fontSize * 0.04,
+              right: -fontSize * 0.1,
+              bottom: -fontSize * 0.2,
+            },
+          ]}
+        >
+          {initial}
+        </Text>
+      ) : null}
     </View>
   );
 }
@@ -139,7 +176,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   thumb: { flex: 1, borderRadius: radius.field, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
-  initial: { fontFamily: fonts.extraBold, fontSize: 88, lineHeight: 96, letterSpacing: -2 },
+  monogram: { position: 'absolute', fontFamily: fonts.extraBold },
   thumbInitial: { fontFamily: fonts.extraBold, fontSize: 30, lineHeight: 36 },
   caption: { paddingHorizontal: space.xs },
   price: { fontFamily: fonts.bold, fontSize: 15, lineHeight: 20, fontVariant: ['tabular-nums'] },

@@ -4,10 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { groupByOwner, type VisitedList } from '@/lists/api';
 import { useVisitedLists } from '@/lists/queries';
-import { contentMaxWidth, space } from '@/theme/tokens';
+import { space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
 import { Card } from '@/ui/Card';
+import { EmptyState } from '@/ui/EmptyState';
 import { Grid } from '@/ui/Grid';
 import { Icon } from '@/ui/Icon';
 import { Screen } from '@/ui/Screen';
@@ -38,10 +39,7 @@ export default function Relatives() {
           <Button variant="secondary" label={t('wishlist.retry')} onPress={() => lists.refetch()} />
         </View>
       ) : lists.data.length === 0 ? (
-        <View style={styles.empty}>
-          <Text variant="heading">{t('relatives.emptyTitle')}</Text>
-          <Text tone="secondary">{t('relatives.emptyBody')}</Text>
-        </View>
+        <EmptyState illustration="letter" title={t('relatives.emptyTitle')} body={t('relatives.emptyBody')} />
       ) : (
         groupByOwner(lists.data).map((group) => (
           <View key={group.ownerId} style={styles.group}>
@@ -80,7 +78,6 @@ function VisitedCard({ list }: { list: VisitedList }) {
 
 const styles = StyleSheet.create({
   group: { gap: space.md },
-  empty: { gap: space.md, maxWidth: contentMaxWidth },
   card: {
     flexGrow: 1,
     paddingHorizontal: space.lg,

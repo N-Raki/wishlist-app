@@ -15,7 +15,7 @@ export async function codeSentTo(email: string) {
 
 export async function signIn(page: Page, email: string, name = 'Léa') {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Se connecter' }).click();
+  await page.getByRole('link', { name: 'Se connecter' }).click();
   await enterCode(page, email, name);
   await expect(page.getByRole('heading', { name: 'Mes listes' })).toBeVisible();
 }

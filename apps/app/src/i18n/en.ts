@@ -4,12 +4,30 @@ export const en: Translations = {
   home: {
     tagline: 'Wish lists that keep the surprise.',
     intro: 'Make your list, share the link: your loved ones coordinate without giving anything away.',
+    start: 'Create my list',
     signIn: 'Sign in',
     showcase: {
-      vinyl: 'Record player',
-      trip: 'Weekend in Lisbon',
+      headphones: 'Wireless headphones',
+      suitcase: 'Weekend in Lisbon',
+      camera: 'Instant camera',
+      plant: 'Monstera',
       claimed: '{{name}} is on it',
       shared: 'You and {{name}}',
+    },
+    steps: {
+      title: 'How it works',
+      add: {
+        title: 'Write down your ideas',
+        body: 'A name is enough. Add a price, a photo or the product’s link to help them choose well.',
+      },
+      share: {
+        title: 'Share the link',
+        body: 'By text, by e-mail, wherever you like. Your loved ones see the list without an account.',
+      },
+      surprise: {
+        title: 'Keep the surprise',
+        body: 'They reserve a gift or chip in together. You see none of it.',
+      },
     },
   },
   tabs: {
@@ -51,7 +69,8 @@ export const en: Translations = {
     noPrice: 'No price given',
     ownerList: '{{name}}’s list',
     someone: 'A shared list',
-    empty: 'Nothing yet. The ideas on this list will show up here.',
+    emptyTitle: 'No ideas yet',
+    emptyBody: 'The wishes on this list will show up here as soon as they’re added.',
     options: 'List options',
     optionsShort: 'Options',
     rename: 'Rename',

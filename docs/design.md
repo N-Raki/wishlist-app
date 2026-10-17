@@ -6,7 +6,7 @@ Retenue par Raki le 2026-10-09 parmi six pistes. Maquettes : [canevas Wish Me](h
 Une liste de souhaits est d'abord une vitrine de cadeaux : les photos portent l'interface, le reste s'efface. La joie vient des images et d'une seule couleur vive, pas de la décoration.
 
 ## Principes
-1. **Photo d'abord.** Grille en 2 colonnes, vignettes 4:5, coins arrondis 22 px. Un souhait sans photo garde une vignette teintée avec son initiale, jamais d'icône générique ; les teintes suivent l'ordre d'ajout, pour que deux voisines ne se ressemblent jamais.
+1. **Photo d'abord.** Grille en 2 colonnes, vignettes 4:5, coins arrondis 22 px. Un souhait sans photo garde une vignette teintée avec son initiale, jamais d'icône générique : l'initiale est très grande et coupée par le coin bas droit, comme une étiquette imprimée, pour se lire comme un choix et non comme une photo manquante ou un avatar (sur les petites vignettes des cartes de liste, elle reste entière et centrée). Les teintes suivent l'ordre d'ajout, pour que deux voisines ne se ressemblent jamais.
 2. **Une seule couleur d'accent**, toujours avec du texte encre dessus (jamais blanc sur corail).
 3. **Le secret est expliqué au bon moment.** Côté propriétaire, aucun état de réservation n'apparaît. La promesse de surprise est dite là où elle rassure : sur une liste encore vide et au moment de partager, pas en pastille permanente.
 4. **Un vocabulaire de réservation unique** : « Réserver », « Léa s’en occupe » + « Participer », « Vous et Hugo » (ou « Vous l’offrez avec Hugo » quand la place le permet).
@@ -39,6 +39,12 @@ Source unique dans le code : `apps/app/src/theme/palette.ts`. Sur le web, les co
 - **Rayons** : vignettes et cartes 22 à 26 px, champs 14 à 16 px, boutons en pilule.
 - **Cibles tactiles** : 44 px minimum.
 
+## Illustrations
+Des objets en 3D de la famille Fluent Emoji de Microsoft (licence MIT, notice dans `apps/app/assets/illustrations/LICENSE` et crédit dans les mentions légales), une seule famille pour toute l'app (`Illustration`). Elles servent là où il n'y a pas encore de vraie photo : les exemples de l'accueil, posés sur les teintes des vignettes, et les états vides (`EmptyState`). Toujours décoratives (`aria-hidden`), le texte voisin dit la même chose. Une nouvelle illustration vient de la même famille, pas d'une autre banque.
+
+## Accueil sans compte
+Une page, un seul appel à l'action : « Créer ma liste » (en bas sur téléphone, sous le texte sur grand écran). « Se connecter » reste en haut à droite pour qui a déjà un compte ; les deux mènent au même code par e-mail. Dessous, un exemple de liste vue par un proche (qui s'occupe de quoi, ce que le propriétaire ne voit jamais), la seconde colonne décalée vers le bas, puis « Comment ça marche » en trois temps, chacun avec son illustration. Sur grand écran, le texte et l'exemple sont côte à côte.
+
 ## Icône et écran de lancement
 Un « w » encre en Gabarito ExtraBold, avec une étincelle, sur fond corail (choisi par Raki le 2026-10-16). Source : `apps/app/assets/icon.svg`. Les fichiers PNG en sont tirés : icône 1024 px, Android adaptative (le w seul sur fond corail, et version monochrome), favicon, et écran de lancement (l'icône arrondie, au centre, sur le fond du thème clair ou sombre).
 - **Barre d'onglets** translucide (flou + saturation), le contenu défile dessous. Le haut des écrans sans en-tête (barre d'état, Dynamic Island) a la même matière (`BarBackground`).
@@ -52,7 +58,7 @@ Tirées des premiers retours de Raki sur l'app (2026-10-11). À vérifier sur ch
 3. **La barre d'onglets reste là.** On ne la quitte que pour un formulaire ouvert en modale ; une page ouverte depuis un onglet s'empile dans cet onglet. Toucher l'onglet courant ramène à son début.
 4. **Les champs facultatifs le disent.** « (facultatif) » à côté du libellé ; les autres sont obligatoires (`aria-required`). Une erreur s'affiche à l'envoi, sous le champ, et s'efface quand on le corrige.
 5. **Une info se dit au moment où elle sert**, pas en badge permanent.
-6. **Les états vides sont la première impression.** Chaque écran est relu vide, avec un élément et avec beaucoup, et sans photo.
+6. **Les états vides sont la première impression.** Chaque écran est relu vide, avec un élément et avec beaucoup, et sans photo. Un état vide (`EmptyState`) a une illustration, un titre qui dit ce qui viendra et une phrase qui dit comment ; l'action pour le remplir est celle de l'écran.
 7. **Rien ne déborde à 320 px** (WCAG 1.4.10, testé par `expectReflow` dans les tests e2e) ; un titre ne partage pas sa ligne avec un bouton.
 8. **Mentions légales et confidentialité** : en pied des pages publiques (accueil, liste vue par un visiteur), à côté de toute collecte de données (connexion), et dans l'onglet Compte une fois connecté.
 9. **Le clavier ne s'ouvre d'office que sur le seul choix de l'écran** (un code, le nom d'une liste). Pas quand d'autres options attendent dessous (connexion, souhait). `Screen` garde la page et son action au-dessus du clavier, et le glisser de la page le range.
@@ -78,6 +84,5 @@ Sur iPad, l’app suit les points 1 à 4 et 7 ; les boutons d’en-tête restent
 - Typographie française : espace insécable avant `€` et `!`, apostrophe typographique.
 
 ## Reste à faire avant l'étape 3
-- Vraies photos dans les maquettes (aucune banque d'images accessible depuis l'environnement de travail).
 - Animations (ouverture des feuilles, réservation) avec ressorts interruptibles, et variante « mouvement réduit ».
 - Logos officiels Apple et Google selon leurs chartes.
