@@ -40,6 +40,6 @@ test('a large screen gets a layout of its own', async ({ page }, testInfo) => {
 
   // Back to a phone's width, the phone's layout comes back.
   await page.setViewportSize({ width: 390, height: 800 });
-  expect((await navigation.boundingBox())?.y).toBeGreaterThan(600);
+  await expect.poll(async () => (await navigation.boundingBox())?.y).toBeGreaterThan(600);
   await expect(page.getByRole('button', { name: 'Options de la liste' })).toHaveText('');
 });
