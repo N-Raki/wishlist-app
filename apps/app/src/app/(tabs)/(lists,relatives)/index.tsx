@@ -17,6 +17,8 @@ export default function Home() {
     return (
       <Screen
         title={t('lists.title')}
+        width="wide"
+        heading={<Text variant="display">{t('lists.title')}</Text>}
         action={
           <Link href="/list-form" asChild>
             <Button role="link" icon="plus" label={t('lists.newList')} />

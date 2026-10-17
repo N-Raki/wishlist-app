@@ -13,6 +13,7 @@ import { WishArt } from '@/lists/WishGrid';
 import { fonts, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
 import { Button } from '@/ui/Button';
+import { useLargeScreen } from '@/ui/layout';
 import { Screen } from '@/ui/Screen';
 import { Text } from '@/ui/Text';
 import { TextLink } from '@/ui/TextLink';
@@ -66,6 +67,7 @@ function Details({ list, wish, position }: { list: WishlistView; wish: Wish; pos
   const { session } = useSession();
   // A new account first chooses its name on the sign-in sheet, above this page.
   const named = useNameRequirement() === 'none';
+  const large = useLargeScreen();
   const [notice, setNotice] = useState<Notice | null>(null);
   const reserveIt = useListMutation(list.id, reserve);
   const cancel = useListMutation(list.id, cancelReservation);
@@ -123,17 +125,8 @@ function Details({ list, wish, position }: { list: WishlistView; wish: Wish; pos
     );
   }
 
-  return (
-    <Screen title={`${wish.name} · ${list.name}`} action={action}>
-      {router.canGoBack() ? null : (
-        // Opened from a link: the way to the whole list, which the header's back button can't offer.
-        <TextLink href={{ pathname: '/wishlists/[id]', params: { id: list.id } }} style={styles.listLink}>
-          {list.name}
-        </TextLink>
-      )}
-      <View style={styles.art}>
-        <WishArt wish={wish} position={position} size="tile" />
-      </View>
+  const details = (
+    <>
       <View style={styles.heading}>
         <Text variant="title">{wish.name}</Text>
         {wish.price_cents === null ? (
@@ -156,6 +149,8 @@ function Details({ list, wish, position }: { list: WishlistView; wish: Wish; pos
           {failed ? t('common.genericError') : notice ? t(`reservation.${notice}`) : null}
         </Text>
       ) : null}
+      {/* On a large screen, the action follows who is on it, as on a shop's product page. */}
+      {large ? <View style={styles.action}>{action}</View> : null}
 
       {wish.description ? (
         <View style={styles.section}>
@@ -173,6 +168,33 @@ function Details({ list, wish, position }: { list: WishlistView; wish: Wish; pos
           />
         </Link>
       ) : null}
+    </>
+  );
+
+  return (
+    <Screen title={`${wish.name} · ${list.name}`} width="wide" action={large ? undefined : action}>
+      {router.canGoBack() ? null : (
+        // Opened from a link: the way to the whole list, which the header's back button can't offer.
+        <TextLink href={{ pathname: '/wishlists/[id]', params: { id: list.id } }} style={styles.listLink}>
+          {list.name}
+        </TextLink>
+      )}
+      {large ? (
+        // Photo and details side by side, both in view at once.
+        <View style={styles.columns}>
+          <View style={styles.largeArt}>
+            <WishArt wish={wish} position={position} size="tile" />
+          </View>
+          <View style={styles.details}>{details}</View>
+        </View>
+      ) : (
+        <>
+          <View style={styles.art}>
+            <WishArt wish={wish} position={position} size="tile" />
+          </View>
+          {details}
+        </>
+      )}
     </Screen>
   );
 }
@@ -193,4 +215,8 @@ const styles = StyleSheet.create({
   heading: { gap: space.xs },
   price: { fontFamily: fonts.bold, fontSize: 20, lineHeight: 26, fontVariant: ['tabular-nums'] },
   section: { gap: space.sm },
+  columns: { flexDirection: 'row', alignItems: 'flex-start', gap: space.xxxl },
+  largeArt: { flex: 5 },
+  details: { flex: 6, gap: space.xl },
+  action: { alignItems: 'flex-start' },
 });

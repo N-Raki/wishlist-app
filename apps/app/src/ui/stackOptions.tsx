@@ -6,6 +6,7 @@ import { fonts, space } from '@/theme/tokens';
 import { HeaderButton } from './HeaderButton';
 import type { IconName } from './Icon';
 import { TextLink } from './TextLink';
+import { useTabBarInset } from './tabBarInset';
 
 type ScreenOptions = Extract<NonNullable<ComponentProps<typeof Stack>['screenOptions']>, (...args: never[]) => unknown>;
 
@@ -29,7 +30,14 @@ type Options = Exclude<NonNullable<ComponentProps<typeof Stack.Screen>['options'
 const sfSymbols = { close: 'xmark', share: 'square.and.arrow.up', more: 'ellipsis' } as const satisfies Partial<
   Record<IconName, string>
 >;
-type HeaderAction = { icon: keyof typeof sfSymbols; label: string; onPress: () => void };
+type HeaderAction = {
+  icon: keyof typeof sfSymbols;
+  /** The button's name, read by assistive technologies. */
+  label: string;
+  /** Shown next to the icon on large screens; must be part of `label` (WCAG 2.5.3). */
+  shortLabel?: string;
+  onPress: () => void;
+};
 
 /**
  * Buttons on one side of the header. On iOS they are native bar button items, so they sit on
@@ -47,9 +55,16 @@ export function headerActions(side: 'left' | 'right', actions: HeaderAction[]): 
     return side === 'left' ? { unstable_headerLeftItems: items } : { unstable_headerRightItems: items };
   }
   const element = () => (
-    <View style={{ flexDirection: 'row', marginHorizontal: Platform.OS === 'web' ? space.md : 0 }}>
-      {actions.map(({ icon, label, onPress }) => (
-        <HeaderButton key={icon} icon={icon} label={label} onPress={onPress} />
+    <View style={{ flexDirection: 'row', gap: space.sm, marginHorizontal: Platform.OS === 'web' ? space.md : 0 }}>
+      {actions.map(({ icon, label, shortLabel, onPress }) => (
+        // Actions on the right name what they do when there is room; closing (left) is understood.
+        <HeaderButton
+          key={icon}
+          icon={icon}
+          label={label}
+          visibleLabel={side === 'right' ? (shortLabel ?? label) : undefined}
+          onPress={onPress}
+        />
       ))}
     </View>
   );
@@ -62,6 +77,8 @@ export function closeButton(label: string, onPress: () => void) {
 }
 
 function HomeLink() {
+  // Signed in on a large screen, the brand already leads the bar along the top.
+  if (useTabBarInset().atTop) return null;
   return (
     <TextLink
       href="/"

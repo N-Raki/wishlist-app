@@ -26,17 +26,12 @@ Règle 10 de design.md, portée par `Button` (`variant` primary, secondary ou pl
 - **Connexion.** Les autres voies (mot de passe, code, renvoyer le code, changer d'adresse) passent en texte seul ; Google reste à bord, c'est une vraie alternative.
 - **Annuler une réservation** : inchangé, sans confirmation ni rouge. Elle se défait : juste après, l'action redevient « Réserver » (ou « Participer »).
 
-## 3. Web et grands écrans
+## 3. Web et grands écrans — corrigé
 Constaté : tout est pensé pour le mobile ; sur ordinateur, les boutons ne montrent qu'une icône et la mise en page ne s'adapte pas.
 
-- Aujourd'hui, une seule colonne de 560 px partout (`contentMaxWidth`), et la barre d'onglets du mobile est aussi utilisée sur le web.
-- À prévoir :
-  - des points de rupture dans `tokens.ts` et un hook partagé ;
-  - au-delà d'une tablette, une navigation en haut ou sur le côté à la place de la barre d'onglets ;
-  - des grilles de listes et de souhaits sur plusieurs colonnes ;
-  - des boutons d'en-tête avec leur libellé (« Partager », « Options ») ;
-  - des états de survol.
-- Section « Grands écrans » à ajouter dans design.md.
+Section « Grands écrans » de design.md : un point de rupture à 768 px (`largeScreenMinWidth`, `useLargeScreen`), navigation en haut, colonne large de 1080 px pour les grilles (`Grid`), action principale à côté du titre ou en fin de formulaire, boutons d'en-tête libellés et alignés sur la colonne, états de survol, fenêtres centrées. Fiche d'un souhait en deux colonnes. Compte a désormais son titre, comme les deux autres onglets.
+
+Testé par `e2e/large-screens.spec.ts`. L'iPad reprend la navigation en haut et les grilles, à vérifier sur l'appareil.
 
 ## 4. Accueil sans compte et états vides
 Constaté : l'accueil d'un visiteur non connecté manque d'allure, notamment ses exemples de cadeaux sans image.

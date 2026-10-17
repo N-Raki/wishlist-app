@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { fonts, radius, space } from '@/theme/tokens';
 import { useColors } from '@/theme/useColors';
+import { Grid } from '@/ui/Grid';
 import { Text } from '@/ui/Text';
 import { Touchable } from '@/ui/Touchable';
 import type { Wish } from './api';
@@ -12,28 +13,15 @@ import { formatPrice } from './money';
 import { photoUrl } from './photos';
 import { initialOf, tintAt } from './tint';
 
-/** Two columns of 4:5 tiles: the photos carry the page (docs/design.md, "Photo d'abord"). */
+/**
+ * 4:5 tiles, two columns on a phone and more on a large screen: the photos carry the page
+ * (docs/design.md, "Photo d'abord").
+ */
 export function WishGrid({ children }: { children: ReactNode[] }) {
-  const rows: ReactNode[][] = [];
-  children.forEach((child, index) => {
-    if (index % 2 === 0) rows.push([child]);
-    else rows.at(-1)?.push(child);
-  });
   return (
-    <View role="list" style={styles.grid}>
-      {rows.map((row, index) => (
-        // biome-ignore lint/suspicious/noArrayIndexKey: rows are positions, not items
-        <View key={index} style={styles.row}>
-          {row.map((cell, cellIndex) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: the cell's content carries its own key
-            <View key={cellIndex} role="listitem" style={styles.cell}>
-              {cell}
-            </View>
-          ))}
-          {row.length === 1 ? <View style={styles.cell} /> : null}
-        </View>
-      ))}
-    </View>
+    <Grid minCellWidth={220} minColumns={2} rowGap={space.lg}>
+      {children}
+    </Grid>
   );
 }
 
@@ -88,6 +76,7 @@ export function WishTile({
   return (
     <Link href={href} asChild>
       <Touchable
+        hoveredLook={styles.hovered}
         aria-label={[t(opens === 'details' ? 'wish.open' : 'wishlist.edit', { name: wish.name }), badge]
           .filter(Boolean)
           .join(', ')}
@@ -141,9 +130,6 @@ export function WishArt({
 }
 
 const styles = StyleSheet.create({
-  grid: { gap: space.lg },
-  row: { flexDirection: 'row', gap: space.md },
-  cell: { flex: 1 },
   wish: { gap: space.sm },
   tile: {
     aspectRatio: 4 / 5,
@@ -165,5 +151,6 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     overflow: 'hidden',
   },
+  hovered: { transform: [{ translateY: -3 }] },
   pressed: { opacity: 0.85, transform: [{ scale: 0.98 }] },
 });

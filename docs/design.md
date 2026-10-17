@@ -42,12 +42,12 @@ Source unique dans le code : `apps/app/src/theme/palette.ts`. Sur le web, les co
 ## Icône et écran de lancement
 Un « w » encre en Gabarito ExtraBold, avec une étincelle, sur fond corail (choisi par Raki le 2026-10-16). Source : `apps/app/assets/icon.svg`. Les fichiers PNG en sont tirés : icône 1024 px, Android adaptative (le w seul sur fond corail, et version monochrome), favicon, et écran de lancement (l'icône arrondie, au centre, sur le fond du thème clair ou sombre).
 - **Barre d'onglets** translucide (flou + saturation), le contenu défile dessous. Le haut des écrans sans en-tête (barre d'état, Dynamic Island) a la même matière (`BarBackground`).
-- **Boutons d'en-tête** (`headerActions`) : sur iOS, les boutons du système (symboles SF sur « Liquid Glass » rond, comme Retour) ; ailleurs, l'icône seule, sans fond. Couleur encre partout : le corail n'atteint pas 3:1 sur le fond clair.
+- **Boutons d'en-tête** (`headerActions`) : sur iOS, les boutons du système (symboles SF sur « Liquid Glass » rond, comme Retour) ; ailleurs, l'icône seule, sans fond (avec son libellé sur grand écran, voir « Grands écrans »). Couleur encre partout : le corail n'atteint pas 3:1 sur le fond clair.
 
 ## Règles d'interface
 Tirées des premiers retours de Raki sur l'app (2026-10-11). À vérifier sur chaque écran touché, avant d'ouvrir la PR.
 
-1. **L'action principale est en bas, à portée du pouce.** Une seule par écran, en pilule pleine au-dessus de la barre d'onglets (`Screen action=`), visible quel que soit le défilement. Les actions rares ou destructrices vont dans le menu « ⋯ » en haut ; fermer un formulaire, c'est la croix en haut à gauche.
+1. **L'action principale est en bas, à portée du pouce** (sur téléphone ; voir « Grands écrans »). Une seule par écran, en pilule pleine au-dessus de la barre d'onglets (`Screen action=`), visible quel que soit le défilement. Les actions rares ou destructrices vont dans le menu « ⋯ » en haut ; fermer un formulaire, c'est la croix en haut à gauche.
 2. **Ce qui a l'air touchable l'est, et l'inverse.** Carte, pointillés, `+`, chevron : uniquement sur un élément qui réagit au toucher. Un état vide ou une explication est du texte posé sur le fond, sans cadre.
 3. **La barre d'onglets reste là.** On ne la quitte que pour un formulaire ouvert en modale ; une page ouverte depuis un onglet s'empile dans cet onglet. Toucher l'onglet courant ramène à son début.
 4. **Les champs facultatifs le disent.** « (facultatif) » à côté du libellé ; les autres sont obligatoires (`aria-required`). Une erreur s'affiche à l'envoi, sous le champ, et s'efface quand on le corrige.
@@ -57,6 +57,19 @@ Tirées des premiers retours de Raki sur l'app (2026-10-11). À vérifier sur ch
 8. **Mentions légales et confidentialité** : en pied des pages publiques (accueil, liste vue par un visiteur), à côté de toute collecte de données (connexion), et dans l'onglet Compte une fois connecté.
 9. **Le clavier ne s'ouvre d'office que sur le seul choix de l'écran** (un code, le nom d'une liste). Pas quand d'autres options attendent dessous (connexion, souhait). `Screen` garde la page et son action au-dessus du clavier, et le glisser de la page le range.
 10. **Les actions se hiérarchisent, la destruction se voit** (`Button`). Trois niveaux : pilule pleine pour l'action principale (une au plus par écran), pilule à bord pour les autres, texte seul pour sortir (« Annuler », « Fermer ») ou prendre une autre voie, et seulement sous d'autres boutons, pour qu'il se lise comme un bouton. Ce qui fait perdre quelque chose est rouge (`destructive`), en dernier et sous un filet (`Divider`) ; s'il ne se défait pas, une confirmation suit, avec le seul bouton rouge plein de l'app. Ce qui se défait aussitôt (annuler une réservation, se déconnecter) n'est ni rouge ni confirmé.
+
+## Grands écrans
+À partir de 768 px de large (`largeScreenMinWidth`, une tablette ou un ordinateur), la mise en page change. Un seul point de rupture suffit : en dessous, on tient un téléphone ; au-dessus, il y a de la place et souvent une souris. Le nombre de colonnes des grilles suit la largeur réelle, sans palier. `useLargeScreen()` le dit au code (`src/ui/layout.ts`). Sur le web, la page sort du serveur en version téléphone et s’adapte dans le navigateur, sans écart d’hydratation.
+
+1. **Navigation en haut.** La barre d’onglets devient une barre en haut : « Wish Me » à gauche, les onglets à droite, l’onglet courant en pilule claire. Elle est alignée sur la colonne large des pages.
+2. **Deux largeurs de colonne.** 560 px pour lire et remplir (formulaires, compte, textes légaux), 1080 px pour les grilles (`Screen width="wide"`). Les textes posés dans une page large restent à 560 px.
+3. **Grilles.** `Grid` met autant de cellules par ligne qu’il en tient : souhaits de 220 px minimum (2 colonnes au moins, 4 sur ordinateur), listes et proches de 320 px minimum (3 sur ordinateur).
+4. **L’action principale quitte le bas.** Le pouce n’est plus là. Elle se place à côté du titre (`Screen heading=`), ou en fin de page pour un formulaire. Sur la fiche d’un souhait, la photo et le détail sont côte à côte, et l’action suit l’état de réservation.
+5. **Boutons d’en-tête avec libellé.** Une pilule à bord avec l’icône et un mot (« Partager », « Options ») ; le nom accessible garde la forme longue, qui contient le mot visible (WCAG 2.5.3). La croix de fermeture reste une icône. Sur le web, l’en-tête s’aligne sur la colonne de la page, pas sur les bords de la fenêtre.
+6. **Survol.** Ce qui se clique réagit sous la souris : les cartes et les vignettes se soulèvent, les boutons à bord et les icônes prennent un fond atténué, le bouton plein fonce légèrement. Transitions de 150 ms, coupées si le système demande moins d’animations.
+7. **Fenêtres.** Menus et confirmations s’ouvrent au centre (440 px), plus au bas de l’écran.
+
+Sur iPad, l’app suit les points 1 à 4 et 7 ; les boutons d’en-tête restent ceux du système.
 
 ## Accessibilité vérifiée sur les maquettes
 - Contrastes texte ≥ 4,5:1 (texte secondaire 5,85:1 sur le fond, placeholder 4,64:1).

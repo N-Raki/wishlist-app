@@ -32,7 +32,7 @@ export default function Account() {
   }
 
   return (
-    <Screen title={t('account.title')}>
+    <Screen title={t('account.title')} heading={<Text variant="display">{t('account.title')}</Text>}>
       <View style={[styles.card, { backgroundColor: colors.surface }]}>
         <View style={styles.field}>
           <Text variant="caption" tone="secondary">

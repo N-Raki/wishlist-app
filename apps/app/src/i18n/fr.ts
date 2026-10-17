@@ -53,6 +53,7 @@ export const fr = {
     someone: 'Une liste partagée',
     empty: 'Rien pour l’instant. Les idées de cette liste apparaîtront ici.',
     options: 'Options de la liste',
+    optionsShort: 'Options',
     rename: 'Renommer',
     delete: 'Supprimer la liste',
     deleteTitle: 'Supprimer «\u00A0{{name}}\u00A0»\u00A0?',
@@ -135,6 +136,8 @@ export const fr = {
   },
   share: {
     open: 'Partager la liste',
+    /** Shown next to the icon on large screens; within `open`, which stays the button's name. */
+    openShort: 'Partager',
     title: 'Partager «\u00A0{{name}}\u00A0»',
     ownerPromise:
       'Vos proches verront la liste et pourront réserver un cadeau, seuls ou à plusieurs. Vous ne saurez jamais qui offre quoi.',

@@ -55,6 +55,7 @@ export function Button({
         { backgroundColor: look.background, borderColor: look.border },
         disabled && styles.disabled,
       ]}
+      hoveredLook={variant === 'primary' ? styles.filledHovered : { backgroundColor: colors.surfaceMuted }}
       pressedLook={variant === 'plain' ? styles.plainPressed : styles.pressed}
       {...props}
     >
@@ -83,6 +84,7 @@ const styles = StyleSheet.create({
   },
   compact: { minHeight: minTouchTarget, paddingHorizontal: space.lg, gap: space.xs },
   pressed: { opacity: 0.8, transform: [{ scale: 0.97 }] },
+  filledHovered: { filter: 'brightness(0.94)' },
   // Nothing to shrink: the text dims, like the header buttons.
   plainPressed: { opacity: 0.5 },
   disabled: { opacity: 0.5 },
